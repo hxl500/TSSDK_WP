@@ -1,0 +1,133 @@
+if ARCH_TS
+
+config SPL_FS_FAT
+	default y
+
+config SPL_LIBCOMMON_SUPPORT
+	default y
+
+config SPL_LIBDISK_SUPPORT
+	default y
+
+config SPL_LIBGENERIC_SUPPORT
+	default y
+
+config SPL_MMC_SUPPORT
+	default y if MMC_SDHCI_ZYNQ
+
+config SPL_SERIAL_SUPPORT
+	default y
+
+config SPL_SPI_FLASH_SUPPORT
+	default y if ZYNQ_QSPI
+
+config SPL_SPI_SUPPORT
+	default y if ZYNQ_QSPI
+
+config SYS_BOARD
+	default "tx536" if ARCH_TS_TX536
+	default "tx5215"  if ARCH_TS_TX5215
+	default "tx5112"  if ARCH_TS_TX5112
+    default "tx5336"  if ARCH_TS_TX5336
+    
+config SYS_VENDOR
+	string "Vendor name"
+	default "tsingmicro"
+
+config SYS_SOC
+	default "ts"
+
+config SYS_CONFIG_NAME
+	string "Board configuration name"
+	default "ts_tx536" if ARCH_TS_TX536
+	default "ts_tx5215"  if ARCH_TS_TX5215
+	default "ts_tx5112"  if ARCH_TS_TX5112	
+	help
+	  This option contains information about board configuration name.
+	  Based on this option include/configs/<CONFIG_SYS_CONFIG_NAME>.h header
+	  will be used for board configuration.
+
+config SYS_MEM_RSVD_FOR_MMU
+	bool "Reserve memory for MMU Table"
+	help
+	  If defined this option is used to setup different space for
+	  MMU table than the one which will be allocated during
+	  relocation.
+
+config BOOT_INIT_FILE
+	string "boot.bin init register filename"
+	depends on SPL
+	default ""
+	help
+	  Add register writes to boot.bin format (max 256 pairs).
+	  Expect a table of register-value pairs, e.g. "0x12345678 0x4321"
+
+config PMUFW_INIT_FILE
+	string "PMU firmware"
+	depends on SPL
+	default ""
+	help
+	  Include external PMUFW (Platform Management Unit FirmWare) to
+	  a Xilinx bootable image (boot.bin).
+
+config ZYNQMP_SPL_PM_CFG_OBJ_FILE
+	string "PMU firmware configuration object to load at runtime by SPL"
+	depends on SPL
+	help
+	  Path to a binary PMU firmware configuration object to be linked
+	  into U-Boot SPL and loaded at runtime into the PMU firmware.
+
+	  The ZynqMP Power Management Unit (PMU) needs a configuration
+	  object for most SoC peripherals to work. To have it loaded by
+	  U-Boot SPL set here the file name (absolute path or relative to
+	  the top source tree) of your configuration, which must be a
+	  binary blob. It will be linked in the SPL binary and loaded
+	  into the PMU firmware by U-Boot SPL during board
+	  initialization.
+
+	  Leave this option empty if your PMU firmware has a hard-coded
+	  configuration object or you are loading it by any other means.
+
+config ZYNQMP_USB
+	bool "Configure ZynqMP USB"
+
+config ZYNQMP_NO_DDR
+	bool "Disable DDR MMU mapping"
+	help
+	  This option configures MMU with no DDR to avoid speculative
+	  access to DDR memory where DDR is not present.
+
+config SYS_MALLOC_F_LEN
+	default 0x800
+
+config DEFINE_TCM_OCM_MMAP
+	bool "Define TCM and OCM memory in MMU Table"
+	default y if MP
+	help
+	  This option if enabled defines the TCM and OCM memory and its
+	  memory attributes in MMU table entry.
+
+config ZYNQMP_PSU_INIT_ENABLED
+	bool "Include psu_init"
+	help
+	  Include psu_init to full u-boot. SPL include psu_init by default.
+
+config SPL_ZYNQMP_ALT_BOOTMODE_ENABLED
+	bool "Overwrite SPL bootmode"
+	depends on SPL
+	help
+	  Overwrite bootmode selected via boot mode pins to tell SPL what should
+	  be the next boot device.
+
+config ZYNQ_SDHCI_MAX_FREQ
+	default 200000000
+
+config UBOOT_ENABLE_SMP
+    bool "Enable SMP Of The Auxiliary Register"
+    default y if ARCH_TS_TX5112
+    default y if ARCH_TS_TX5215
+    select ARM_ERRATA_454179
+    help
+      Enable the ACTLR.MSP bit. The caches are disabled when ACTLR.SMP is set to 0 regardless of the value of the cache enable bit
+
+endif

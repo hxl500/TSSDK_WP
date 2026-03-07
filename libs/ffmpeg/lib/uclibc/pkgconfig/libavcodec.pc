@@ -1,0 +1,14 @@
+prefix=/home/test/jenkins/workspace/5X/CD/PRE_CD/code/TX5215BX_T8a0_V010R081B050/libs/ffmpeg/src/ffmpeg/install_arm
+exec_prefix=${prefix}
+libdir=/home/test/jenkins/workspace/5X/CD/PRE_CD/code/TX5215BX_T8a0_V010R081B050/libs/ffmpeg/src/ffmpeg/install_arm/lib
+includedir=/home/test/jenkins/workspace/5X/CD/PRE_CD/code/TX5215BX_T8a0_V010R081B050/libs/ffmpeg/src/ffmpeg/install_arm/include
+
+Name: libavcodec
+Description: FFmpeg codec library
+Version: 60.3.100
+Requires: libavutil >= 58.2.100
+Requires.private: 
+Conflicts:
+Libs: -L${libdir}  -lavcodec -pthread -lm -latomic
+Libs.private: 
+Cflags: -I${includedir}

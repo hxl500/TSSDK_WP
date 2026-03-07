@@ -1,0 +1,11 @@
+#
+# SHAREMSG support
+#
+
+config SHAREMSG
+	   tristate "Tsingmicro SHAREMSG support"
+	   default n
+	   help
+
+	   The is Tsingmicro SHAREMSG module.
+

@@ -1,0 +1,56 @@
+#
+# Tsingmicro Soc drivers
+#
+
+obj-y += wrap_io.o
+obj-y += wrap_file.o
+obj-y += wrap_spinlock.o
+obj-y += wrap_mutex.o
+obj-y += wrap_semaphore.o
+obj-y += wrap_rcu.o
+obj-y += wrap_malloc.o
+obj-y += wrap_delay.o
+obj-y += wrap_list.o
+obj-y += wrap_workqueue.o
+obj-y += wrap_wait.o
+obj-y += wrap_current.o
+obj-y += wrap_atomic.o
+obj-y += wrap_clk.o
+obj-y += wrap_i2c.o
+obj-y += wrap_spi.o
+obj-y += wrap_kstrtox.o
+obj-y += wrap_uaccess.o
+obj-y += wrap_device.o
+obj-y += wrap_of_device.o
+obj-y += wrap_platform.o
+obj-y += wrap_cdev.o
+obj-y += wrap_dma-mapping.o
+obj-y += wrap_kthread.o
+obj-y += wrap_skbuff.o
+obj-y += wrap_netlink.o
+obj-y += wrap_of_reserved_mem.o
+obj-y += wrap_devm.o
+obj-y += wrap_v4l2.o
+obj-y += wrap_v4l2_fh.o
+obj-y += wrap_resource.o
+obj-y += wrap_pcm.o
+obj-y += wrap_proc_fs.o
+obj-y += wrap_pgtable.o
+obj-y += wrap_mm.o
+obj-y += wrap_scatterlist.o
+obj-y += wrap_dma-buf.o
+obj-y += wrap_getorder.o
+obj-y += wrap_page.o
+obj-y += wrap_kfifo.o
+obj-y += wrap_cache.o
+obj-y += wrap_reset.o
+obj-y += wrap_fs.o
+obj-y += wrap_seqfile.o
+obj-y += wrap_class.o
+obj-y += wrap_barrier.o
+obj-y += wrap_preempt.o
+obj-y += wrap_idr.o
+obj-y += wrap_sched.o
+obj-y += wrap_jiffies.o
+obj-y += wrap_dma-fence.o
+obj-y += wrap_bitops.o

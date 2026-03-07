@@ -1,0 +1,75 @@
+* Binding for ts pinctrl
+
+Required properties:
+  - compatible: "ts,ts-pinctrl";
+  - reg: offset and length of ts padctrl;
+  - ts,npins: number of ts pin;
+
+Optional properties:
+  -init-function: A string of function name, the driver will configure all the
+   groups under the specified function once after initialization, but these pins
+   will not be occupied.
+
+The ts pin configuration node is a node of a group of pins which can be
+used for a specific function. This node represents both mux and config of the
+pins in that group. Each configuration node can consist of multiple nodes
+describing the pinmux and pinconf options. Those nodes can be pinmux nodes or
+pinconf nodes.
+
+Required subnode describing the function. The name of each subnode will be used
+as function name.
+
+Required properties for configuration nodes:
+  - groups: A list of pinmux groups, need to be the same as the node name.
+  - function: The name of a pinmux function to activate for the specified set
+    of groups, need to be the same as the function node name.
+  - ts,pins: integers array, represents a group of pins mux and config setting.
+  - mux,val: 0 to 3 mean the specific device function.
+
+Please refer to pinctrl-bindings.txt in this directory for details of the
+common pinctrl bindings used by client devices, including the meaning of the
+phrase "pin configuration node".
+
+The following generic properties as defined in pinctrl-bindings.txt are valid
+to specify in a pinconf subnode:
+    bias-pull-up		- pull up the pin
+    bias-pull-down		- pull down the pin
+    drive-strength		- sink or source at most X mA
+    input-schmitt-enable	- enable schmitt-trigger mode
+    input-schmitt-disable	- disable schmitt-trigger mode
+
+Example:
+	pinctrl: pinctrl@f0d95000 {
+		compatible = "ts,ts-pinctrl";
+		reg = <0x0 0xf0d95000 0x0 0x1000>;
+		ts,npins = <97>;
+		spi2 {
+			spi2_pinctrl: spi2_grp {
+				ts,pins = <17 18 19 20>;
+				mux,val = <1>;
+				function = "spi2";
+				groups = "spi2_grp";
+			};
+		};
+		PA {
+			PA0_pinctrl: PA0_grp {
+				ts,pins = <0>;
+				mux,val = <3>;
+				function = "PA";
+				groups = "PA0_grp";
+			};
+			PA1_pinctrl: PA1_grp {
+				ts,pins = <1>;
+				mux,val = <3>;
+				function = "PA";
+				groups = "PA1_grp";
+			};
+		};
+	};
+
+Examples of use:
+	node {
+		pinctrl-names = "default","default";
+		pinctrl-0 = <&PA0_pinctrl>;
+		pinctrl-1 = <&PA1_pinctrl>;
+	};

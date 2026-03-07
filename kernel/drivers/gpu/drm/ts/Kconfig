@@ -1,0 +1,78 @@
+config DRM_TS
+	bool "DRM Support for Tsingmicro"
+	select DRM_KMS_HELPER
+	select DRM_KMS_CMA_HELPER
+	select DRM_GEM_CMA_HELPER
+	select VIDEOMODE_HELPERS
+	help
+	  Choose this option if you have a tsingmicro soc chipset.
+	  This driver provides kernel mode setting and buffer
+	  management to userspace. This driver does not provide
+	  2D or 3D acceleration; acceleration is performed by other
+	  IP found on the SoC.
+
+config DRM_MALIDP
+	tristate "ARM Mali Display Processor"
+	depends on DRM && OF && (ARM || ARM64)
+	depends on COMMON_CLK
+	help
+	  Choose this option if you want to compile the ARM Mali Display
+	  Processor driver. It supports the DP500, DP550 and DP650 variants
+	  of the hardware.
+	  If compiled as a module it will be called mali-dp.
+
+config DRM_NEMADC
+	tristate "Nema DC Display Processor"
+	depends on DRM && OF && (ARM || ARM64)
+	depends on COMMON_CLK
+	help
+	  Choose this option if you want to compile the Nema DC Display
+	  Processor driver.
+
+	  If compiled as a module it will be called nemadc.
+
+config DRM_TS_VIRT_HDMI
+	tristate "VIRT HDMI"
+	depends on DRM && OF && (ARM || ARM64)
+	help
+	  Choose this option if you want a virtul hdmi encoder.
+	  This options is used when dpu connects lcd directly. In this case,
+	  there is no encoder and connector, but drm need.
+	  If M is selected the module will be called virt-hdmi.
+
+config DRM_TS_DW_MIPI_DSI
+	tristate "Tsingmicro DW MIPI DSI"
+	select DRM_MIPI_DSI
+	depends on DRM && OF && (ARM || ARM64)
+	help
+	  Choose this option if you want tsingmicro designware encoder and
+	  connector. This options is used when dpu connects mipi lcd through
+	  dsi host and phy.
+
+config DRM_TS_DW_HDMI
+	tristate "Tsingmicro DW HDMI"
+	depends on DRM && OF && DRM_DW_HDMI && (ARM || ARM64)
+	help
+	  Choose this option if you want a dw hdmi encoder.
+	  This options is used when dpu connects lcd directly. In this case,
+	  there is no encoder and connector, but drm need.
+	  If M is selected the module will be called dw-hdmi.
+
+config DRM_NEMADC_SPI
+	tristate "NEMADC SPI"
+	depends on DRM && OF && (ARM || ARM64)
+	help
+	  Choose this option if you want a virtul hdmi encoder.
+	  This options is used when dpu connects lcd directly. In this case,
+	  there is no encoder and connector, but drm need.
+	  If M is selected the module will be called virt-hdmi spi.
+
+config DRM_NEMADC_MIPI
+	tristate "NEMADC MIPI"
+	depends on DRM && OF && (ARM || ARM64)
+	help
+	  Choose this option if you want a mipi encoder.
+	  This options is used when dpu connects lcd directly. In this case,
+	  there is no encoder and connector, but drm need.
+	  If M is selected the module will be called mipi.
+

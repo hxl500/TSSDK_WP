@@ -1,0 +1,47 @@
+/*
+ * dts file for tsingmicro tx51xx haps
+ *
+ * Copyright 2022 Tsingmicro, Inc.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ */
+
+/dts-v1/;
+
+#include "ts-tx51xx-aov-fast.dtsi"
+
+/ {
+	model = "TS TX5112DV300";
+	compatible = "tsingmicro,ts-tx5112";
+
+	aliases {
+		sd0 = &sdhci1;
+		serial0 = &uart0;
+	};
+	memory@0 {
+		device_type = "memory";
+		reg = <0x0 0x08000000>;
+		// reg = <0x0 0x04000000>;
+	};
+	reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+		sharebuffer: sharebuffer@6000000 {
+			// need adapt baremetal malloc max bitstream size and head size
+			reg = <0x6000000 (0x200000 + 0x1C00000)>;
+		};
+
+		/* global autoconfigured region for contiguous allocations */
+		linux,cma {
+			compatible = "shared-dma-pool";
+			reusable;
+			reg = <0x01800000 0x02800000>;  //40M cma
+			linux,cma-default;
+		};
+	};
+
+};

@@ -1,0 +1,42 @@
+#!/bin/sh
+set -e
+
+MAKEDEVS=${TARGET_BUILD_DIR}/tools/ext4/makedevs
+FULL_DEVICES_TABLE=${TARGET_BUILD_DIR}/tools/ext4/full_devices_table.txt
+
+mkdir -p ${TARGET_OUT_DIR}/squashfs/rootfs/usr
+mkdir -p ${TARGET_OUT_DIR}/squashfs/rootfs/opt
+mkdir -p ${TARGET_OUT_DIR}/squashfs/rootfs/opt/app
+mkdir -p ${TARGET_OUT_DIR}/squashfs/rootfs/opt/backup
+mkdir -p ${TARGET_OUT_DIR}/squashfs/usr
+mkdir -p ${TARGET_OUT_DIR}/squashfs/opt/app
+mkdir -p ${TARGET_OUT_DIR}/squashfs/opt/backup
+rsync -auH --exclude=/THIS_IS_NOT_YOUR_ROOT_FILESYSTEM  --exclude=/usr --exclude=/opt/app --exclude=/opt/backup ${TARGET_OUT_DIR}/rootfs/* ${TARGET_OUT_DIR}/squashfs/rootfs
+rsync -auH  ${TARGET_OUT_DIR}/rootfs/usr/* ${TARGET_OUT_DIR}/squashfs/usr
+
+if [ -d ${TARGET_OUT_DIR}/rootfs/opt/app/* ] ; then
+	rsync -auH  ${TARGET_OUT_DIR}/rootfs/opt/app/* ${TARGET_OUT_DIR}/squashfs/opt/app
+else
+	rsync -auH  ${TARGET_OUT_DIR}/rootfs/opt/app/ ${TARGET_OUT_DIR}/squashfs/opt/app
+fi
+
+rsync -auH  ${TARGET_OUT_DIR}/rootfs/opt/backup/ ${TARGET_OUT_DIR}/squashfs/opt/backup
+
+chown -h -R 0:0 ${TARGET_OUT_DIR}/squashfs/rootfs
+chown -h -R 0:0 ${TARGET_OUT_DIR}/squashfs/usr
+chown -h -R 0:0 ${TARGET_OUT_DIR}/squashfs/opt/app
+chown -h -R 0:0 ${TARGET_OUT_DIR}/squashfs/opt/backup
+${MAKEDEVS} -d  ${FULL_DEVICES_TABLE}  ${TARGET_OUT_DIR}/squashfs/rootfs
+
+	rm -f ${TARGET_OUT_DIR}/rootfs.squashfs
+	rm -f ${TARGET_OUT_DIR}/usr.squashfs
+	rm -f ${TARGET_OUT_DIR}/app.squashfs
+	rm -f ${TARGET_OUT_DIR}/backup.squashfs
+   	rm -rf ${TARGET_OUT_DIR}/squashfs/rootfs/etc/udev/hwdb.d/
+
+	mksquashfs ${TARGET_OUT_DIR}/squashfs/rootfs ${TARGET_OUT_DIR}/rootfs.squashfs   -noappend -processors 7 -comp xz
+	mksquashfs ${TARGET_OUT_DIR}/squashfs/usr ${TARGET_OUT_DIR}/usr.squashfs  -noappend -processors 7 -comp xz
+	mksquashfs ${TARGET_OUT_DIR}/squashfs/opt/app ${TARGET_OUT_DIR}/app.squashfs  -noappend -processors 7 -comp xz
+	mksquashfs ${TARGET_OUT_DIR}/squashfs/opt/backup ${TARGET_OUT_DIR}/backup.squashfs  -noappend -processors 7 -comp xz
+
+rm -rf ${TARGET_OUT_DIR}/squashfs

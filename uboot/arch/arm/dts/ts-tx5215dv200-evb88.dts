@@ -1,0 +1,31 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * dts file for tsingmicro tx5215
+ *
+ * Copyright 2022 Beijing Tsingmicro Intelligent Technology Co.,Ltd.
+ *
+ */
+
+/dts-v1/;
+
+#include "ts_tx5215.dtsi"
+#include "ts_tx52xx_evb88.dtsi"
+
+/ {
+	model = "Tsingmicro TX5215DV200";
+	compatible = "ts,tx5215dv200-evb88";
+
+	aliases {
+		gpio0 = &gpio0;
+		mmc0 = &sdhci0;
+		sd0 = &sdhci1;
+		serial0 = &uart0;
+		spi0 = &qspi;
+		spi1 = &ssi0;
+	};
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x0 0x08000000>;
+	};
+};

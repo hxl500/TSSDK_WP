@@ -1,0 +1,82 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * dts file for tsingmicro dt53
+ *
+ * Copyright 2022 Beijing Tsingmicro Intelligent Technology Co.,Ltd.
+ *
+ */
+
+#include <dt-bindings/clock/xlnx-zynqmp-clk.h>
+#include <dt-bindings/clock/ts-tx5336-clk.h>
+/ {
+	fpga_pll1_1: fpga_pll1_1 {
+		u-boot,dm-pre-reloc;
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		/*clock-frequency = <7379713>;*/
+		clock-frequency = <20000000>;
+		clock-accuracy = <100>;
+	};
+
+	osc24m: osc24m_clk {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <24000000>;
+		clock-accuracy = <100>;
+	};
+
+	ts_clk: tx536-clock-controller {
+		reg = <0x0 0xF038A000 0x0 0x1000>;
+		reg-io-width = <4>;
+		#clock-cells = <1>;
+		compatible = "ts,ts-common-clk";
+		clocks = <&osc24m>;
+	};
+
+};
+
+#if 0
+
+&cpu0 {
+	clocks = <&ts_clk TS_CLK_TX536_A53_CLKIN>;
+};
+&gmac0 {
+	clocks = <&ts_clk TS_CLK_TX536_MII_RXCLK>, <&ts_clk TS_CLK_TX536_GMII_TX_CLK>,
+		 <&ts_clk TS_CLK_TX536_PTP_REF_CLK>;
+	clock-names = "rx_clk", "tx_clk", "ptp_ref";
+};
+
+&nand0 {
+	clocks = <&ts_clk TS_CLK_TX536_NFC_CLKB>,
+		<&ts_clk TS_CLK_TX536_NFC_HCLK>;
+	clock-names = "nfc_clkb, nfc_hclk";
+};
+
+/* &gpio0 {
+ *	clocks = <&ts_clk TS_CLK_TX536_TOP_GPIO_PCLK>;
+ * };
+ */
+
+//&qspi {
+//	clocks = <&ts_clk TS_CLK_TX536_OSPI_REF_CLK>;
+//	clock-names = "ospi_refclk";
+//};
+
+// &sdhci0 {
+	// clocks = <&ts_clk TS_CLK_TX536_MSHC_0_HCLK>, <&ts_clk TS_CLK_TX536_MSHC_0_BCLK>;
+	// clock-names = "biu", "ciu";
+// };
+
+&sdhci1 {
+	clocks = <&ts_clk TS_CLK_TX536_MSHC_1_HCLK>, <&ts_clk TS_CLK_TX536_MSHC_1_BCLK>;
+	clock-names = "biu", "ciu";
+};
+
+&ssi0 {
+	clocks = <&ts_clk TS_CLK_TX536_SPI_0_SSICLK>;
+};
+
+&uart0 {
+	clocks = <&fpga_pll1_1>;
+};
+#endif

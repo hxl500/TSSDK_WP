@@ -1,0 +1,81 @@
+#!/bin/sh
+set -e
+
+MAKEDEVS=${TARGET_BUILD_DIR}/tools/ext4/makedevs
+FULL_DEVICES_TABLE=${TARGET_BUILD_DIR}/tools/ext4/full_devices_table.txt
+MTD_SIZE=20971520
+WWW_MTD_SIZE=6291456
+MODEL_MTD_SIZE=77594624
+
+if [ "`which mkfs.ubifs`" = "" ]; then
+	MKFS_UBIFS=${TARGET_BUILD_DIR}/tools/mtd/mkfs.ubifs
+else
+	MKFS_UBIFS=`which mkfs.ubifs`
+fi
+echo "MKFS_UBIFS=$MKFS_UBIFS"
+
+
+if [ "`which ubinize`" = "" ]; then
+	UBINIZE=${TARGET_BUILD_DIR}/tools/mtd/ubinize
+else
+	UBINIZE=`which ubinize`
+fi
+echo "UBINIZE=$UBINIZE"
+
+mkdir -p ${TARGET_OUT_DIR}/ubifs
+rsync -auH --exclude=/THIS_IS_NOT_YOUR_ROOT_FILESYSTEM  ${TARGET_OUT_DIR}/rootfs/* ${TARGET_OUT_DIR}/ubifs/rootfs
+cp ${TARGET_BUILD_DIR}/tools/mtd/ubi.cfg  ${TARGET_OUT_DIR}/
+
+chown -h -R 0:0 ${TARGET_OUT_DIR}/ubifs/rootfs
+${MAKEDEVS} -d  ${FULL_DEVICES_TABLE}  ${TARGET_OUT_DIR}/ubifs/rootfs
+
+	rm -f ${TARGET_OUT_DIR}/rootfs.ubifs
+	rm -f ${TARGET_OUT_DIR}/rootfs.ubi
+   	rm -rf ${TARGET_OUT_DIR}/ubifs/rootfs/etc/udev/hwdb.d/
+
+	$MKFS_UBIFS -d ${TARGET_OUT_DIR}/ubifs/rootfs -e 0x1f000 -c 260 -m 0x800 -x lzo -v -F -o ${TARGET_OUT_DIR}/rootfs.ubiimg
+        $MKFS_UBIFS -d ${TARGET_OUT_DIR}/../firmware/system -e 0x1f000 -c 160 -m 0x800 -x lzo -v -F -o ${TARGET_OUT_DIR}/system.ubiimg
+	$MKFS_UBIFS -d ${TARGET_OUT_DIR}/../firmware/www -e 0x1f000 -c 48 -m 0x800 -x lzo -v -F -o ${TARGET_OUT_DIR}/www.ubiimg
+	$MKFS_UBIFS -d ${TARGET_OUT_DIR}/../firmware/model -e 0x1f000 -c 592 -m 0x800 -x lzo -v -F -o ${TARGET_OUT_DIR}/model.ubiimg
+
+	$UBINIZE -o ${TARGET_OUT_DIR}/rootfs.ubi -m 0x800 -p 0x20000 -s 2048 -v ${TARGET_BUILD_DIR}/tools/mtd/ubi.cfg
+	$UBINIZE -o ${TARGET_OUT_DIR}/system.ubi -m 0x800 -p 0x20000 -s 2048 -O 2048 -v ${TARGET_OUT_DIR}/../firmware/system_ubi.cfg
+	UBI_SIZE=$(stat -c%s "${TARGET_OUT_DIR}/system.ubi")
+       	if [ $UBI_SIZE -lt $MTD_SIZE ]; then
+		echo "填充UBI镜像从 $UBI_SIZE 到 $MTD_SIZE 字节..."
+		# 创建填充文件（使用0xFF，这是NAND擦除状态）
+		dd if=/dev/zero bs=$MTD_SIZE count=1 2>/dev/null | tr "\000" "\377" > "${TARGET_OUT_DIR}/system.ubi.padded"
+		# 将原始UBI数据写入填充文件开头
+		dd if="${TARGET_OUT_DIR}/system.ubi" of="${TARGET_OUT_DIR}/system.ubi.padded" conv=notrunc 2>/dev/null
+		mv "${TARGET_OUT_DIR}/system.ubi.padded" "${TARGET_OUT_DIR}/system.ubi"
+		echo "填充完成"
+	fi
+
+	$UBINIZE -o ${TARGET_OUT_DIR}/www.ubi -m 0x800 -p 0x20000 -s 2048 -O 2048 -v ${TARGET_OUT_DIR}/../firmware/www_ubi.cfg
+	WWW_UBI_SIZE=$(stat -c%s "${TARGET_OUT_DIR}/www.ubi")
+	if [ $WWW_UBI_SIZE -lt $WWW_MTD_SIZE ]; then
+		echo "填充UBI镜像从 $WWW_UBI_SIZE 到 $WWW_MTD_SIZE 字节..."
+		# 创建填充文件（使用0xFF，这是NAND擦除状态）
+		dd if=/dev/zero bs=$WWW_MTD_SIZE count=1 2>/dev/null | tr "\000" "\377" > "${TARGET_OUT_DIR}/www.ubi.padded"
+		# 将原始UBI数据写入填充文件开头
+		dd if="${TARGET_OUT_DIR}/www.ubi" of="${TARGET_OUT_DIR}/www.ubi.padded" conv=notrunc 2>/dev/null
+		mv "${TARGET_OUT_DIR}/www.ubi.padded" "${TARGET_OUT_DIR}/www.ubi"
+		echo "填充完成"
+	fi
+
+
+	$UBINIZE -o ${TARGET_OUT_DIR}/model.ubi -m 0x800 -p 0x20000 -s 2048 -O 2048 -v ${TARGET_OUT_DIR}/../firmware/model_ubi.cfg
+	MODEL_UBI_SIZE=$(stat -c%s "${TARGET_OUT_DIR}/model.ubi")
+	if [ $MODEL_UBI_SIZE -lt $MODEL_MTD_SIZE ]; then
+		echo "填充UBI镜像从 $MODEL_UBI_SIZE 到 $MODEL_MTD_SIZE 字节..."
+		# 创建填充文件（使用0xFF，这是NAND擦除状态）
+		dd if=/dev/zero bs=$MODEL_MTD_SIZE count=1 2>/dev/null | tr "\000" "\377" > "${TARGET_OUT_DIR}/model.ubi.padded"
+		# 将原始UBI数据写入填充文件开头
+		dd if="${TARGET_OUT_DIR}/model.ubi" of="${TARGET_OUT_DIR}/model.ubi.padded" conv=notrunc 2>/dev/null
+		mv "${TARGET_OUT_DIR}/model.ubi.padded" "${TARGET_OUT_DIR}/model.ubi"
+		echo "填充完成"
+	fi
+
+
+
+rm -rf ${TARGET_OUT_DIR}/ubifs

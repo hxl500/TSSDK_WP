@@ -1,0 +1,63 @@
+if ARCH_TS || COMPILE_TEST
+
+#
+# Tsingmicro Soc drivers
+#
+
+config TS_MUX_TX536
+	bool "Tsingmicro TS_TX536_MIX support"
+	depends on ARCH_TS_TX536
+	default y if ARCH_TS_TX536
+	default n
+	help
+		use tsingmicro tx536 chip mixed configuration.
+
+config TS_MUX_TX5215
+	bool "Tsingmicro TS_TX5215_MIX support"
+	depends on ARCH_TS_TX5215
+	default y if ARCH_TS_TX5215
+	default n
+	help
+		use tsingmicro tx5215 chip mixed configuration.
+
+config TS_MUX_TX5112
+	bool "Tsingmicro TS_TX5112_MIX support"
+	depends on ARCH_TS_TX5112
+	default y if ARCH_TS_TX5112
+	default n
+	help
+		use tsingmicro tx5112 chip mixed configuration.
+
+config TS_MUX_TX5336
+	bool "Tsingmicro TS_TX5336_MIX support"
+	depends on ARCH_TS_TX5336
+	default y if ARCH_TS_TX5336
+	default n
+	help
+		use tsingmicro tx5336 chip mixed configuration.
+
+config TS_DMA_HEAP
+	bool "add dma heap from newer kernel"
+	default n
+	help
+	  add dma heap from newer kernel
+
+config TS_DMA_TRACE
+	bool "enable ts dma trace function"
+        default n
+	help
+      enable ts dma trace function
+
+config ON_FPGA
+	bool "is run on fpga"
+	default n
+	depends on ARCH_TS
+
+config TS_BOOT_TX5215
+	bool "Tsingmicro TS_TX5215_BOOT_MODE"
+	depends on ARCH_TS_TX5215
+	default y if ARCH_TS_TX5215
+	default n
+	help
+		use tsingmicro tx5215 chip configuration.
+endif

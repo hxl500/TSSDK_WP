@@ -1,0 +1,10 @@
+config DVP_TS
+	tristate "Tsingmicro dvp_drv support"
+	help
+		dvp driver.
+	
+config OS02G10
+	tristate "os02g10 sensor of dvp"
+	select NVMEM
+	help
+	   dvp need this sensor.

@@ -1,0 +1,11 @@
+fullbank_gru_8k_cfg.h:
+size:7184, crc32:42c1067b
+program done
+
+
+fullbank_gru_8k_weight.h:
+size:93096, crc32:063c259b
+program done
+
+
+  blob_mem_size: 832

@@ -1,0 +1,623 @@
+/*
+ * Zynq pin controller
+ *
+ *  Copyright (C) 2014 Xilinx
+ *
+ *  Sören Brinkmann <soren.brinkmann@xilinx.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+#include <linux/io.h>
+#include <linux/mfd/syscon.h>
+#include <linux/init.h>
+#include <linux/of.h>
+#include <linux/platform_device.h>
+#include <linux/pinctrl/pinctrl.h>
+#include <linux/pinctrl/pinmux.h>
+#include <linux/pinctrl/pinconf.h>
+#include <linux/pinctrl/pinconf-generic.h>
+#include <linux/regmap.h>
+#include "../pinctrl-utils.h"
+#include "../core.h"
+
+#define TS_NUM_MIOS	120
+
+#define TS_PINMUX_MUX_SHIFT	0
+#define TS_PINMUX_MUX_MASK	(0x3 << TS_PINMUX_MUX_SHIFT)
+#define TS_PINMUX_GPIO_MUX_VAL 3
+
+/**
+ * struct ts_pinctrl - driver data
+ * @pctrl:		Pinctrl device
+ * @reg_base:		Pinctrl reg base
+ * @groups:		Pingroups
+ * @ngroups:		Number of @groups
+ * @funcs:		Pinmux functions
+ * @nfuncs:		Number of @funcs
+ */
+struct ts_pinctrl {
+	struct pinctrl_dev *pctrl;
+	void __iomem *reg_base;
+	struct ts_pctrl_group *groups;
+	unsigned int ngroups;
+	struct ts_pinmux_function *funcs;
+	unsigned int nfuncs;
+	struct pinctrl_desc desc;
+};
+
+struct ts_pctrl_group {
+	const char *name;
+	unsigned int *pins;
+	unsigned int npins;
+	unsigned int mux_val;
+};
+
+/**
+ * struct ts_pinmux_function - a pinmux function
+ * @name:	Name of the pinmux function.
+ * @groups:	List of pingroups for this function.
+ * @ngroups:	Number of entries in @groups.
+ */
+struct ts_pinmux_function {
+	const char *name;
+	const char **groups;
+	unsigned int ngroups;
+};
+
+static u32 grp_index;
+
+/* pinctrl */
+static int ts_pctrl_get_groups_count(struct pinctrl_dev *pctldev)
+{
+	struct ts_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+
+	return pctrl->ngroups;
+}
+
+static const char *ts_pctrl_get_group_name(struct pinctrl_dev *pctldev,
+					    unsigned int selector)
+{
+	struct ts_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+
+	return pctrl->groups[selector].name;
+}
+
+static int ts_pctrl_get_group_pins(struct pinctrl_dev *pctldev,
+				    unsigned int selector,
+				    const unsigned int **pins,
+				    unsigned int *num_pins)
+{
+	struct ts_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+
+	*pins = pctrl->groups[selector].pins;
+	*num_pins = pctrl->groups[selector].npins;
+
+	return 0;
+}
+
+static const struct pinctrl_ops ts_pctrl_ops = {
+	.get_groups_count = ts_pctrl_get_groups_count,
+	.get_group_name = ts_pctrl_get_group_name,
+	.get_group_pins = ts_pctrl_get_group_pins,
+	.dt_node_to_map = pinconf_generic_dt_node_to_map_all,
+	.dt_free_map = pinctrl_utils_free_map,
+};
+
+/* pinmux */
+static int ts_pmux_get_functions_count(struct pinctrl_dev *pctldev)
+{
+	struct ts_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+
+	return pctrl->nfuncs;
+}
+
+static const char *ts_pmux_get_function_name(struct pinctrl_dev *pctldev,
+					      unsigned int selector)
+{
+	struct ts_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+
+	return pctrl->funcs[selector].name;
+}
+
+static int ts_pmux_get_function_groups(struct pinctrl_dev *pctldev,
+					unsigned int selector,
+					const char *const **groups,
+					unsigned *const num_groups)
+{
+	struct ts_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+
+	*groups = pctrl->funcs[selector].groups;
+	*num_groups = pctrl->funcs[selector].ngroups;
+	return 0;
+}
+
+static int ts_pinmux_set_mux(struct pinctrl_dev *pctldev,
+			      unsigned int function, unsigned int group)
+{
+	u32 reg, i;
+	struct ts_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+	const struct ts_pctrl_group *pgrp = &pctrl->groups[group];
+	const struct ts_pinmux_function *func = &pctrl->funcs[function];
+
+	dev_dbg(pctldev->dev, "%s\n", __func__);
+	dev_dbg(pctldev->dev, "set_mux,function:%u,group:%u\n", function,
+		group);
+	dev_dbg(pctldev->dev, "group name:%s,func name:%s", pgrp->name,
+		func->name);
+	dev_dbg(pctldev->dev, "pgrp->mux_val:%x\n", pgrp->mux_val);
+
+	for (i = 0; i < pgrp->npins; i++) {
+		u32 reg_offset = 4 * pgrp->pins[i];
+
+		reg = readl(pctrl->reg_base + reg_offset);
+		reg &= ~TS_PINMUX_MUX_MASK;
+		reg |= pgrp->mux_val;
+		writel(reg, pctrl->reg_base + reg_offset);
+	}
+
+	return 0;
+}
+
+static int ts_gpio_request_enable(struct pinctrl_dev *pctldev,
+				    struct pinctrl_gpio_range *range,
+				    unsigned int offset)
+{
+	struct ts_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+	struct pinctrl_desc *ts_desc = &pctrl->desc;
+	u32 reg_offset;
+	u32 reg;
+
+	dev_dbg(pctldev->dev, "%s\n", __func__);
+
+	if (offset >= ts_desc->npins) {
+		dev_err(pctldev->dev, "error pin %d\n", offset);
+		return -EINVAL;
+	}
+
+	reg_offset = 4 * offset;
+	dev_dbg(pctldev->dev, "reg_offset: %#x\n", reg_offset);
+
+	reg = readl(pctrl->reg_base + reg_offset);
+	reg &= ~TS_PINMUX_MUX_MASK;
+	reg |= TS_PINMUX_GPIO_MUX_VAL;
+	writel(reg, pctrl->reg_base + reg_offset);
+
+	return 0;
+}
+
+static const struct pinmux_ops ts_pinmux_ops = {
+	.get_functions_count = ts_pmux_get_functions_count,
+	.get_function_name = ts_pmux_get_function_name,
+	.get_function_groups = ts_pmux_get_function_groups,
+	.set_mux = ts_pinmux_set_mux,
+	.gpio_request_enable = ts_gpio_request_enable,
+	// .strict = true,
+};
+
+/* pinconfig */
+#define TS_PINCONF_PULLUP		    BIT(6)
+#define TS_PINCONF_PULLDOWN	    BIT(5)
+#define TS_PINCONF_INPUT_SCHMITT   BIT(8)
+
+#define TS_PINCONF_DRIVE_STRENGTH_SHIFT	12
+#define TS_PINCONF_DRIVE_STRENGTH_MASK	(7 << TS_PINCONF_DRIVE_STRENGTH_SHIFT)
+
+static int ts_pinconf_cfg_get(struct pinctrl_dev *pctldev,
+			       unsigned int pin, unsigned long *config)
+{
+	u32 reg, reg_offset;
+	unsigned int arg = 0;
+	unsigned int param = pinconf_to_config_param(*config);
+	struct ts_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+
+	if (pin >= TS_NUM_MIOS)
+		return -ENOTSUPP;
+	reg_offset = 4 * pin;
+	reg = readl(pctrl->reg_base + reg_offset);
+	dev_dbg(pctldev->dev, "cfg_get,pin:%u\n", pin);
+	dev_dbg(pctldev->dev, "readl reg:%x\n", reg);
+	switch (param) {
+	case PIN_CONFIG_BIAS_PULL_UP:
+		if (!(reg & TS_PINCONF_PULLUP))
+			return -EINVAL;
+		arg = 1;
+		break;
+	case PIN_CONFIG_BIAS_PULL_DOWN:
+		if (!(reg & TS_PINCONF_PULLDOWN))
+			return -EINVAL;
+		arg = 1;
+		break;
+	case PIN_CONFIG_BIAS_HIGH_IMPEDANCE:
+		if (!(reg & (TS_PINCONF_PULLUP | TS_PINCONF_PULLDOWN)))
+			return -EINVAL;
+		arg = 1;
+		break;
+	case PIN_CONFIG_DRIVE_STRENGTH:
+		arg = (reg & TS_PINCONF_DRIVE_STRENGTH_MASK);
+		arg = arg >> TS_PINCONF_DRIVE_STRENGTH_SHIFT;
+		break;
+	case PIN_CONFIG_INPUT_SCHMITT:
+		if (!(reg & TS_PINCONF_INPUT_SCHMITT))
+			return -EINVAL;
+		arg = 1;
+		break;
+	case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
+		if (!(reg & TS_PINCONF_INPUT_SCHMITT))
+			arg = 0;
+		else
+			arg = 1;
+		break;
+	default:
+		dev_dbg(pctldev->dev,
+			"unsupported configuration parameter '%u'\n", param);
+		return -ENOTSUPP;
+	}
+
+	*config = pinconf_to_config_packed(param, arg);
+	return 0;
+}
+
+static int ts_pinconf_cfg_set(struct pinctrl_dev *pctldev,
+			       unsigned int pin,
+			       unsigned long *configs, unsigned int num_configs)
+{
+	int i;
+	u32 reg, reg_offset;
+	struct ts_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+
+	if (pin >= TS_NUM_MIOS)
+		return -ENOTSUPP;
+
+	dev_dbg(pctldev->dev, "cfg_set,pin:%u,num_configs:%u\n", pin,
+		num_configs);
+	reg_offset = 4 * pin;
+	reg = readl(pctrl->reg_base + reg_offset);
+	for (i = 0; i < num_configs; i++) {
+		unsigned int param = pinconf_to_config_param(configs[i]);
+		unsigned int arg = pinconf_to_config_argument(configs[i]);
+
+		switch (param) {
+		case PIN_CONFIG_BIAS_PULL_UP:
+			reg &= ~TS_PINCONF_PULLDOWN;
+			reg |= TS_PINCONF_PULLUP;
+			break;
+		case PIN_CONFIG_BIAS_PULL_DOWN:
+			reg &= ~TS_PINCONF_PULLUP;
+			reg |= TS_PINCONF_PULLDOWN;
+			break;
+		case PIN_CONFIG_BIAS_HIGH_IMPEDANCE:
+			reg &= ~TS_PINCONF_PULLDOWN;
+			reg &= ~TS_PINCONF_PULLUP;
+			break;
+		case PIN_CONFIG_DRIVE_STRENGTH:
+			reg &= ~TS_PINCONF_DRIVE_STRENGTH_MASK;
+			reg |= (arg & TS_PINCONF_DRIVE_STRENGTH_MASK);
+			break;
+		case PIN_CONFIG_INPUT_SCHMITT:
+			reg |= TS_PINCONF_INPUT_SCHMITT;
+			break;
+		case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
+			if (arg != 0)
+				reg |= TS_PINCONF_INPUT_SCHMITT;
+			else
+				reg &= ~TS_PINCONF_INPUT_SCHMITT;
+			break;
+		default:
+			dev_warn(pctldev->dev,
+				 "unsupported configuration parameter '%u'\n",
+				 param);
+			continue;
+		}
+	}
+
+	writel(reg, pctrl->reg_base + reg_offset);
+	reg = readl(pctrl->reg_base + reg_offset);
+	return 0;
+}
+
+static int ts_pinconf_group_set(struct pinctrl_dev *pctldev,
+				 unsigned int selector,
+				 unsigned long *configs,
+				 unsigned int num_configs)
+{
+	int i, ret;
+	struct ts_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+	const struct ts_pctrl_group *pgrp = &pctrl->groups[selector];
+
+	for (i = 0; i < pgrp->npins; i++) {
+		ret = ts_pinconf_cfg_set(pctldev, pgrp->pins[i], configs,
+					  num_configs);
+		if (ret)
+			return ret;
+	}
+
+	return 0;
+}
+
+static const struct pinconf_ops ts_pinconf_ops = {
+	.is_generic = true,
+	.pin_config_get = ts_pinconf_cfg_get,
+	.pin_config_set = ts_pinconf_cfg_set,
+	.pin_config_group_set = ts_pinconf_group_set,
+};
+
+static int ts_pinctrl_parse_groups(struct platform_device *pdev,
+				    struct device_node *np,
+				    struct ts_pctrl_group *grp,
+				    struct ts_pinctrl *pctrl, u32 index)
+{
+	struct device *dev = &pdev->dev;
+	int ret;
+
+	dev_dbg(dev, "group(%d): %s\n", index, np->name);
+
+	/* Initialise group */
+	ret = of_property_read_u32(np, "mux,val", &grp->mux_val);
+	if (ret) {
+		dev_err(dev, "read mux,val error\n");
+		return ret;
+	}
+
+	ret = of_property_count_elems_of_size(np, "ts,pins", sizeof(u32));
+
+	if (ret < 0) {
+		dev_err(dev,
+			"failed to get the count of ts,pins in %pOF node\n",
+			np);
+		return ret;
+	}
+	grp->npins = ret;
+	grp->pins = devm_kzalloc(dev, grp->npins * sizeof(unsigned int),
+				 GFP_KERNEL);
+	if (!grp->pins)
+		return -ENOMEM;
+	ret = of_property_read_u32_array(np, "ts,pins", grp->pins, grp->npins);
+	if (ret) {
+		dev_err(dev, "read ts,pins error\n");
+		return ret;
+	}
+
+	grp->name = np->name;
+
+	return 0;
+}
+
+static int init_func_index = -1;
+static int init_grp_index = -1;
+const char *init_func_name;
+static bool have_init_func;
+
+static int ts_pinctrl_parse_functions(struct platform_device *pdev,
+				       struct ts_pinctrl *pctrl,
+				       struct device_node *np, u32 index)
+{
+	struct device *dev = &pdev->dev;
+	struct device_node *child;
+	struct ts_pinmux_function *func;
+	struct ts_pctrl_group *grp;
+	int ret;
+	u32 i = 0;
+
+	func = &pctrl->funcs[index];
+
+	/* Initialise function */
+	func->name = np->name;
+	func->ngroups = of_get_child_count(np);
+	dev_dbg(dev, "func:%s,ngroups = %d\n", func->name, func->ngroups);
+	dev_dbg(dev, "grp_index = %d\n", grp_index);
+	if (func->ngroups <= 0)
+		return 0;
+
+	if (have_init_func && (strcmp(func->name, init_func_name) == 0)) {
+		init_func_index = index;
+		init_grp_index = grp_index;
+		have_init_func = false;
+	}
+
+	func->groups = devm_kzalloc(dev,
+				    func->ngroups * sizeof(char *), GFP_KERNEL);
+	if (!func->groups)
+		return -ENOMEM;
+
+	for_each_child_of_node(np, child) {
+		func->groups[i] = child->name;
+		grp = &pctrl->groups[grp_index++];
+		ret = ts_pinctrl_parse_groups(pdev, child, grp, pctrl, i++);
+		if (ret) {
+			dev_err(&pdev->dev, "failed to parse groups\n");
+			of_node_put(child);
+			return ret;
+		}
+	}
+
+	return 0;
+}
+
+static void ts_pinctrl_child_count(struct ts_pinctrl *pctrl,
+				    struct device_node *np)
+{
+	struct device_node *child;
+
+	for_each_child_of_node(np, child) {
+		pctrl->nfuncs++;
+		pctrl->ngroups += of_get_child_count(child);
+	}
+}
+
+static int ts_pinctrl_parse_dt(struct platform_device *pdev,
+				struct ts_pinctrl *pctrl)
+{
+	struct pinctrl_desc *ts_desc = &pctrl->desc;
+	struct device *dev = &pdev->dev;
+	struct device_node *np = dev->of_node;
+	struct device_node *child;
+	int ret;
+	int i;
+
+	ret = of_property_read_u32(np, "ts,npins", &ts_desc->npins);
+	if (ret) {
+		dev_err(dev, "read ts,npins error\n");
+		return ret;
+	}
+
+	ts_pinctrl_child_count(pctrl, np);
+
+	dev_dbg(dev, "ts_desc->npins:%u\n", ts_desc->npins);
+	dev_dbg(dev, "nfuncs = %d\n", pctrl->nfuncs);
+	dev_dbg(dev, "ngroups = %d\n", pctrl->ngroups);
+
+	pctrl->funcs = devm_kzalloc(dev, pctrl->nfuncs *
+				    sizeof(struct ts_pinmux_function),
+				    GFP_KERNEL);
+	if (!pctrl->funcs) {
+		dev_err(dev, "failed to allocate memory for function list\n");
+		return -ENOMEM;
+	}
+
+	pctrl->groups = devm_kzalloc(dev, pctrl->ngroups *
+				     sizeof(struct ts_pctrl_group),
+				     GFP_KERNEL);
+	if (!pctrl->groups) {
+		dev_err(dev, "failed allocate memory for pin group list\n");
+		return -ENOMEM;
+	}
+
+	if (!of_property_read_string(np, "init-function", &init_func_name)) {
+		have_init_func = true;
+		dev_dbg(dev, "init-function = %s\n", init_func_name);
+	}
+
+	i = 0;
+	grp_index = 0;
+
+	for_each_child_of_node(np, child) {
+		ret = ts_pinctrl_parse_functions(pdev, pctrl, child, i++);
+		if (ret) {
+			dev_err(&pdev->dev, "failed to parse function\n");
+			of_node_put(child);
+			return ret;
+		}
+	}
+
+	return 0;
+}
+
+static int ts_pinctrl_register(struct platform_device *pdev,
+				struct ts_pinctrl *pctrl)
+{
+	struct pinctrl_desc *ts_desc = &pctrl->desc;
+	struct pinctrl_pin_desc *pindesc, *pdesc;
+	int pin, ret;
+
+	ret = ts_pinctrl_parse_dt(pdev, pctrl);
+	if (ret)
+		return ret;
+
+	pindesc = devm_kzalloc(&pdev->dev, sizeof(*pindesc) * ts_desc->npins,
+			       GFP_KERNEL);
+	if (!pindesc)
+		return -ENOMEM;
+
+	pdesc = pindesc;
+
+	for (pin = 0; pin < ts_desc->npins; pin++) {
+		pdesc->number = pin;
+		pdesc->name =
+		    devm_kasprintf(&pdev->dev, GFP_KERNEL, "PIN%d", pin);
+		pdesc++;
+	}
+
+	ts_desc->pins = pindesc;
+	ts_desc->name = "ts_pinctrl";
+	ts_desc->owner = THIS_MODULE;
+	ts_desc->pctlops = &ts_pctrl_ops;
+	ts_desc->pmxops = &ts_pinmux_ops;
+	ts_desc->confops = &ts_pinconf_ops;
+
+	pctrl->pctrl = devm_pinctrl_register(&pdev->dev, ts_desc, pctrl);
+	if (IS_ERR(pctrl->pctrl)) {
+		dev_err(&pdev->dev, "could not register pinctrl driver\n");
+		return PTR_ERR(pctrl->pctrl);
+	}
+
+	if ((init_func_index >= 0) && (init_grp_index >= 0)) {
+		u32 i;
+		const struct ts_pinmux_function *func = &pctrl->funcs[init_func_index];
+		u32 end_grp_index = func->ngroups + init_grp_index;
+
+		dev_dbg(&pdev->dev, "init_func_idx %d, grp_idx %d-%d\n",
+			init_func_index, init_grp_index, end_grp_index);
+		for (i = init_grp_index; i < end_grp_index; i++)
+			ts_desc->pmxops->set_mux(pctrl->pctrl, init_func_index, i);
+
+		init_func_index = -1;
+		init_grp_index = -1;
+	}
+
+	return 0;
+}
+
+static int ts_pinctrl_probe(struct platform_device *pdev)
+{
+	int ret;
+	struct resource *res;
+	struct ts_pinctrl *pctrl;
+
+	dev_dbg(&pdev->dev, "pinctrl_probe\n");
+	pctrl = devm_kzalloc(&pdev->dev, sizeof(*pctrl), GFP_KERNEL);
+	if (!pctrl)
+		return -ENOMEM;
+
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (!res) {
+		dev_err(&pdev->dev, "missing IO resource\n");
+		return -ENODEV;
+	}
+
+	pctrl->reg_base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(pctrl->reg_base))
+		return PTR_ERR(pctrl->reg_base);
+
+	dev_dbg(&pdev->dev, "res->start:%08x\n", (u32) res->start);
+
+	ret = ts_pinctrl_register(pdev, pctrl);
+	if (ret)
+		return ret;
+
+	platform_set_drvdata(pdev, pctrl);
+
+	dev_info(&pdev->dev, "ts pinctrl initialized\n");
+
+	return 0;
+}
+
+static const struct of_device_id ts_pinctrl_of_match[] = {
+	{.compatible = "ts,ts-pinctrl-tx536"},
+	{}
+};
+
+static struct platform_driver ts_pinctrl_driver = {
+	.driver = {
+		   .name = "ts-pinctrl",
+		   .of_match_table = ts_pinctrl_of_match,
+		   },
+	.probe = ts_pinctrl_probe,
+};
+
+static int __init ts_pinctrl_init(void)
+{
+	return platform_driver_register(&ts_pinctrl_driver);
+}
+
+arch_initcall(ts_pinctrl_init);

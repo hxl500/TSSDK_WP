@@ -1,0 +1,5 @@
+
+cve/build/out/
+cve/build/temp/
+common/build/temp/
+common/build/out

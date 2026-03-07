@@ -1,0 +1,63 @@
+#!/bin/bash
+
+###
+ # @copyright (c) 2023 Tsingmicro Intelligent Technology Co., Limited
+ # @FilePath: fakeroot
+ # @brief:
+ # @Author: ymc (yangmengchao@tsingmicro.com)
+ # @Version: 1.0
+ # @Date: 2023-08-27
+###
+
+set -e
+
+. ${TARGET_BUILD_DIR}/tools/initrd/reconfig.sh
+
+MAKEDEVS=${TARGET_BUILD_DIR}/tools/initrd/makedevs
+if [ "x"${TARGET_DYNAMIC_DEV_FILE} == "x""enable" -a "x"${TARGET_KERNEL_SYSFS} == "x""enable" ] ; then
+	echo -e "\033[32m [USE DYNAMIC DEV FILES]\033[0m"
+	FULL_DEVICES_TABLE=${TARGET_BUILD_DIR}/tools/initrd/full_devices_table_dynamic.txt
+else
+	echo -e "\033[32m [USE STATIC DEVICE FILES]\033[0m"
+	echo -e "\033[32m [If your have different ko filezx, use should modify full_devices_table_static file!!!]\033[0m"
+	if [ ${TARGET_KERNEL_SYSFS} == "enable" ] ; then
+		FULL_DEVICES_TABLE=${TARGET_BUILD_DIR}/tools/initrd/full_devices_table_static.txt
+	# config_device_tab ${FULL_DEVICES_TABLE}
+	elif [ ${TARGET_KERNEL_SYSFS} == "disable" ] ; then
+		FULL_DEVICES_TABLE=${TARGET_BUILD_DIR}/tools/initrd/full_devices_table_static_nosysfs.txt
+	fi
+fi
+echo -e "\033[32m [DEVICES_TABLE:${FULL_DEVICES_TABLE}]\033[0m"
+
+PACKTOOL=${TARGET_BUILD_DIR}/tools/pack-util/pack-util
+
+if [ ! -f ${PACKTOOL} ]; then
+	cd ${TARGET_BUILD_DIR}/tools/pack-util/
+	make
+	cd -
+fi
+rm -rf ${TARGET_OUT_DIR}/initrd
+config_rootfs ${TARGET_OUT_DIR}/rootfs
+mkdir -p ${TARGET_OUT_DIR}/initrd/rootfs
+rsync -auH --exclude=/THIS_IS_NOT_YOUR_ROOT_FILESYSTEM  ${TARGET_OUT_DIR}/rootfs/* ${TARGET_OUT_DIR}/initrd/rootfs
+chown -h -R 0:0 ${TARGET_OUT_DIR}/initrd/rootfs
+
+${MAKEDEVS} -d  ${FULL_DEVICES_TABLE}  ${TARGET_OUT_DIR}/initrd/rootfs
+
+rm -f ${TARGET_OUT_DIR}/rootfs.initrd
+rm -f ${TARGET_OUT_DIR}/rootfs.initrd.cpio
+rm -f ${TARGET_OUT_DIR}/system.squashfs
+
+echo -e "*\n*Start build rootfs\n*"
+cd ${TARGET_OUT_DIR}/initrd/rootfs
+find . | cpio -H newc -o > ../rootfs_initrd.cpio
+cd ..
+lzop -9 -f rootfs_initrd.cpio -o rootfs_initrd.cpio.lzo
+${PACKTOOL} -o ${TARGET_OUT_DIR}/rootfs.initrd rootfs_initrd.cpio.lzo
+mksquashfs ${TARGET_OUT_DIR}/system ${TARGET_OUT_DIR}/system.squashfs  -noappend -processors 7 -comp lzo
+
+echo "======================================================================================="
+init_rd_size=`ls -l rootfs_initrd.cpio.lzo | awk '{ print $5 }'`
+echo "initrd size = $init_rd_size Byte"
+echo "======================================================================================="
+config_kernel $init_rd_size

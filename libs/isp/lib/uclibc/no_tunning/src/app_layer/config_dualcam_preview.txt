@@ -1,0 +1,22 @@
+# set baudRate
+log:baudRate=921600
+
+# set log level
+log:levelMask=0x3333333334,ispMask=0xffffffffff,sw3aMask=0x7
+
+# set camera 0
+set:camid=0,fps=15,pWidth=1920,pHeight=1080
+# set camera 1
+set:camid=1,fps=15,pWidth=1920,pHeight=1080
+
+# start all camera
+start
+
+# sleep 21s
+sleep:time=21
+
+# stop all camera
+stop
+
+# exit camera
+exit

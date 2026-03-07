@@ -1,0 +1,39 @@
+config ARCH_TS
+	bool "TsingMicro SoC Support"
+	depends on ARCH_MULTI_V7
+	select ARM_AMBA
+	select ARM_GIC
+	select DW_APB_TIMER_OF
+if ARCH_TS
+
+menu "TsingMicro platform type"
+
+config ARCH_TS_TX5215
+	bool "TsingMicro TX5215 family"
+	depends on ARCH_TS
+	select HAVE_ARM_ARCH_TIMER
+	select RESET_CONTROLLER
+	select PINCTRL_TS_TX5215
+	select PINCTRL
+	select NETPOLL
+	select NET_POLL_CONTROLLER
+	select MFD_SYSCON
+	help
+	  Support for TsingMicro V7 SoC family
+
+config ARCH_TS_TX5112
+	bool "TsingMicro TX5112 family"
+	depends on ARCH_TS
+	select HAVE_ARM_ARCH_TIMER
+	select RESET_CONTROLLER
+	select PINCTRL
+	select PINCTRL_TS_TX5112
+	select NETPOLL
+	select NET_POLL_CONTROLLER
+	select MFD_SYSCON
+	help
+	  Support for TsingMicro V7 SoC family
+
+endmenu
+
+endif

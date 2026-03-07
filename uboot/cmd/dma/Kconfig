@@ -1,0 +1,10 @@
+menu "TS specific command line interface"
+
+config CMD_DMA
+	bool "command for verifying DDR features"
+	default n
+	help
+	   Support for testing ddr4 on TS platforms. This command
+	   supports memory verification, memory comapre if supported.
+
+endmenu

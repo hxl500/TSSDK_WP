@@ -1,0 +1,11 @@
+#ifndef __STEST_EVTNAME_H__
+#define __STEST_EVTNAME_H__
+
+#define STEST_EVTNAME_ARRAY_NUM      396
+#define STEST_TOTAL_EVTNAME_NUM      563
+#define STEST_MOTOR_EVTNAME_NUM      0
+#define STEST_SENSOR_EVTNAME_NUM     0
+#define STEST_ISP_EVTNAME_NUM        291
+#define STEST_SPECIAL_EVTNAME_NUM    272
+
+#endif

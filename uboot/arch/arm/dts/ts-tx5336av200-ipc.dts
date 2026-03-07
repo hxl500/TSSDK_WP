@@ -1,0 +1,271 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * dts file for tsingmicro dt53
+ *
+ * Copyright 2022 Beijing Tsingmicro Intelligent Technology Co.,Ltd.
+ *
+ */
+
+/dts-v1/;
+
+#include "ts_tx5336.dtsi"
+#include "ts-tx5336-clk.dtsi"
+#include "ts-tx5336-reset.dtsi"
+#include "ts-tx5336-ipc-pinctrl.dtsi"
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/phy/phy.h>
+
+
+/ {
+	model = "TS TX5336";
+	compatible = "ts,tx5336";
+
+	bd_info {
+		/* Hardware Board Name. */
+		BOARD-MODEL = "TX5336";
+		/* Hardware Version Number. */
+		BOARD-REVISION = "V1.0";
+		/* Type - CPU - DDR - compile NO. - device NO. - Factory NO.-YYMM */
+		BOARD-SERIAL = "FPGA-A53-0202-0000-T001-V1P0";
+	};
+
+	aliases {
+		/*ethernet0 = &gem3;*/
+		/* gpio0 = &gpio; */
+		/*i2c0 = &i2c0;*/
+		/*i2c1 = &i2c1;*/
+		mmc0 = &sdhci0;
+		sd0 = &sdhci1;
+		/*rtc0 = &rtc;*/
+		serial0 = &uart0;
+		/*serial1 = &uart1;*/
+		/*serial2 = &dcc;*/
+		spi0 = &qspi;
+		/*usb0 = &usb0;*/
+		spi1 = &ssi0;
+	};
+
+	chosen {
+		bootargs = "earlycon";
+		stdout-path = "serial0:115200n8";
+	};
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x0 0x0 0x0 0x80000000>; //<0x8 0x00000000 0x0 0x80000000>;
+	};
+};
+
+&otpc {
+    status = "okay";
+};
+
+&gmac0 {
+	status = "okay";
+	phy-handle = <&phy0>;
+	phy-mode = "rmii";
+	pinctrl-names = "default";
+	pinctrl-0 = <&mac0_pinctrl0>, <&mac0_rst_pinctrl>, <&mac0_clk_pinctrl>;
+	mdio {
+		#address-cells = <0x1>;
+		#size-cells = <0x0>;
+		phy0: phy@0 {
+			compatible = "ethernet-phy-ieee802.3-c22";
+			device_type = "ethernet-phy";
+			reg = <0x3>;
+			phy-reset-gpios = <&porta 10 GPIO_ACTIVE_LOW>;
+		};
+	};
+};
+
+&gpio0 {
+	status = "okay";
+#if 0
+    pinctrl-names = "default";
+    pinctrl-0 = <&gpioa15_pinctrl>;
+#endif
+};
+
+&gpio1 {
+	status = "okay";
+};
+
+&gpio2 {
+	status = "okay";
+};
+
+&pinctrl {
+	status = "okay";
+};
+
+&qspi {
+	status = "okay";
+	page-size = <256>;
+	block-size = <16>;
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+#if 0
+    pinctrl-names = "default";
+    pinctrl-0 = <&qspi_pinctrl>;
+#endif
+
+#if 1
+	nand1:spi-nand@0 {
+		status = "okay";
+		compatible = "spi-nand";
+		reg = <0>; /* CS0 */
+		//spi-max-frequency = <40000000>;
+		spi-max-frequency = <20000000>;
+		page-size = <2048>;
+		block-size = <131072>;
+		spi-rx-bus-width = <4>;
+		spi-tx-bus-width = <4>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			/* reserved for future boot direct from NAND flash
+			 * (this would use the same layout as the 8MiB NOR flash)
+			 */
+			partition@0 {
+				label = "nand-boot-reserved";
+				reg = <0 0x800000>;
+			};
+
+			/* recovery / install environment */
+			partition@800000 {
+				label = "recovery";
+				reg = <0x800000 0x2000000>;
+			};
+
+			/* ubia (first OpenWrt) - a/b names to prevent confusion with ubi0/1/etc. */
+			partition@2800000 {
+				label = "ubia";
+				reg = <0x2800000 0x6C00000>;
+			};
+
+			/* ubib (second OpenWrt) */
+			partition@9400000 {
+				label = "ubib";
+				reg = <0x9400000 0x6C00000>;
+			};
+		};
+	};
+#else
+	spi-flash@0 {
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <51200000>; /* Based on DC1 spec */
+		//reg = <1>; /* CS1 */
+		reg = <0>; /* CS0 */
+		spi-rx-bus-width = <4>;
+		spi-tx-bus-width = <4>;
+	};
+#endif
+};
+
+&ssi0 {
+	status = "okay";
+	flash@0 {
+		compatible = "jedec,spi-nor";
+	};
+};
+/*
+ * &rtc {
+ *	status = "okay";
+ * };
+ */
+
+&sdhci0 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&sd0_pinctrl0>;
+};
+&sdhci1 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&gpioc5_pinctrl>;
+	sd-pwr-gpios = <&portc 5 GPIO_ACTIVE_LOW>;
+
+};
+/*
+ * &uart0 {
+ *	status = "okay";
+ * };
+ */
+&uart0 {
+	status = "okay";
+};
+
+/* ULPI SMSC USB3320 */
+/*
+ * &usb0 {
+ *	status = "okay";
+ * };
+ */
+
+/*
+ * &dwc3_0 {
+ *	status = "okay";
+ *	dr_mode = "host";
+ *	snps,usb3_lpm_capable;
+ *	phy-names = "usb3-phy";
+ *	phys = <&lane2 PHY_TYPE_USB3 0 2 26000000>;
+ *};
+ */
+
+/*
+ * &watchdog0 {
+ * status = "okay";
+ * };
+ */
+
+&nand0{
+		nand-bus-width = <8>;
+		nand-on-flash-bbt = <1>;
+		nand-ecc-mode = "hw";
+		nand-ecc-strength = <4>;
+		nand-ecc-step-size = <512>;
+		/*nand-ecc-maximize;*/
+		status = "disabled";
+
+		bootloader@0 {
+			label = "bootloader";
+			reg = <0x0 0x200000>;
+		};
+
+		bootloaderenv@200000 {
+			label = "bootloader env";
+			reg = <0x200000 0xc0000>;
+		};
+
+		kernel@400000 {
+			label = "kernel";
+			reg = <0x400000 0x600000>;
+		};
+
+		rootfs1@a00000 {
+			label = "rootfs1";
+			reg = <0xa00000 0x03000000>;
+		};
+
+		rootfs2@3a00000 {
+			label = "rootfs2";
+			reg = <0x3a00000 0x03000000>;
+		};
+		rootfs3@6a00000 {
+			label = "rootfs3";
+			reg = <0x6a00000 0x03000000>;
+		};
+		rootfs4@9a00000 {
+			label = "rootfs4";
+			reg = <0x9a00000 0x0f800000>;
+		};
+};
+
+&otpc {
+	status = "okay";
+};

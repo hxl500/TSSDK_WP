@@ -1,0 +1,104 @@
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ *  Copyright (C) 2022-2022 Tsingmicro, Inc.
+ */
+
+#ifndef _DT_BINDINGS_TS_TX5215_RESETS_H
+#define _DT_BINDINGS_TS_TX5215_RESETS_H
+
+#define TS_CPU_C0RST			0
+#define TS_CPU_C1RST			1
+#define TS_CPU_DBG_RST			2
+#define TS_SDHC0_RST			3
+#define TS_SDHC1_RST			5
+#define TS_PERI_DMA0_HRST		7
+#define TS_PERI_DMA1_HRST		8
+#define TS_MEM_DMA_ARST			9
+#define TS_GMAC_RST				10
+#define TS_OCRAM_ARST			12
+#define TS_PKE_RST				13
+#define TS_SKE_RST				14
+#define TS_HASH_RST				15
+#define TS_SPACC_RST			16
+#define TS_TRNG_RST				17
+#define TS_OSPI_PRST			18
+#define TS_OSPI_HRST			19
+#define TS_OSPI_REF_RST			20
+#define TS_USB2C_HRST			21
+#define TS_USB_PHY_RST			22
+#define TS_I2C0_RST				23
+#define TS_I2C1_RST				25
+#define TS_I2C2_RST				27
+#define TS_I2C3_RST				29
+#define TS_UART0_RST			31
+#define TS_UART1_RST			33
+#define TS_UART2_RST			35
+#define TS_USI0_PRST			37
+#define TS_USI1_PRST			38
+#define TS_I2S0_RST				39
+#define TS_PDM_RST				41
+#define TS_ADC_PRST				43
+#define TS_SPI_RST				44
+#define TS_OTPC_PRST			46
+#define TS_PWM_PRST				47
+#define TS_IOMUX_PRST			48
+#define TS_WDT_PRST				49
+#define TS_WDT_TICK_RST			50
+#define TS_TIMER_PRST			51
+#define TS_TMR_T1RST			52
+#define TS_TMR_T2RST			53
+#define TS_TMR_T3RST			54
+#define TS_TMR_T4RST			55
+#define TS_TMR_T5RST			56
+#define TS_TMR_T6RST			57
+#define TS_TMR_T7RST			58
+#define TS_TMR_T8RST			59
+#define TS_SYS_REG_RST			60
+#define TS_GPIO_A_PRST			61
+#define TS_GPIO_B_RST			62
+#define TS_BOOTM_HRST			63
+#define TS_AUD_CODEC_RST		64
+#define TS_DISP_SYS_RST			65
+#define TS_NEMADC_HRST			66
+#define TS_DVP_HRST				67
+#define TS_DVP_ARST				68
+#define TS_DVP_PXRST			69
+#define TS_CVE_RST				70
+#define TS_AMR_RST				73
+#define TS_VI_SYS_RST			76
+#define TS_ISP_HRST				77
+#define TS_ISP_ARST				78
+#define TS_ISP_SRST				79
+#define TS_VPE_HRST				80
+#define TS_VPE_ARST				81
+#define TS_VPE_CRST				82
+#define TS_VPE_ISP_RST			83
+#define TS_HDR_HRST				84
+#define TS_HDR_ARST				85
+#define TS_HDR_SRST				86
+#define TS_MIPI_RX0_PRST		87
+#define TS_MIPI_RX1_PRST1		88
+#define TS_MIPI_PHY_PRST		89
+#define TS_DDR_SYS_RST			90
+#define TS_UMCTL_PRST			91
+#define TS_MCTL_P0_ARST			92
+#define TS_MCTL_P1_ARST			93
+#define TS_MCTL_P2_ARST			94
+#define TS_MCTL_P3_ARST			95
+#define TS_MCTL_P4_ARST			96
+#define TS_MCTL_P5_ARST			97
+#define TS_DDRC_CORE_RST		98
+#define TS_DDR_PHY_PRST			99
+#define TS_DDR_PHY_RST			100
+#define TS_AI_SYS_RST			101
+#define TS_RNE_HRST				102
+#define TS_RNE_ARST				103
+#define TS_RNE_CRST				104
+#define TS_VPU_SYS_RST			105
+#define TS_VPU_HRST				106
+#define TS_VPU_ARST				107
+#define TS_INT_COL_RST			108
+#define TS_GMAC1_RST			109
+#define TS_RST_MAX				110
+
+#endif

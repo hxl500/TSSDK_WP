@@ -1,0 +1,29 @@
+#!/bin/sh
+set -e
+
+MAKEDEVS=${TARGET_BUILD_DIR}/tools/ext4/makedevs
+FULL_DEVICES_TABLE=${TARGET_BUILD_DIR}/tools/ext4/full_devices_table.txt
+
+EXT4_SIZE=384
+if [ "$1" != "" -a $1 -gt 1 ]; then
+	EXT4_SIZE=$1
+fi
+
+if [ "`which mkfs.ext4`" = "" ]; then
+	MKFS_EXT4=${TARGET_BUILD_DIR}/tools/ext4/mkfs.ext4
+else
+	MKFS_EXT4=`which mkfs.ext4`
+fi
+echo "MKFS_EXT4=$MKFS_EXT4"
+
+mkdir -p ${TARGET_OUT_DIR}/ext4
+rsync -auH --exclude=/THIS_IS_NOT_YOUR_ROOT_FILESYSTEM  ${TARGET_OUT_DIR}/rootfs/* ${TARGET_OUT_DIR}/ext4
+
+chown -h -R 0:0 ${TARGET_OUT_DIR}/ext4
+${MAKEDEVS} -d  ${FULL_DEVICES_TABLE}  ${TARGET_OUT_DIR}/ext4
+
+
+	rm -f ${TARGET_OUT_DIR}/rootfs.ext4
+	${MKFS_EXT4} -d ${TARGET_OUT_DIR}/ext4 -b 1024 -r 1 -N 0 -m 5 -L "" -O 64bit ${TARGET_OUT_DIR}/rootfs.ext4 "$EXT4_SIZE""M" || { ret=$?; echo "ERROR:*** Maybe you need to increase the filesystem size (BR2_TARGET_ROOTFS_EXT2_SIZE)" 1>&2; exit $ret; }
+
+rm -rf ${TARGET_OUT_DIR}/ext4

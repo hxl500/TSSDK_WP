@@ -1,0 +1,3 @@
+add_subdirectory (${ARMCB_ISP_CUSTOM}/actuator/ms41929/build                      ${ARMCB_GENERATED_TEMP}/vendor/actuator/ms41929)
+add_subdirectory (${ARMCB_ISP_CUSTOM}/actuator/ms41929_aux/build                  ${ARMCB_GENERATED_TEMP}/vendor/actuator/ms41929_aux)
+# add_subdirectory (${ARMCB_ISP_CUSTOM}/actuator/actuator_normal/build              ${ARMCB_GENERATED_TEMP}/vendor/actuator/actuator_normal)

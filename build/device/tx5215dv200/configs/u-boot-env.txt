@@ -1,0 +1,100 @@
+all_mtd=0x000000
+all_mtd_size=0x7f00000
+all_name_mtd=all_ptz.bin
+arg_debug_console=console=ttyS0,115200n8 ignore_loglevel earlycon=uart8250,mmio32,0xf2449000          lpj=1000000
+arg_console=console=ttyS0,115200n8 quiet   lpj=1000000
+baudrate=115200
+boardname=TS-TX5239DV200-PTZ
+boot_dev=mmc
+boot_slot=1
+boot_spinand=run switch_spinand; run mtd_bootargs${boot_slot}; run read_kernel${boot_slot}_spinand; run bootm_kernel
+bootcmd=run reset_env; run swupdate_all; run ${bootmode}
+bootdelay=0
+bootm_kernel=bootz ${loadaddr}
+bootmode=boot_spinand
+env_mtd=0x1C0000
+env_mtd_size=0x40000
+erase_env_spinand=nand erase ${env_mtd} ${env_mtd_size};
+erase_root_spinand=nand erase ${root_mtd} ${root_mtd_size};
+fdt_high=0xffffffff
+fdtcontroladdr=7fda4e0
+fip_mtd=0x000000
+fip_mtd_2=0x0E0000
+fip_mtd_size=0x0E0000
+fip_name=fip_tx5239dv200_ptz.bin
+gatewayip=192.168.1.1
+get_all_spinand=if load ${swupdate_interface} ${swupdate_dev} ${loadaddr} ${swupdate_dir}/${all_name_mtd}; then run switch_spinand; run write_all_spinand; else echo [GET]:FAILED ALL BIN!; setenv swupdate_err y; fi;
+get_fip1_spinand=if load ${swupdate_interface} ${swupdate_dev} ${loadaddr} ${swupdate_dir}/${fip_name}; then run switch_spinand; run write_fip1_spinand; setenv swupdate_fip_flag n; else echo [GET]:FAILED FIP!; setenv swupdate_err y; fi;
+get_fip2_spinand=if load ${swupdate_interface} ${swupdate_dev} ${loadaddr} ${swupdate_dir}/${fip_name}; then run switch_spinand; run write_fip2_spinand; setenv swupdate_fip_flag n; else echo [GET]:FAILED FIP!; setenv swupdate_err y; fi;
+get_ini=setenv swupdate_err n; if load ${swupdate_interface} ${swupdate_dev} ${loadaddr} ${swupdate_dir}/${ini_name}; then ini uboot; ini kernel; ini rootfs; ini usrfs; ini env; else echo [GET]:no INI!; setenv swupdate_err y; fi;
+get_kernel1_spinand=if load ${swupdate_interface} ${swupdate_dev} ${loadaddr} ${swupdate_dir}/${kernel_name}; then run switch_spinand; run write_kernel1_spinand; setenv swupdate_kernel_flag n; else echo [GET]:FAILED KERNEL!; setenv swupdate_err y; fi;
+get_kernel2_spinand=if load ${swupdate_interface} ${swupdate_dev} ${loadaddr} ${swupdate_dir}/${kernel_name}; then run switch_spinand; run write_kernel2_spinand; setenv swupdate_kernel_flag n; else echo [GET]:FAILED KERNEL!; setenv swupdate_err y; fi;
+get_rootfs1_spinand=if load ${swupdate_interface} ${swupdate_dev} ${loadaddr} ${swupdate_dir}/${rootfs_ubi_name}; then run switch_spinand; run write_rootfs1_spinand; else echo [GET]:FAILED ROOTFS!; setenv swupdate_err y; fi;
+get_rootfs2_spinand=if load ${swupdate_interface} ${swupdate_dev} ${loadaddr} ${swupdate_dir}/${rootfs_ubi_name}; then run switch_spinand; run write_rootfs2_spinand; else echo [GET]:FAILED ROOTFS!; setenv swupdate_err y; fi;
+ini_name=update.ini
+ipaddr=192.168.1.10
+kernel_mtd=0x200000
+kernel_mtd_2=0x700000
+kernel_mtd_size=0x500000
+kernel_name=ts-tx5239dv200-ptz.itb
+loadaddr=0x02000000
+loadaddr_gz=0x00a00000
+mmcdev=0
+mtd_bootargs1=setenv bootargs ${arg_console} ${mtdroot1} ${spinandparts} ${hw_args}
+mtd_bootargs2=setenv bootargs ${arg_console} ${mtdroot2} ${spinandparts} ${hw_args}
+mtdroot1=ubi.mtd=5,2048 root=ubi0:rootfs rootfstype=ubifs ro
+mtdroot2=ubi.mtd=6,2048 root=ubi0:rootfs rootfstype=ubifs ro
+netdev=eth0
+netmask=255.255.255.0
+nfs_bootargs=run set_nfs;setenv bootargs ${arg_console} ${arg_nfs} ${hw_args}
+nfs_root=root=/dev/nfs rw  rootwait hlt
+nfsargs=setenv ipaddr ${ipaddr}; setenv serverip ${serverip}; run set_nfs; run set_dev_args;
+read_kernel1_spinand=nand read ${loadaddr} ${kernel_mtd} ${kernel_mtd_size}
+read_kernel2_spinand=nand read ${loadaddr} ${kernel_mtd_2} ${kernel_mtd_size}
+reset_env=if test ${swupdate_reset_env} = y; then env default -a; setenv swupdate_reset_env n; saveenv;fi
+root_mtd=0x3400000
+root_mtd_size=0x4b00000
+rootfs_mtd=0xc00000
+rootfs_mtd_2=0x2000000
+rootfs_mtd_size=0x1400000
+rootfs_ubi_name=rootfs.ubi
+sd_kernel=run ramdisk_bootargs; while true; do if load ${swupdate_interface} ${swupdate_dev} ${loadaddr} ${swupdate_dir}/${kernel_ramfs_name}; then run bootm_kernel; else echo [SD]:FAILED KERNEL!; fi; done;
+serverip=192.168.1.20
+set_dev_args=setenv hw_args
+set_ip=setenv arg_ip ip=${ipaddr}:${serverip}:${gatewayip}:${netmask}:${boardname}:${netdev}:off
+set_nfs=run set_ip; run set_nfsroot; setenv arg_nfs ${nfs_root} ${arg_nfsroot} ${arg_ip}
+set_nfsroot=setenv arg_nfsroot nfsroot=${serverip}:${rootpath},nolock,v3
+spinand_name=nand0
+spinandparts=mtdparts=spi0.0:896K(boot1),896K(boot2),256K(env),5M(kernel1),5M(kernel2),20M(rootfs1),20M(rootfs2),20M(root),55M(update),-(config)
+stderr=serial@f2449000
+stdin=serial@f2449000
+stdout=serial@f2449000
+switch_sd=mmc rescan; mmc dev 1; setenv mmcdev 1; setenv mmcroot ${sdroot}; run set_dev_args;
+switch_spinand=mtd list; run set_dev_args;
+swupdate_all= if test ${swupdate_flag} = y; then run get_ini; if test ${swupdate_fip_flag} = y; then echo [UPDATE] FIP...; run get_fip; fi; if test ${swupdate_kernel_flag} = y; then echo [UPDATE] KERNEL...; run get_kernel; fi; if test ${swupdate_rootfs_flag} = y; then echo [UPDATE] ROOTFS...; run get_rootfs; fi; if test ${swupdate_usrfs_flag} = y; then echo [UPDATE] USRFS...; run get_usrfs; fi; if test ${swupdate_err} = n; then saveenv; while true; do echo [UPDATE_ALL] DONE, Please remove sdcard and reset; sleep 5; done; else echo [UPDATE_ALL] NotDone.; fi; fi;
+swupdate_dev=0
+swupdate_dir=/
+swupdate_err=n
+swupdate_fip_flag=n
+swupdate_flag=y
+swupdate_interface=mmc
+swupdate_kernel_flag=n
+swupdate_part=0
+swupdate_reset_env=n
+swupdate_rootfs_flag=n
+swupdate_usrfs_flag=n
+update_all_sd2spinand=run get_all_spinand;
+update_fip1_sd2spinand=run get_fip1_spinand;
+update_fip2_sd2spinand=run get_fip2_spinand;
+update_kernel1_sd2spinand=run get_kernel1_spinand;
+update_kernel2_sd2spinand=run get_kernel2_spinand;
+update_rootfs1_sd2spinand=run get_rootfs1_spinand;
+update_rootfs2_sd2spinand=run get_rootfs2_spinand;
+update_rootfs_spinand=run nfsargs; run switch_spinand; while true; do if tftp ${loadaddr} ${rootfs_ubi_name}; then run write_rootfs1_spinand; exit; else echo [TFTP]:FAILED ROOTFS!; fi;  done;
+write_all_spinand=nand erase ${all_mtd} ${all_mtd_size}; nand write ${loadaddr} ${all_mtd} ${all_mtd_size}
+write_fip1_spinand=nand erase ${fip_mtd} ${fip_mtd_size}; nand write ${loadaddr} ${fip_mtd} ${fip_mtd_size}
+write_fip2_spinand=nand erase ${fip_mtd_2} ${fip_mtd_size}; nand write ${loadaddr} ${fip_mtd_2} ${fip_mtd_size}
+write_kernel1_spinand=nand erase ${kernel_mtd} ${kernel_mtd_size}; nand write ${loadaddr} ${kernel_mtd} ${kernel_mtd_size}
+write_kernel2_spinand=nand erase ${kernel_mtd_2} ${kernel_mtd_size}; nand write ${loadaddr} ${kernel_mtd_2} ${kernel_mtd_size}
+write_rootfs1_spinand=nand erase ${rootfs_mtd} ${rootfs_mtd_size}; nand write ${loadaddr} ${rootfs_mtd} ${rootfs_mtd_size}
+write_rootfs2_spinand=nand erase ${rootfs_mtd_2} ${rootfs_mtd_size}; nand write ${loadaddr} ${rootfs_mtd_2} ${rootfs_mtd_size}

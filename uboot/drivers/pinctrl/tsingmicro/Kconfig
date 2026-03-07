@@ -1,0 +1,46 @@
+config PINCTRL_TS_TX536
+	bool "Tsingmicro tx536 pinctrl driver"
+	depends on ARCH_TS_TX536
+	help
+	  This enables pinctrl driver for ts tx536.
+
+	  Currently, this driver actually does nothing but print debug
+	  messages when pinctrl operations are invoked.
+
+config PINCTRL_TS_TX5336
+	bool "Tsingmicro dt53 pinctrl driver"
+	depends on ARCH_TS_TX5336
+	default n if ARCH_TS_TX5215
+	default y 
+
+	help
+	  This enables pinctrl driver for ts dt53.
+
+	  Currently, this driver actually does nothing but print debug
+	  messages when pinctrl operations are invoked.
+
+
+config PINCTRL_TS_TX5215
+	bool "Tsingmicro tx5215 pinctrl driver"
+	depends on ARCH_TS_TX5215
+	default n if ARCH_TS_TX5112
+	default y
+	
+	help
+	  This enables pinctrl driver for ts tx5215.
+
+	  Currently, this driver actually does nothing but print debug
+	  messages when pinctrl operations are invoked.
+	  
+config PINCTRL_TS_TX5112
+	bool "Tsingmicro tx5112 pinctrl driver"
+	depends on ARCH_TS_TX5112
+	default n if ARCH_TS_TX5215
+	default y 
+
+	help
+	  This enables pinctrl driver for ts tx5112.
+
+	  Currently, this driver actually does nothing but print debug
+	  messages when pinctrl operations are invoked.
+

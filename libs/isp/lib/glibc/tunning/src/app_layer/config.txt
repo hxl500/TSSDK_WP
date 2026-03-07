@@ -1,0 +1,26 @@
+# set baudRate
+log:baudRate=921600
+
+# set log level
+#log:levelMask=0x3333333334,ispMask=0xffffffffff,sw3aMask=0x7
+log:levelMask=0x3333333334,ispMask=0xffffffffff,sw3aMask=0x7,logPath=log.txt
+
+# set camera 0
+#set:camid=0,fps=30,pWidth=1920,pHeight=1080
+set:camid=0,fps=30,pWidth=1920,pHeight=1080,vWidth=1920,vHeight=1080,vFmt=NV12
+#set:camid=1,fps=15,pWidth=1920,pHeight=1080,vWidth=1920,vHeight=1080,vFmt=NV12
+
+# start all camera
+start
+
+# sleep 1s
+sleep:time=1
+
+# dump images
+dump:camid=0,analysis=0,num=1
+
+# stop all camera
+stop
+
+# exit camera
+exit

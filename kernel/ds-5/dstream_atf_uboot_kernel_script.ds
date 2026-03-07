@@ -1,0 +1,15 @@
+# atf and uboot run from storage media, program stop at uboot cmd
+# try to attach CPU, and download FIT(kernel,dtb,rootfs), then bootm
+
+# allow access El1 memory from EL3, for setting breakpoint
+set debug-agent ALLOW_EL1_MEMACC_FROM_EL3 1
+
+# stop A53 core
+stop
+
+#download linux kernel image
+restore out\ts-tx536.itb binary 0x10000000
+
+add-symbol-file  kernel\vmlinux EL1N:0
+
+continue

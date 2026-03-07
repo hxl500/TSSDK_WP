@@ -1,0 +1,14 @@
+/out
+/temp
+
+*.ko
+*.o
+*.o.cmd
+Module.symvers
+modules.order
+*.ko
+*.ko.cmd
+.tmp_versions/
+*.mod.c
+
+

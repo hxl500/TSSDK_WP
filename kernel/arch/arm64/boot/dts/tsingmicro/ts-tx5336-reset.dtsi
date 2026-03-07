@@ -1,0 +1,153 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * Reset specification for Tsingmicor Soc
+ *
+ * (C) Copyright 2022 - 2022, Tsingmicro, Inc.
+ *
+ */
+
+#include <dt-bindings/reset/ts-tx5336-resets.h>
+/ {
+	ts_reset: reset-controller {
+		compatible = "ts,tx5336-reset";
+		reg = <0x0 0xF038A000 0x0 0x1000>;
+		#reset-cells = <1>;
+	};
+};
+
+// &dma0 {
+	// resets = <&ts_reset TS_RST_DMAC0>;
+	// reset-names = "dma";
+// };
+
+&gmac0 {
+	 resets = <&ts_reset TS_RST_GMAC_GLOBAL>;
+	 reset-names = "stmmaceth";
+};
+
+&sdhci0 {
+    resets = <&ts_reset TS_SDHCI0_AHB_RST>;
+    reset-names = "sdhci";
+};
+
+&sdhci1 {
+    resets = <&ts_reset TS_SDHCI1_AHB_RST>;
+    reset-names = "sdhci";
+};
+
+// &cve {
+	// resets = <&ts_reset TS_RST_CVE_AHB>,
+		//    <&ts_reset TS_RST_CVE_AXI>,
+		//    <&ts_reset TS_RST_CVE_CORE>,
+		//    <&ts_reset TS_RST_CVE_GLOBAL>;
+	// reset-names = "cve_ahb","cve_axi","cve_core","cve_global";
+// };
+&qspi {
+	resets = <&ts_reset TS_QSPI_REF_RST>,
+			<&ts_reset TS_QSPI_AHB_RST>,
+			<&ts_reset TS_QSPI_APB_RST>;
+	reset-names = "ospi_ref", "ospi_ahb", "ospi_apb";
+};
+// &nand0 {
+	// resets = <&ts_reset TS_RST_NFC_AHB>,
+		//  <&ts_reset TS_RST_NFC_FUNC_BLOCK>,
+		//  <&ts_reset TS_RST_NFC_GLOBAL>;
+	// reset-names = "nfc_ahb", "nfc_func_block", "nfc_global";
+// };
+// &spi0 {
+	// resets = <&ts_reset TS_RST_SPI0_GLOBAL>;
+	// reset-names = "spi";
+// };
+// &bt1120tx {
+	// resets = <&ts_reset TS_RST_BT1120_RX_APB>,
+		// <&ts_reset TS_RST_BT1120_RX_AXI>,
+		// <&ts_reset TS_RST_BT1120_RX_GLOBAL>;
+	// reset-name = "bt1120rx_apb", "bt1120rx_axi", "bt1120rx_global";
+// };
+// &bt1120rx {
+	// resets = <&ts_reset TS_RST_BT1120_TX_GLOBAL>;
+	// reset-name = "bt1120tx_global";
+// };
+
+// &gpu {
+	// resets = <&ts_reset TS_RST_GPU>;
+	// reset-names = "gpu";
+// };
+
+// &aiisp {
+	// resets = <&ts_reset TS_RST_AIISP_AHB>,
+	// <&ts_reset TS_RST_AIISP_CORE>,
+	// <&ts_reset TS_RST_AIISP_GLOBAL>,
+	// /*rce*/
+	// <&ts_reset TS_RST_RCE_AHB>,
+	// <&ts_reset TS_RST_RCE_AXI>,
+	// <&ts_reset TS_RST_RCE_CORE>,
+	// <&ts_reset TS_RST_RCE_MEM>,
+	// <&ts_reset TS_RST_RCE_GLOBAL>,
+	// /*rne*/
+	// <&ts_reset TS_RST_RNE_AHB>,
+	// <&ts_reset TS_RST_RNE_AXI>,
+	// <&ts_reset TS_RST_RNE_CORE>,
+	// <&ts_reset TS_RST_RNE_MEM>,
+	// <&ts_reset TS_RST_RNE_GLOBAL>;
+	// reset-names = "aiisp_ahb", "aiisp_core", "aiisp_glb",
+		// "rce_ahb", "rce_axi", "rce_core", "rce_mem", "rce_glb",
+		// "rne_ahb", "rne_axi", "rne_core", "rne_mem", "rne_glb";
+// };
+
+&gpadc {
+	resets = <&ts_reset TS_GPADC_APB_RST>;
+	reset-names = "adc";
+};
+
+// &isp {
+	// resets = <&ts_reset TS_RST_ISP_GLOBAL>,
+	// <&ts_reset TS_RST_ISP_CORE>,
+	// <&ts_reset TS_RST_ISP_AXI>,
+	// <&ts_reset TS_RST_ISP_AHB>;
+	// reset-names = "isp_glb", "isp_core", "isp_axi", "isp_ahb";
+// };
+
+&usb0 {
+	resets = <&ts_reset TS_USB_PHY_RST>;
+	reset-names = "usbphy";
+};
+
+&ocotp {
+	resets = <&ts_reset TS_OTPC_APB_RST>;
+	reset-names = "ts_otpc";
+};
+
+&pdmic0 {
+	resets = <&ts_reset TS_PDM0_M_RST>;
+	reset-names = "pdm";
+};
+
+&pdmic1 {
+	resets = <&ts_reset TS_PDM1_M_RST>;
+	reset-names = "pdm";
+};
+
+&pdmic2 {
+	resets = <&ts_reset TS_PDM2_M_RST>;
+	reset-names = "pdm";
+};
+
+&pdmic3 {
+	resets = <&ts_reset TS_PDM3_M_RST>;
+	reset-names = "pdm";
+};
+// &vpe {
+	// resets = <&ts_reset TS_RST_VPE_GLOBAL>,
+	// <&ts_reset TS_RST_VPE_CORE>,
+	// <&ts_reset TS_RST_VPE_AXI>,
+	// <&ts_reset TS_RST_VPE_APB>;
+	// reset-names = "vpe_glb", "vpe_core", "vpe_axi", "vpe_ahb";
+// };
+
+&i2s {
+	resets = <&ts_reset TS_I2S_CORE_RST>,
+	<&ts_reset TS_I2S_APB_RST>;
+	reset-names = "i2s_core_rst","i2s_apb_rst";
+};
+

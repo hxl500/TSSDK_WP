@@ -1,0 +1,105 @@
+/*
+ * dts file for tsingmicro tx5112
+ *
+ * Copyright 2022 Tsingmicro, Inc.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ */
+
+#include <dt-bindings/pinctrl/pinctrl-ts-tx5112.h>
+/ {
+		pinctrl: pinctrl@f0000000 {
+			compatible = "ts_tx5112,pinctrl";
+			status = "disabled";
+			reg = <0xf0000000 0x1000000>;
+			ts,npins = <PINMAX>;
+			mac0 {
+				//MAC_EPHY_CLK MAC_TXCLK MAC_TXEN MAC_RXDV MAC_MDC MAC_MDIO
+				mac0_pinctrl0: mac0_grp_0 {
+					ts,pins = <PA0 PA1 PA2 PA5 PB0 PB1>;
+					mux,val = <0>;
+					function = "mac0";
+					groups = "mac0_grp_0";
+				};
+				//MAC_TXD0 MAC_TXD1 MAC_RXD0 MAC_RXD1
+				mac0_pinctrl1: mac0_grp_1 {
+					ts,pins = <PA3 PA4 PA6 PA7>;
+					mux,val = <1>;
+					function = "mac0";
+					groups = "mac0_grp_1";
+				};
+				mac0_rst_pinctrl: mac0_grp_rst {
+					ts,pins = <PB7>;
+					mux,val = <8>;
+					function = "mac0";
+					groups = "mac0_grp_rst";
+				};
+			};
+#if 0
+			spi0 {
+				spi0_pinctrl: spi0_grp {
+					ts,pins = <PC0 PC1 PC2 PC3>;
+					mux,val = <0>;
+					function = "spi0";
+					groups = "spi0_grp";
+				};
+			};
+#endif
+			/*conflict with qspi*/
+#if 0
+			emmc0 {
+				emmc0_pinctrl: emmc0_grp {
+					ts,pins = <PE0 PE1 PE2 PE3 PE4 PE5>;
+					mux,val = <4>;
+					function = "emmc0";
+					groups = "emmc0_grp";
+				};
+			};
+#endif
+			emmc1 {
+				emmc1_pinctrl: emmc1_grp {
+					ts,pins = <PF0 PF1 PF2 PF3 PF4 PF5>;
+					mux,val = <0>;
+					function = "emmc1";
+					groups = "emmc1_grp";
+				};
+			};
+
+			qspi {
+				qspi_pinctrl: qspi_grp {
+					ts,pins = <PE0 PE1 PE2 PE3 PE4 PE5>;
+					mux,val = <0>;
+					function = "qspi";
+					groups = "qspi_grp";
+				};
+			};
+
+			usi_spi0_cs {
+				usi_spi0_cs_pinctrl: usi_spi0_cs_grp {
+					ts,pins = <PD0>;
+					mux,val = <8>;
+					function = "usispi0_cs";
+					groups = "usispi0_cs_grp";
+				};
+			};
+#if 0
+			/* config unused pins of QFN88 package as gpio */
+			not_use {
+				qfn88_not_use_pin_as_gpio: not_use_grp {
+					ts,pins = <PC0 PC1 PC2 PC3 PC4 PC5 PC6 PC7 PD0
+								PD3 PD4 PD5 PD6 PD7 PE0
+								PF5 PF6 PF7 PG0 PG1 PG2 PJ0 PJ1 PJ2 PJ3 PJ4 PJ5
+								PK6
+								>;
+					mux,val = <8>;
+					function = "not_use";
+					groups = "not_use_grp";
+				};
+			};
+#endif
+		};
+};
+

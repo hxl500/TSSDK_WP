@@ -1,0 +1,44 @@
+#! /bin/sh
+
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin
+export LD_LIBRARY_PATH=/usr/lib
+
+/bin/mount -a
+mkdir -p /dev/pts 
+mount -t devpts devpts /dev/pts
+mkdir -p /dev/shm 
+mount -t tmpfs tmpfs /dev/shm
+
+/bin/echo /sbin/mdev > /proc/sys/kernel/hotplug
+
+mount -t squashfs -o loop /dev/mtdblock3 /usr
+
+#/etc/init.d/S11load_ko start
+
+#/usr/bin/sample_venc 0 r 0 &
+
+mount -t jffs2 /dev/mtdblock4 /root
+if [ ! -f /root/format_do_not_remove ];then
+	umount /dev/mtdblock4
+	flash_eraseall -j /dev/mtd4
+	mount -t jffs2 /dev/mtdblock4 /root
+	touch /root/format_do_not_remove
+fi
+
+# net
+# insmod_ethernet
+ifconfig eth0 192.168.1.10
+telnetd &
+
+echo 1 > /proc/sys/vm/dirty_ratio
+echo 1 >  /proc/sys/vm/dirty_background_ratio
+echo 2 >  /proc/sys/vm/dirty_writeback_centisecs
+echo 3 >  /proc/sys/vm/dirty_expire_centisecs
+echo 100 > /proc/sys/vm/swappiness
+echo 163 > /proc/sys/vm/vfs_cache_pressure
+
+#/etc/init.d/drop_clear.sh &
+
+/etc/init.d/insmod_nfs
+
+

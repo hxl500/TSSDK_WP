@@ -1,0 +1,78 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * Reset specification for Tsingmicor Soc
+ *
+ * (C) Copyright 2022 - 2022, Tsingmicro, Inc.
+ *
+ */
+#include <dt-bindings/reset/ts-tx5112-resets.h>
+
+/ {
+	ts_reset: reset-controller {
+		compatible = "tsm,tx5112-reset";
+		reg = <0xF1004000 0x1000>;
+		#reset-cells = <1>;
+	};
+};
+
+&isp {
+	resets = <&ts_reset TS_ISP_SRST>,
+		<&ts_reset TS_ISP_ARST>,
+		<&ts_reset TS_ISP_HRST>;
+	reset-names = "isp_core", "isp_axi", "isp_ahb";
+};
+
+&qspi {
+	resets = <&ts_reset TS_OSPI_PRST>,
+			 <&ts_reset TS_OSPI_HRST>,
+			 <&ts_reset TS_OSPI_REF_RST>;
+	reset-names = "ospi_apb", "ospi_ahb", "ospi_ref";
+};
+
+&gmac0 {
+	resets = <&ts_reset TS_GMAC_RST>;
+	reset-names = "stmmaceth";
+};
+
+&vpu_h265 {
+	resets = <&ts_reset TS_H265_CCLK_RST>;
+};
+
+&amr {
+	resets = <&ts_reset TS_AMR_RST>;
+	reset-names = "amr";
+};
+
+&pdmic {
+	resets = <&ts_reset TS_PDM_RST>;
+	reset-names = "pdm";
+};
+&usb0 {
+	resets = <&ts_reset TS_USB_PHY_RST>;
+	reset-names = "usbphy";
+};
+
+&adc {
+	resets = <&ts_reset TS_APB_ADC_PRST>;
+	reset-names = "adc";
+};
+
+&ocotp {
+	resets = <&ts_reset TS_APB_OTPC_PRST>;
+	reset-names = "ts_otpc";
+};
+
+&dwahbdma0 {
+	resets = <&ts_reset TS_AHB_PERI_DMA0_HRST>;
+	reset-names = "ahb_dma";
+};
+
+&dwahbdma1 {
+	resets = <&ts_reset TS_AHB_PERI_DMA1_HRST>;
+	reset-names = "ahb_dma";
+};
+
+&watchdog0 {
+	resets = <&ts_reset TS_APB_WDT_PRST>, <&ts_reset TS_APB_WDT_TICK_RST>;
+	reset-names = "wdt_apb", "wdt_tick";
+};

@@ -1,0 +1,1304 @@
+/*
+ * dts file for tsingmicro tx536
+ *
+ * Copyright 2022 Tsingmicro, Inc.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ */
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+
+/ {
+	compatible = "ts,tx536";
+	#address-cells = <2>;
+	#size-cells = <2>;
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		cpu0: cpu@0 {
+			compatible = "arm,cortex-a53", "arm,armv8";
+			device_type = "cpu";
+			enable-method = "psci";
+			reg = <0x0>;
+			next-level-cache = <&l2>;
+			//operating-points-v2 = <&cpu_opp_table>;
+			//cpu-idle-states = <&CPU_SLEEP_0>;
+		};
+
+		cpu1: cpu@1 {
+			compatible = "arm,cortex-a53", "arm,armv8";
+			device_type = "cpu";
+			enable-method = "psci";
+			reg = <0x1>;
+			next-level-cache = <&l2>;
+			//operating-points-v2 = <&cpu_opp_table>;
+			//cpu-idle-states = <&CPU_SLEEP_0>;
+		};
+
+/*
+ *		idle-states {
+ *			entry-method = "arm,psci";
+ *
+ *			CPU_SLEEP_0: cpu-sleep-0 {
+ *				compatible = "arm,idle-state";
+ *				arm,psci-suspend-param = <0x40000000>;
+ *				local-timer-stop;
+ *				entry-latency-us = <300>;
+ *				exit-latency-us = <600>;
+ *				min-residency-us = <10000>;
+ *			};
+ *		};
+ */
+		l2: l2-cache0 {
+			compatible = "cache";
+		};
+	};
+
+/*
+ *	cpu_opp_table: cpu_opp_table {
+ *		compatible = "operating-points-v2";
+ *		opp-shared;
+ *		opp00 {
+ *			opp-hz = /bits/ 64 <1199999988>;
+ *			opp-microvolt = <1000000>;
+ *			clock-latency-ns = <500000>;
+ *		};
+ *		opp01 {
+ *			opp-hz = /bits/ 64 <599999994>;
+ *			opp-microvolt = <1000000>;
+ *			clock-latency-ns = <500000>;
+ *		};
+ *		opp02 {
+ *			opp-hz = /bits/ 64 <399999996>;
+ *			opp-microvolt = <1000000>;
+ *			clock-latency-ns = <500000>;
+ *		};
+ *		opp03 {
+ *			opp-hz = /bits/ 64 <299999997>;
+ *			opp-microvolt = <1000000>;
+ *			clock-latency-ns = <500000>;
+ *		};
+ *	};
+ */
+
+	dcc: dcc {
+		compatible = "arm,dcc";
+		status = "disabled";
+	};
+
+	pmu {
+		compatible = "arm,armv8-pmuv3";
+		interrupt-parent = <&gic>;
+		interrupts = <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>,
+				 <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	psci {
+		compatible = "arm,psci-0.2";
+		method = "smc";
+	};
+
+	timer {
+		compatible = "arm,armv8-timer";
+		interrupt-parent = <&gic>;
+		interrupts = <1 13 0x308>,
+			     <1 14 0x308>,
+			     <1 11 0x308>,
+			     <1 10 0x308>;
+		/*always-on;*/
+	};
+
+	amba_apu: amba_apu@0 {
+		compatible = "simple-bus";
+		#address-cells = <2>;
+		#size-cells = <1>;
+		ranges = <0 0 0 0 0xffffffff>;
+
+		gic: interrupt-controller@f0e90000 {
+			compatible = "arm,gic-400", "arm,cortex-a15-gic";
+			#interrupt-cells = <3>;
+			reg = <0x0 0xf0e91000 0x1000>,
+				  <0x0 0xf0e92000 0x2000>,
+				  <0x0 0xf0e94000 0x2000>,
+				  <0x0 0xf0e96000 0x2000>;
+			interrupt-controller;
+			interrupt-parent = <&gic>;
+			interrupts = <1 9 0x304>;
+		};
+	};
+
+	//temp
+	sgrf: syscon@f128d000 {
+		compatible = "ts,tx536-sgrf", "syscon";
+		reg = <0x0 0xf128d000 0x0 0x1000>;
+	};
+
+	//temp
+	smu: syscon@f12a2000 {
+		compatible = "ts,tx536-smu", "syscon";
+		reg = <0x0 0xf12a2000 0x0 0x1000>;
+		interrupt-parent = <&gic>;
+		interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
+		calibration = <0x8000>;
+	};
+
+	lp_rtc: lp_rtc {
+		status = "disabled";
+		compatible = "ts,lp_rtc";
+		reg = <0x0 0xf12a2118 0x0 0x20>;
+		interrupt-parent = <&gic>;
+		interrupts = <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH>; //lp rtc interrupt nr
+		regoff-base = <0x00000000>;
+	};
+
+	soc {
+		compatible = "simple-bus";
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		grf: syscon@f128c000 {
+			compatible = "ts,tx536-grf", "syscon";
+			reg = <0x0 0xf128c000 0x0 0x1000>;
+		};
+
+		noc: syscon@f0ea0000 {
+			compatible = "ts,tx536-noc", "syscon";
+			reg = <0x0 0xf0ea0000 0x0 0x20000>;
+		};
+
+		cgu_top: cgu_top@f0d9a000 {
+			compatible = "ts,tx536-cgu", "syscon";
+			reg = <0x0 0xf0d9a000 0x0 0x1000>;
+		};
+
+		dma0: dma-controller@f0e9a000 {
+			compatible = "arm,pl330", "arm,primecell";
+			status = "disabled";
+			reg = <0x0 0xf0e9a000 0x0 0x1000>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>,
+					 <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>,
+					 <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>,
+					 <GIC_SPI 127 IRQ_TYPE_LEVEL_HIGH>,
+					 <GIC_SPI 128 IRQ_TYPE_LEVEL_HIGH>;
+			arm,primecell-periphid = <0x00341330>;
+			#dma-cells = <1>;
+			iommus = <&smmu 73>, <&smmu 74>, <&smmu 75>, <&smmu 127>, <&smmu 128>;
+		};
+
+		rne_dma: rne_dma@f0200000 {
+			compatible = "ts,simple-bus-chip-rne";
+			status = "disabled";
+			reg = <0x0 0xf0200000 0x0 0x200000>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>;
+			iommus = <&smmu 103>;
+		};
+
+		rce_dma: rce_dma@f0400000 {
+			compatible = "ts,simple-bus-chip-rce";
+			status = "disabled";
+			reg = <0x0 0xf0400000 0x0 0x200000>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>;
+			iommus = <&smmu 102>;
+		};
+
+		uart1: serial@f0d8a000 {
+			compatible = "snps,dw-apb-uart";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d8a000 0x0 0x1000>;
+			reg-shift = <2>;
+		};
+
+		uart2: serial@f0d8b000 {
+			compatible = "snps,dw-apb-uart";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d8b000 0x0 0x1000>;
+			reg-shift = <2>;
+		};
+
+		uart3: serial@f0d8c000 {
+			compatible = "snps,dw-apb-uart";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d8c000 0x0 0x1000>;
+			reg-shift = <2>;
+		};
+
+		uart4: serial@f0d8d000 {
+			compatible = "snps,dw-apb-uart";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d8d000 0x0 0x1000>;
+			reg-shift = <2>;
+		};
+
+		uart5: serial@f0d8e000 {
+			compatible = "snps,dw-apb-uart";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d8e000 0x0 0x1000>;
+			reg-shift = <2>;
+		};
+
+		uart6: serial@f0d8f000 {
+			compatible = "snps,dw-apb-uart";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d8f000 0x0 0x1000>;
+			reg-shift = <2>;
+		};
+
+		usart0: usi0-uart@f1284000 {
+			compatible = "ts,ts-usi-uart";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 93 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf1284000 0x0 0x1000>;
+			reg-shift = <2>;
+		};
+
+		usart1: usi1-uart@f1285000 {
+			compatible = "ts,ts-usi-uart";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf1285000 0x0 0x1000>;
+			reg-shift = <2>;
+		};
+
+		usart2: usi2-uart@f0d88000 {
+			compatible = "ts,ts-usi-uart";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d88000 0x0 0x1000>;
+			reg-shift = <2>;
+		};
+
+		usart3: usi3-uart@f0d89000 {
+			compatible = "ts,ts-usi-uart";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d89000 0x0 0x1000>;
+			reg-shift = <2>;
+		};
+
+		ui2c0: usi3-i2c@f0d89000 {
+			compatible = "ts,ts-usi-i2c";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d89000 0x0 0x1000>;
+			clock-frequency = <100000>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+
+		uspi2: usi2spi@f0d88000 {
+			compatible = "ts,ts-spi";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d88000 0x0 0x1000>;
+			reg-shift = <2>;
+			uspics-gpios = <&portb 11 GPIO_ACTIVE_HIGH>;
+		};
+
+		gmac0: ethernet0@f0d60000 {
+			compatible = "ts-tx536,dwc-qos-ethernet-4.10";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 59 IRQ_TYPE_LEVEL_HIGH>,
+					<GIC_SPI 59 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d60000 0x0 0x10000>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			snps,write-requests = <2>;
+			snps,read-requests = <16>;
+			snps,no-pbl-x8;
+			snps,txpbl = <8>;
+			snps,rxpbl = <2>;
+			iommus = <&smmu 59>;
+			ts,clkctl = <&cgu_top>;
+			status = "disabled";
+		};
+
+		pinctrl: pinctrl@f0d95000 {
+			compatible = "ts,ts-pinctrl-tx536";
+			reg = <0x0 0xf0d95000 0x0 0x1000>;
+			ts,npins = <97>;
+		};
+
+		mcu_pinctrl: mcu_pinctrl@f128a000 {
+			compatible = "ts,ts-pinctrl-tx536";
+			reg = <0x0 0xf128a000 0x0 0x1000>;
+			ts,npins = <30>;
+		};
+
+		gpio0: gpio@f0d94000 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			compatible = "snps,dw-apb-gpio";
+			reg = <0x0 0xf0d94000 0x0 0x400>;
+
+			porta: gpio-controller@0 {
+				compatible = "snps,dw-apb-gpio-port";
+				gpio-controller;
+				#gpio-cells = <2>;
+				snps,nr-gpios = <32>;
+				reg = <0>;
+				interrupt-controller;
+				#interrupt-cells = <2>;
+				interrupt-parent = <&gic>;
+				interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
+				gpio-ranges = <&pinctrl 0 0 5>,
+							<&pinctrl 5 96 1>,
+							<&pinctrl 6 6 26>;
+			};
+		};
+
+		gpio1: gpio@f0d94400 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			compatible = "snps,dw-apb-gpio";
+			reg = <0x0 0xf0d94400 0x0 0x400>;
+
+			portb: gpio-controller@0 {
+				compatible = "snps,dw-apb-gpio-port";
+				gpio-controller;
+				#gpio-cells = <2>;
+				snps,nr-gpios = <32>;
+				reg = <0>;
+				interrupt-controller;
+				#interrupt-cells = <2>;
+				interrupt-parent = <&gic>;
+				interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
+				gpio-ranges = <&pinctrl 0 32 32>;
+			};
+		};
+
+		gpio2: gpio@f0d94800 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			compatible = "snps,dw-apb-gpio";
+			reg = <0x0 0xf0d94800 0x0 0x400>;
+
+			portc: gpio-controller@0 {
+				compatible = "snps,dw-apb-gpio-port";
+				gpio-controller;
+				#gpio-cells = <2>;
+				snps,nr-gpios = <32>;
+				reg = <0>;
+				interrupt-controller;
+				#interrupt-cells = <2>;
+				interrupt-parent = <&gic>;
+				interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
+				gpio-ranges = <&pinctrl 0 64 32>;
+			};
+		};
+
+		gpio3: gpio@f1289000 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			compatible = "snps,dw-apb-gpio";
+			reg = <0x0 0xf1289000 0x0 0x400>;
+
+			mcu_gpio: gpio-controller@0 {
+				compatible = "snps,dw-apb-gpio-port";
+				gpio-controller;
+				#gpio-cells = <2>;
+				snps,nr-gpios = <30>;
+				reg = <0>;
+				interrupt-controller;
+				#interrupt-cells = <2>;
+				interrupt-parent = <&gic>;
+				interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
+				gpio-ranges = <&mcu_pinctrl 0 0 30>;
+			};
+		};
+
+		gpio4: aon-gpio {
+			compatible = "ts,aon-gpio-tx536";
+			status = "disabled";
+			ts,smu = <&smu>;
+			reg = <0x0 0xf12a2000 0x0 0x1000>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-controller;
+			#interrupt-cells = <2>;
+		};
+
+		mcu_i2c0: i2c@f1281000 {
+			compatible = "snps,designware-i2c";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf1281000 0x0 0x1000>;
+			clock-frequency = <400000>;
+			// pinctrl-names = "default";
+			//pinctrl-0 = <&i2c0_pinctrl>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+
+		mcu_i2c1: i2c@f1282000 {
+			compatible = "snps,designware-i2c";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf1282000 0x0 0x1000>;
+			clock-frequency = <400000>;
+			// pinctrl-names = "default";
+			//pinctrl-0 = <&i2c1_pinctrl>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+
+		i2c2: i2c@f0d80000 {
+			compatible = "snps,designware-i2c";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d80000 0x0 0x1000>;
+			clock-frequency = <400000>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&i2c2_pinctrl>;
+			rx-depth = <16>;
+			tx-depth = <16>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+
+		i2c3: i2c@f0d81000 {
+			compatible = "snps,designware-i2c";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d81000 0x0 0x1000>;
+			clock-frequency = <400000>;
+			rx-depth = <16>;
+			tx-depth = <16>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+
+		i2c4: i2c@f0d82000 {
+			compatible = "snps,designware-i2c";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d82000 0x0 0x1000>;
+			clock-frequency = <400000>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&i2c4_pinctrl>;
+			rx-depth = <16>;
+			tx-depth = <16>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+
+		i2c5: i2c@f0d83000 {
+			compatible = "snps,designware-i2c";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d83000 0x0 0x1000>;
+			clock-frequency = <400000>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&i2c5_pinctrl>;
+			rx-depth = <16>;
+			tx-depth = <16>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+
+		i2c6: i2c@f0d84000 {
+			compatible = "snps,designware-i2c";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d84000 0x0 0x1000>;
+			clock-frequency = <400000>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&i2c6_pinctrl>;
+			rx-depth = <16>;
+			tx-depth = <16>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+
+		i2c7: i2c@f0d85000 {
+			compatible = "snps,designware-i2c";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d85000 0x0 0x1000>;
+			clock-frequency = <400000>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&i2c7_pinctrl>;
+			rx-depth = <16>;
+			tx-depth = <16>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+
+		i2c8: i2c@f0d86000 {
+			compatible = "snps,designware-i2c";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d86000 0x0 0x1000>;
+			clock-frequency = <400000>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&i2c8_pinctrl>;
+			rx-depth = <16>;
+			tx-depth = <16>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+
+		i2c9: i2c@f0d87000 {
+			compatible = "snps,designware-i2c";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d87000 0x0 0x1000>;
+			clock-frequency = <400000>;
+			rx-depth = <16>;
+			tx-depth = <16>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+
+		nand0: nand@f0da8000 {
+			compatible = "ts,tx536-nand";
+			reg = <0x0 0xf0da8000 0x0 0x2000>;
+			reg-names = "ts-nand";
+			#address-cells = <1>;
+			#size-cells = <1>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-names = "bch";
+			//dmas = <&dma_apbh 0>;
+			//dma-names = "rx-tx";
+			#stream-id-cells = <1>;
+			iommus = <&smmu 70>;
+			//power-domains = <&zynqmp_firmware PD_NAND>;
+
+			status = "disabled";
+		};
+
+		smmu: smmu@f0800000 {
+			compatible = "arm,mmu-500", "arm,smmu-v2";
+			reg = <0x0 0xf0800000 0x0 0x400000>;
+			#iommu-cells = <1>;
+			/* always ignore appended 5-bit TBU number */
+			stream-match-mask = <0x7c00>;
+			status = "disabled";
+			#global-interrupts = <2>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>,
+					<GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>,
+				/* performance counter interrupts 0-7 */
+				     <0 211 4>, <0 212 4>,
+				     <0 213 4>, <0 214 4>,
+				     <0 215 4>, <0 216 4>,
+				     <0 217 4>, <0 218 4>,
+				/* per context interrupt, 64 interrupts */
+				     <0 162 4>, <0 163 4>,
+				     <0 164 4>, <0 165 4>,
+				     <0 166 4>, <0 167 4>,
+				     <0 168 4>, <0 169 4>,
+				     <0 170 4>, <0 171 4>,
+				     <0 172 4>, <0 173 4>,
+				     <0 174 4>, <0 175 4>,
+				     <0 176 4>, <0 177 4>,
+				     <0 178 4>, <0 179 4>,
+				     <0 180 4>, <0 181 4>,
+				     <0 182 4>, <0 183 4>,
+				     <0 184 4>, <0 185 4>,
+				     <0 186 4>, <0 187 4>,
+				     <0 188 4>, <0 189 4>,
+				     <0 190 4>, <0 191 4>,
+				     <0 192 4>, <0 193 4>,
+				     <0 194 4>, <0 195 4>,
+				     <0 196 4>, <0 197 4>,
+				     <0 198 4>, <0 199 4>,
+				     <0 200 4>, <0 201 4>,
+				     <0 202 4>, <0 203 4>,
+				     <0 204 4>, <0 205 4>,
+				     <0 206 4>, <0 207 4>,
+				     <0 208 4>, <0 209 4>;
+			interrupt-names = "sec", "no-sec";
+		};
+
+		bt1120tx: bt1120tx@f0d9c000 {
+			compatible = "ts,bt1120tx", "tx536,bt1120tx";
+			reg = <0x0 0xf0d9c000 0 0x1000>;
+			reg-names = "ts-bt1120tx";
+			/*memory-region = <&bt1120tx_reserved>;*/
+			/*#address-cells = <1>;*/
+			/*#size-cells = <1>;*/
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-names = "dma_tx";
+
+			pinctrl-name = "default";
+			pinctrl-0 = <&bt1120_tx_pinctrl>;
+			#stream-id-cells = <1>;
+			iommus = <&smmu 43>;
+
+			status = "disabled";
+		};
+
+		bt1120rx: bt1120rx@f0d9d000 {
+			compatible = "ts,bt1120rx", "tx536,bt1120rx";
+			reg = <0x0 0xf0d9d000 0 0x1000>;
+			reg-names = "ts-bt1120rx";
+			/*memory-region = <&bt1120rx_reserved>;*/
+			/*#address-cells = <1>;*/
+			/*#size-cells = <1>;*/
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-name = "dma_rx";
+
+			pinctrl-names = "default";
+			pinctrl-0 = <&bt1120_rx_pinctrl>;
+			#stream-id-cells = <1>;
+			iommus = <&smmu 44>;
+
+			status = "disabled";
+		};
+
+		sectimer0: sectimer0@f0d90000 {
+			compatible = "snps,dw-apb-timer";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d90000 0x0 0x14>;
+			status = "disabled";
+		};
+
+		sectimer1: sectimer1@f0d90014 {
+			compatible = "snps,dw-apb-timer";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d90014 0x0 0x14>;
+			status = "disabled";
+		};
+
+		sectimer2: sectimer2@f0d90028 {
+			compatible = "snps,dw-apb-timer";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d90028 0x0 0x14>;
+			status = "disabled";
+		};
+
+		systimer0: systimer0@f0d91000 {
+			compatible = "snps,dw-apb-timer";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d91000 0x0 0x14>;
+			status = "disabled";
+		};
+
+		systimer1: systimer1@f0d91014 {
+			compatible = "snps,dw-apb-timer";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d91014 0x0 0x14>;
+			status = "disabled";
+		};
+
+		systimer2: systimer2@f0d91028 {
+			compatible = "snps,dw-apb-timer";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d91028 0x0 0x14>;
+			status = "disabled";
+		};
+
+		systimer3: systimer3@f0d9103c {
+			compatible = "snps,dw-apb-timer";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d9103c 0x0 0x14>;
+			status = "disabled";
+		};
+
+		systimer4: systimer4@f0d91050 {
+			compatible = "snps,dw-apb-timer";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d91050 0x0 0x14>;
+			status = "disabled";
+		};
+
+		systimer5: systimer5@f0d91064 {
+			compatible = "snps,dw-apb-timer";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d91064 0x0 0x14>;
+			status = "disabled";
+		};
+
+		systimer6: systimer6@f0d91078 {
+			compatible = "snps,dw-apb-timer";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d91078 0x0 0x14>;
+			status = "disabled";
+		};
+
+		systimer7: systimer7@f0d9108c {
+			compatible = "snps,dw-apb-timer";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d9108c 0x0 0x14>;
+			status = "disabled";
+		};
+
+		mbox: mbox@f0d96000 {
+			compatible = "ts,tx536-mailbox";
+			reg = <0x0 0xf0d96000 0x0 0x1000>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>;
+			#mbox-cells = <1>;
+			status = "disabled";
+		};
+
+		mailbox_test {
+			compatible	= "mailbox-test";
+			mboxes		= <&mbox 0>;
+			mbox-names	= "tx";
+		};
+
+		watchdog0: wdt_cpu@F0D98000 {
+			compatible = "snps,dw-wdt";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xF0D98000 0x0 0x1000>;
+			timeout-sec = <5>;
+		};
+
+		watchdog1: wdt_sec@F0D97000 {
+			compatible = "snps,dw-wdt";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xF0D97000 0x0 0x1000>;
+			timeout-sec = <5>;
+		};
+		rtc: rtc@F12A3000 {
+			compatible = "ts,rtc";
+			status = "disabled";
+			reg = <0x0 0xF12A3000 0x0 0x1000>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
+			calibration = <0x8000>;
+		};
+		qspi: spi@f0d9e000 {
+			compatible = "cdns,qspi-nor", "ts,qspi-nand";
+			status = "disabled";
+			#address-cells = <2>;
+			#size-cells = <2>;
+			reg = <0x0 0xf0d9e000 0x0 0x1000>,
+				  <0x0 0xe0000000 0x0 0x10000000>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
+			/*cdns,is-decoded-cs;*/
+			cdns,fifo-depth = <256>;
+			cdns,fifo-width = <4>;
+			cdns,trigger-address = <0xe0000000>;
+			/*cdns,is-decoded-cs = <0>;*/
+			iommus = <&smmu 46>;
+		};
+
+		dw_dmac: dw_dmac@F0E98000 {
+			compatible = "snps,axi-dma-1.01a";
+			status = "disabled";
+			reg = <0x0 0xF0E98000 0x0 0x2000>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>;
+			#dma-cells = <3>;
+			dma-channels = <12>;
+			dma-requests = <32>;
+			snps,dma-masters = <1>;
+			snps,data-width = <3>;
+			snps,block-size = <1024 1024 1024 1024 1024 1024
+				1024 1024 1024 1024 1024 1024>;
+			snps,priority = <0 1 2 3 4 5 6 7 8 9 10 11>;
+			snps,axi-max-burst-len = <4>;
+			disable-mem2mem;
+			iommus = <&smmu 76>;
+		};
+
+		pwm: pwm@F1288000 {
+			compatible = "pwm-ts";
+			status = "disabled";
+			reg = <0x0 0xF1288000 0x0 0x1000>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
+			pwm,channels = <12>;
+			pwm,max_period_us = <10000>;
+			#pwm-cells = <2>;
+		};
+
+		sdhci0: sdhci@f0d70000 {
+			compatible = "snps,dwcmshc-sdhci";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 60 IRQ_TYPE_LEVEL_HIGH>,
+					<GIC_SPI 61 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d70000 0x0 0x1000>;
+			bus-width = <8>;
+			disable-wp;
+			dev_type_emmc;
+		};
+
+		sdhci1: sdhci@f0d71000 {
+			compatible = "snps,dwcmshc-sdhci";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>,
+				<GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d71000 0x0 0x1000>;
+			bus-width = <4>;
+			disable-wp;
+			dev_type_sdcard;
+			no-1-8-v;
+			pinctrl-names = "default";
+			pinctrl-0 = <&PB13_pinctrl>, <&PB14_pinctrl>, <&mshc1_pinctrl>;
+			sdpwr-gpios = <&portb 13 GPIO_ACTIVE_HIGH>, <&portb 14 GPIO_ACTIVE_HIGH>;
+			cap-sd-highspeed;
+		};
+
+		spi0: spi@f0da0000 {
+			compatible = "snps,dw-apb-ssi";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0da0000 0x0 0x1000>;
+			reg-io-width = <4>;
+			num-cs = <1>;
+			dmas = <&dw_dmac 0x20 &dw_dmac 0x21>;
+			dma-names = "tx", "rx";
+		};
+
+		spi1: spi1@f0da1000 {
+			compatible = "snps,dw-apb-ssi";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0da1000 0x0 0x1000>;
+			reg-io-width = <4>;
+			num-cs = <1>;
+			pinctrl-names = "default";
+			/*pinctrl-0 = <&PA26_pinctrl>;*/
+			/*cs-gpios = <&porta 26 GPIO_ACTIVE_LOW>;*/
+			dmas = <&dw_dmac 0x20 &dw_dmac 0x21>;
+			dma-names = "tx", "rx";
+		};
+
+		spi2: spi2@f0da2000 {
+			compatible = "snps,dw-apb-ssi";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0da2000 0x0 0x1000>;
+			reg-io-width = <4>;
+			num-cs = <1>;
+			pinctrl-names = "default";
+			/*pinctrl-0 = <&PA26_pinctrl>;*/
+			/*cs-gpios = <&porta 26 GPIO_ACTIVE_LOW>;*/
+			dmas = <&dw_dmac 0x20 &dw_dmac 0x21>;
+			dma-names = "tx", "rx";
+		};
+
+		spi3: spi3@f0da3000 {
+			compatible = "snps,dw-apb-ssi";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0da3000 0x0 0x1000>;
+			reg-io-width = <4>;
+			num-cs = <1>;
+			pinctrl-names = "default";
+			/*pinctrl-0 = <&PA26_pinctrl>;*/
+			/*cs-gpios = <&porta 26 GPIO_ACTIVE_LOW>;*/
+			dmas = <&dw_dmac 0x20 &dw_dmac 0x21>;
+			dma-names = "tx", "rx";
+		};
+
+		spi4: spi4@f0da4000 {
+			compatible = "snps,dw-apb-ssi";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0da4000 0x0 0x1000>;
+			reg-io-width = <4>;
+			num-cs = <1>;
+			pinctrl-names = "default";
+			/*pinctrl-0 = <&PA26_pinctrl>;*/
+			/*cs-gpios = <&porta 26 GPIO_ACTIVE_LOW>;*/
+			dmas = <&dw_dmac 0x20 &dw_dmac 0x21>;
+			dma-names = "tx", "rx";
+		};
+
+		osr_pke: osr_pke@f0d10000 {
+			compatible = "osr,osr-pke";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d10000 0x0 0x10000>;
+		};
+
+		osr_hash: osr_hash@f0d20000 {
+			compatible = "osr,osr-hash";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d20000 0x0 0x1000>;
+		};
+
+		osr_ske: osr_ske@f0d21000 {
+			compatible = "osr,osr-ske";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d21000 0x0 0x1000>;
+		};
+
+		osr_trng: osr_trng@f0d22000 {
+			compatible = "osr,osr-trng";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d22000 0x0 0x1000>;
+		};
+
+		usb0: usb0@f0c00000 {
+			compatible = "ts,dwc3";
+			#address-cells = <2>;
+			#size-cells = <2>;
+			ranges;
+
+			dwc3@f0c00000 {
+				compatible = "snps,dwc3";
+				status = "okay";
+				reg = <0x0 0xf0c00000 0x0 0x100000>;
+				interrupt-parent = <&gic>;
+				interrupts = <0 69 4>;
+
+				pinctrl-names = "default";
+				pinctrl-0 = <&PA19_pinctrl>;
+				drvvbus-gpios = <&porta 19 GPIO_ACTIVE_HIGH>;
+				dr_mode = "host";
+				/*dr_mode = "peripheral";*/
+				snps,quirk-frame-length-adjustment = <0x20>;
+				snps,dis_rxdet_inp3_quirk;
+
+				snps,dis_enblslpm_quirk;
+				snps,dis-u2-freeclk-exists-quirk;
+				snps,dis_u2_susphy_quirk;
+				snps,dis-del-phy-power-chg-quirk;
+				snps,dis-tx-ipgap-linecheck-quirk;
+
+				grf_addr = <0xf128c000>;
+			};
+		};
+
+
+		armcb_camera {
+			compatible = "armcb,camera";
+			vout-num=<4>;
+		};
+
+		armcb_stat {
+			compatible = "armcb,statistic";
+			stat-name = "armcb,ispstat";
+		};
+
+		isp: armcb_isp@0xf0e40000 {
+			compatible = "armcb,isp-octob-cus0";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>,
+					   <GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>;
+
+			ts,grf = <&grf>;
+			ts,sgrf = <&sgrf>;
+
+			mipi0 = <&mipi_csi2host0>;
+			mipi1 = <&mipi_csi2host1>;
+			mipi2 = <&mipi_csi2host2>;
+			tnr = <&tnr>;
+			iommus = <&smmu 58>, <&smmu 111>;
+		};
+
+		armcb_ispmem {
+			compatible = "armcb,isp-mem";
+		};
+
+		mipi_csi2host0: mipi_csi2host@0xf0e50000 {
+			status = "disabled";
+			compatible = "ts,mipi-csi2-rx0";
+			reg = <0x0 0xf0e50000 0x0 0x1000>;
+			phy = <&mipi_rx_phy>;
+			ts,grf = <&grf>;
+		};
+
+		mipi_csi2host1: mipi_csi2host@0xf0e51000 {
+			status = "disabled";
+			compatible = "ts,mipi-csi2-rx1";
+			reg = <0x0 0xf0e51000 0x0 0x1000>;
+			phy = <&mipi_rx_phy>;
+			ts,grf = <&grf>;
+		};
+
+		mipi_csi2host2: mipi_csi2host@0xf0e52000 {
+			status = "disabled";
+			compatible = "ts,mipi-csi2-rx2";
+			reg = <0x0 0xf0e52000 0x0 0x1000>;
+			phy = <&mipi_rx_phy>;
+			ts,grf = <&grf>;
+		};
+
+		mipi_rx_phy: mipi_rx_phy {
+			compatible = "ts,mipi-rx-phy-dw";
+		};
+
+		tnr: isp_tnr {
+			compatible = "ts,isp_tnr";
+		};
+
+		ebd: ebd@0xf0e53000 {
+			compatible = "ts,ebd";
+			reg = <0 0xf0e53000 0 0x1000>;
+			reg-names = "ebd";
+			ts,grf = <&grf>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
+			status = "disabled";
+		};
+
+		dp0: malidp@f0e00000 {
+			compatible = "arm,mali-dp650";
+			reg = <0 0xf0e00000 0 0x20000>;
+			//memory-region = <&dpu_reserved>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>,
+					<0 53 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-names = "DE", "SE";
+			arm,malidp-output-port-lines = /bits/ 8 <8 8 8>;
+			iommus = <&smmu 52>, <&smmu 53>;
+			status = "disabled";
+		};
+
+		hdmi_virt: hdmi_virt@f0e20000 {
+			compatible = "ts,ts-virt-hdmi";
+			reg = <0x0 0xf0e20000 0x0 0x10000>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "disabled";
+		};
+
+		dwhdmi: dwhdmi@f0e20000 {
+			compatible = "ts,dw-hdmi";
+			reg = <0x0 0xf0e20000 0x0 0x10000>;
+			reg-io-width = <1>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
+			iommus = <&smmu 50>;
+			status = "disabled";
+		};
+
+		mipi_csi2dev: mipi_csi2dev@f0e31000 {
+			compatible = "ts,dw-mipi-csi2d";
+			reg = <0x0 0xf0e31000 0x0 0x1000>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
+			ts,grf = <&grf>;
+			status = "disabled";
+		};
+
+		d2m: dma2mipi@f0e30000 {
+			compatible = "ts,d2m";
+			reg = <0x0 0xf0e30000 0x0 0x1000>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 47 IRQ_TYPE_LEVEL_HIGH>;
+			status = "disabled";
+		};
+
+		mipi_dsi: mipi_dsi@f0e32000 {
+			compatible = "ts,dw-mipi-dsi";
+			reg = <0x0 0xf0e32000 0x0 0x1000>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
+			ts,grf = <&grf>;
+			iommus = <&smmu 48>;
+			status = "disabled";
+		};
+
+		sys: sys {
+			compatible = "ts,sys";
+			status = "disabled";
+			iommus = <&smmu 161>;
+		};
+
+		mpp: mpp {
+			compatible = "ts,mpp";
+			status = "disabled";
+			iommus = <&smmu 162>;
+		};
+
+		mpp_proc: mpp_proc {
+			compatible = "ts,mpp_proc";
+			status = "disabled";
+		};
+
+		vpe: vpe@0xf0e54000 {
+			compatible = "ts,vpe";
+			reg = <0 0xf0e54000 0 0x1000>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+			ts,grf = <&grf>;
+			ts,sgrf = <&sgrf>;
+			iommus = <&smmu 45>;
+			status = "disabled";
+		};
+		wave: wave@0xf0e60000 {
+			compatible = "ts,wave";
+			reg = <0 0xf0e60000 0 0x1060>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
+			iommus = <&smmu 71>;
+			status = "disabled";
+		};
+		coda: coda@0xf0e70000 {
+			compatible = "ts,coda";
+			reg = <0 0xf0e70000 0 0x300>;
+			interrupt-parent = <&gic>;
+			interrupts = <0 72 IRQ_TYPE_EDGE_RISING>;
+			iommus = <&smmu 72>;
+			status = "disabled";
+		};
+		gdc: gdc@0xf0d72000 {
+			compatible = "ts,gdc";
+			reg = <0 0xf0d72000 0 0x1000>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 77 IRQ_TYPE_EDGE_RISING>;
+			iommus = <&smmu 77>;
+			status = "disabled";
+		};
+		cve: cve@0xf0d73000 {
+			compatible = "ts,cve_tx511";
+			reg = <0 0xf0d73000 0 0x1000>;
+			ts,grf = <&grf>;
+			ts,sgrf = <&sgrf>;
+			interrupt-parent = <&gic>;
+			interrupts = <0 97 IRQ_TYPE_LEVEL_HIGH>;
+			iommus = <&smmu 97>;
+			status = "disabled";
+		};
+		gpu: gpu@0xf0d74000 {
+			compatible = "verisilicon,galcore";
+			reg = <0 0xf0d74000 0 0x1000>;
+			reg-names = "core_major";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-names = "core_major";
+			ts,grf = <&grf>;
+			ts,sgrf = <&sgrf>;
+			iommus = <&smmu 96>;
+			status = "disabled";
+		};
+
+		aiisp: aiisp@0xf0600000 {
+			compatible = "ts,tx536-aiisp";
+			reg = <0 0xf0600000 0 0x1000>,
+			<0 0xf0200000 0 0x1000>,
+			<0 0xf0400000 0 0x1000>;
+			reg-names = "aiisp", "rne", "rce";
+			ts,noc = <&noc>;
+			ts,grf = <&grf>;
+			ts,sgrf = <&sgrf>;
+			ts,smu = <&smu>;
+			ts,cgu = <&cgu_top>;
+			iommus = <&smmu 98>, <&smmu 99>, <&smmu 100>, <&smmu 101>;
+			status = "disabled";
+		};
+
+		hwacc: hwacc {
+			compatible = "ts,hwacc";
+			status = "disabled";
+
+			//auto find available chan
+			dmas = <&dma0 99>;
+			dma-names = "m2m";
+		};
+
+		i2s0: i2s0@f0da5000 {
+			compatible = "ts-i2s,tx536";
+			status = "disabled";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0da5000 0x0 0x1000>;
+		};
+
+		i2s1: i2s1@f0da6000 {
+			compatible = "ts-i2s,tx536";
+			status = "disabled";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0da6000 0x0 0x1000>;
+		};
+
+		adc: adc@0xf0d93000{
+			compatible = "tsingmicro,ts-adc";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x0 0xf0d93000 0x0 0x1000 >;
+			name-supply = <&LDO2>;
+		};
+
+		ocotp: ocotp@f0d92000 {
+			compatible = "ts,ts-ocotp";
+			status = "disabled";
+			reg = <0x0 0xf0d92000 0x0 0x1000>;
+			name-supply = <&LDO6>;
+		};
+
+
+		noc_bw: noc_bw {
+			compatible = "ts,noc_bw";
+			status = "disabled";
+			ts,noc = <&noc>;
+		};
+
+	};
+};

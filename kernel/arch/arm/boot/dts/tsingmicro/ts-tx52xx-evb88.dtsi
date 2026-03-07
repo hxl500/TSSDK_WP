@@ -1,0 +1,395 @@
+/*
+ * dts file for tsingmicro tx511 haps
+ *
+ * Copyright 2022 Tsingmicro, Inc.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ */
+
+#include "ts-tx5215.dtsi"
+#include "ts-tx5215-clk.dtsi"
+#include "ts-tx5215-reset.dtsi"
+#include "ts-tx52xx-evb88-pinctrl.dtsi"
+
+/ {
+	chosen {
+		/*bootargs = "console=ttyS0,115200n8 initrd=0xc4000000,4M init=/linuxrc
+		 * root=/dev/ram0 rw rootfstype=ext4 rootwait ignore_loglevel earlycon";
+		 */
+		bootargs = "console=ttyS0,115200n8 earlycon";
+		/*bootargs = "console=ttyS0,115200n8 ignore_loglevel";
+		 *bootargs = "root=/dev/ram0 rw ramdisk=8192 initrd=0x41000000,8M
+		 *console=ttyS0,115200n8 init=/linuxrc";
+		 */
+		stdout-path = "serial0:115200";
+	};
+};
+
+&uart0 {
+	status = "okay";
+};
+
+&uart1 {
+	pinctrl-names = "default";
+	// pinctrl-0 = <&uart1_pinctrl>;
+	status = "disable";
+};
+
+&uart2 {
+	pinctrl-names = "default";
+	// pinctrl-0 = <&uart2_pinctrl_0>;
+	status = "disable";
+};
+
+&gpio0 {
+	pinctrl-names = "default";
+	// pinctrl-0 = <&gpioa25_pinctrl>;
+	status = "okay";
+};
+
+&gpio1 {
+	pinctrl-names = "default";
+	// pinctrl-0 = <&gpiob11_pinctrl>;
+	status = "okay";
+};
+
+&usart0 {
+	status = "disable";
+};
+
+&usart1 {
+	status = "disable";
+	pinctrl-names = "default";
+	// pinctrl-0 = <&usi1_pinctrl_1>;
+};
+
+&rne_dma {
+	status = "okay";
+};
+
+/*
+ *&smmu {
+ *	status = "disable";
+ *};
+ */
+
+&uspi0 {
+	status = "okay";
+	#address-cells = <0x1>;
+	#size-cells = <0x0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&usi0_pinctrl &gpioa24_pinctrl>;
+	uspics-gpios = <&porta 24 GPIO_ACTIVE_HIGH>;
+	uspi0_flash0:w25q64@00 {
+		status = "okay";
+		compatible = "winbond,w25q64","jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <10000000>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+		partition@usi2spi-test0{
+			label = "test0";
+			reg = <0x0 0x800000>; /* 8MB */
+		};
+
+	};
+};
+
+&gmac0 {
+	status = "okay";
+	phy-handle = <&phy0>;
+	phy-mode = "rmii";
+	pinctrl-names = "default";
+	pinctrl-0 = <&mac0_pinctrl0>, <&mac0_pinctrl1>;
+	mdio {
+		#address-cells = <0x1>;
+		#size-cells = <0x0>;
+		phy0: phy@0 {
+			compatible = "ethernet-phy-ieee802.3-c22";
+			device_type = "ethernet-phy";
+			reg = <0x3>;
+		};
+	};
+};
+
+&i2c0 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c0_pinctrl_0>;
+	eeprom: eeprom@50 {
+		compatible = "atmel,24c32";
+		reg = <0x50>;
+		pagesize = <32>;
+	};
+
+	cam0: imgsensor0@20 {
+		compatible = "image,sensor0";
+		reg = <0x20>;
+
+		pinctrl-names = "default", "default";
+		pinctrl-0 = <&gpiob9_pinctrl>;
+		pinctrl-1 = <&chip_out0_pinctrl>;
+		rst-gpios = <&portb 9 GPIO_ACTIVE_HIGH>;
+
+		clocks = <&ts_clk TS_CLK_TX5215_CHIP_OCLK_I0>;
+		clock-names = "mclk";
+		assigned-clocks = <&ts_clk TS_CLK_TX5215_CHIP_OCLK_I0>;
+		assigned-clock-rates = <24000000>;
+	};
+};
+
+&ui2c1 {
+	status = "disable";
+};
+
+
+&i2c3 {
+	status = "disable";
+};
+
+
+&dp0 {
+	status = "okay";
+	port {
+		dp0_output: endpoint {
+			remote-endpoint = <&hdmi_virt_input>;
+		};
+	};
+};
+
+&hdmi_virt {
+	status = "okay";
+	ports {
+		port {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			hdmi_virt_input: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&dp0_output>;
+			};
+		};
+	};
+};
+
+&cve {
+	status = "okay";
+};
+
+&amr {
+	status = "okay";
+};
+
+&vpu_h265 {
+	status = "okay";
+};
+
+&hx280enc {
+	status = "okay";
+};
+&qspi {
+	status = "okay";
+	page-size = <256>;
+	block-size = <16>;
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+#if 0
+	nand1:spi-nand@0 {
+		status = "okay";
+		compatible = "spi-nand";
+		reg = <0>; /* CS0 */
+		//spi-max-frequency = <40000000>;
+		spi-max-frequency = <20000000>;
+		page-size = <2048>;
+		block-size = <131072>;
+		spi-rx-bus-width = <4>;
+		spi-tx-bus-width = <4>;
+		cdns,read-delay = <0>;
+		cdns,tshsl-ns = <0>;
+		cdns,tsd2d-ns = <0>;
+		cdns,tchsh-ns = <0>;
+		cdns,tslch-ns = <0>;
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			/* reserved for future boot direct from NAND flash
+			 * (this would use the same layout as the 8MiB NOR flash)
+			 */
+			partition@0 {
+				label = "nand-boot-reserved";
+				reg = <0 0x800000>;
+			};
+
+			/* recovery / install environment */
+			partition@800000 {
+				label = "recovery";
+				reg = <0x800000 0x2000000>;
+			};
+
+			/* ubia (first OpenWrt) - a/b names to prevent confusion with ubi0/1/etc. */
+			partition@2800000 {
+				label = "ubia";
+				reg = <0x2800000 0x3C00000>;
+			};
+#if 0
+			/* ubib (second OpenWrt) */
+			partition@6400000 {
+				label = "ubib";
+				reg = <0x6400000 0x3C00000>;
+			};
+#endif
+		};
+	};
+
+#else
+
+	flash0: giga0@0 {
+		reg = <0>; /* CS0 */
+		cdns,read-delay = <2>;
+		cdns,tshsl-ns = <40>;
+		cdns,tsd2d-ns = <50>;
+		cdns,tchsh-ns = <3>;
+		cdns,tslch-ns = <4>;
+		spi-max-frequency = <51200000>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+	};
+#endif
+};
+
+&sdhci1 {
+	status = "disabled";
+	pinctrl-names = "default";
+	pinctrl-0 = <&mshc1_pinctrl &emmc1_pinctrl &sd_pwr_pinctrl>;
+	card-detect-delay = <200>;
+	sdpwr-gpios = <&portb 9 GPIO_ACTIVE_LOW>;
+};
+
+&spi0 {
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&spi0_pinctrl &gpioa18_pinctrl>;
+	cs-gpios = <&porta 18 GPIO_ACTIVE_LOW>;
+	spi0_flash0: wnbnd0@0 {
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <400000>;
+		reg = <0>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+		partition@spi-test0{
+			label = "test0";
+			reg = <0x0 0x800000>; /* 8MB */
+		};
+	};
+};
+
+&watchdog0 {
+	status = "okay";
+};
+
+&pwm {
+	status = "disable";
+	pinctrl-names = "default";
+	pinctrl-0 = <&pwm0_pinctrl &pwm1_pinctrl &pwm2_pinctrl>;
+};
+
+&dvp {
+	status = "disabled";
+};
+
+&rtc {
+	status = "okay";
+};
+
+&osr_hash {
+	status = "okay";
+};
+
+&osr_ske {
+	status = "okay";
+};
+
+&osr_pke {
+	status = "okay";
+};
+
+&pinctrl {
+	status = "okay";
+};
+
+&hwacc {
+	status = "okay";
+};
+
+&dwahbdma0 {
+	status = "okay";
+};
+
+&dwahbdma1 {
+	status = "okay";
+};
+
+&dw_axi_dmac {
+	status = "okay";
+};
+
+&pdmic {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pdmic_pinctrl_0>;
+	ts,model = "PDMIC @ tsm-tx5215-fpga";
+	ts,mic-min-freq = <1024000>;
+	ts,mic-max-freq = <3072000>;
+	ts,mic-offset = <0x0>;
+	status = "disable";
+	dmas = <&dwahbdma1 0x6 1 0>;
+	dma-names = "rx";
+};
+
+&ts_codec {
+	status = "okay";
+	ts,model = "ts-codec";
+	dmas = <&dwahbdma1 0xe 1 1 &dwahbdma1 0xd 1 0>;
+	dma-names = "tx","rx";
+	pinctrl-names = "default";
+	pinctrl-0 = <&gpioa11_pinctrl>;
+	speaker-gpios = <&porta 11 GPIO_ACTIVE_HIGH>;
+};
+
+&sys {
+	status = "okay";
+};
+
+&mpp {
+	status = "okay";
+};
+
+&mpp_proc {
+	status = "okay";
+};
+
+&vpe {
+	status = "okay";
+};
+
+&usb0 {
+	status = "okay";
+	//pinctrl-names = "default";
+	//pinctrl-0 = <&usb_pinctrl>;
+	//drvvbus-gpios  = <&portb 11 GPIO_ACTIVE_HIGH>;
+};
+
+&ocotp {
+	status = "okay";
+};
+
+&adc {
+	status = "okay";
+};

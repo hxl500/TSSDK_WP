@@ -1,0 +1,145 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * dts file for Xilinx ZynqMP ZCU106
+ *
+ * (C) Copyright 2016 - 2020, Xilinx, Inc.
+ *
+ * Michal Simek <michal.simek@xilinx.com>
+ */
+
+/dts-v1/;
+
+#include "ts_tx5112.dtsi"
+#include "ts-tx5112-clk-ccf-fpga.dtsi"
+#include "ts-tx5112-reset-fpga.dtsi"
+#include "ts-tx5112-pinctrl-fpga.dtsi"
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/phy/phy.h>
+
+/ {
+	model = "Tsingmicro TX5112FP100";
+	compatible = "ts,tx5112fp100";
+
+	aliases {
+		gpio0 = &gpio0;
+		mmc0 = &sdhci0;
+		sd0 = &sdhci1;
+		serial0 = &uart0;
+		spi0 = &qspi;
+		spi1 = &ssi0;
+	};
+
+	chosen {
+		bootargs = "earlycon";
+		stdout-path = "serial0:115200n8";
+	};
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x0 0xe0000000>; //<0x8 0x00000000 0x0 0x80000000>;
+	};
+};
+
+&gmac0 {
+	status = "okay";
+	phy-handle = <&phy0>;
+	phy-mode = "rgmii-rxid";
+	pinctrl-names = "default";
+	pinctrl-0 = <&mac0_pinctrl0>, <&mac0_pinctrl1>, <&mac0_pinctrl2>;
+	mdio {
+		#address-cells = <0x1>;
+		#size-cells = <0x0>;
+		phy0: phy@0 {
+			compatible = "ethernet-phy-ieee802.3-c22";
+			device_type = "ethernet-phy";
+			reg = <0x1>;
+		};
+	};
+};
+
+&qspi {
+	status = "okay";
+	page-size = <256>;
+	block-size = <16>;
+	#address-cells = <1>;
+	#size-cells = <0>;
+#if 0
+	nand1:spi-nand@0 {
+		status = "okay";
+		compatible = "spi-nand";
+		reg = <0>; /* CS0 */
+		//spi-max-frequency = <40000000>;
+		spi-max-frequency = <20000000>;
+		page-size = <2048>;
+		block-size = <131072>;
+		spi-rx-bus-width = <4>;
+		spi-tx-bus-width = <4>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			/* reserved for future boot direct from NAND flash
+			 * (this would use the same layout as the 8MiB NOR flash)
+			 */
+			partition@0 {
+				label = "nand-boot-reserved";
+				reg = <0 0x800000>;
+			};
+
+			/* recovery / install environment */
+			partition@800000 {
+				label = "recovery";
+				reg = <0x800000 0x2000000>;
+			};
+
+			/* ubia (first OpenWrt) - a/b names to prevent confusion with ubi0/1/etc. */
+			partition@2800000 {
+				label = "ubia";
+				reg = <0x2800000 0x6C00000>;
+			};
+
+			/* ubib (second OpenWrt) */
+			partition@9400000 {
+				label = "ubib";
+				reg = <0x9400000 0x6C00000>;
+			};
+		};
+	};
+#endif
+	spi-flash@0 {
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <108000000>; /* Based on DC1 spec */
+		reg = <1>; /* CS1 */
+	};
+};
+
+&ssi0 {
+	status = "okay";
+	flash@0 {
+		compatible = "jedec,spi-nor";
+	};
+};
+
+&pinctrl {
+	status = "okay";
+};
+
+&sdhci0 {
+	status = "okay";
+};
+&sdhci1 {
+	status = "okay";
+};
+
+&uart0 {
+	status = "okay";
+};
+&gpio0 {
+	status = "okay";
+};
+&gpio1 {
+	status = "okay";
+};

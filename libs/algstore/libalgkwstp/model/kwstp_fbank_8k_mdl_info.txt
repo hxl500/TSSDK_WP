@@ -1,0 +1,13 @@
+kwstp_fbank_8k_cfg.h:
+size:1784, crc32:d59be4f6
+program done
+
+
+kwstp_fbank_8k_weight.h:
+size:3592, crc32:c084236d
+program done
+
+
+The blobs memory size       : 512 BYTE.
+--res-version               : kwstp_fbank_v01
+--chip                      : TX5215DV200

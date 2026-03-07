@@ -1,0 +1,365 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * dts file for tsingmicro tx536
+ *
+ * Copyright 2022 Beijing Tsingmicro Intelligent Technology Co.,Ltd.
+ *
+ */
+
+/dts-v1/;
+
+#include "ts_tx536.dtsi"
+#include "ts-tx536-clk.dtsi"
+#include "ts-tx536-reset.dtsi"
+#include "ts-tx536-pinctrl.dtsi"
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/phy/phy.h>
+
+/ {
+	model = "TsingMicor TX5368AV200";
+	compatible = "ts,tx5368av200-smartbox";
+
+	bd_info {
+		/* Hardware Board Name. */
+		BOARD-MODEL = "TS-TX5368-SMARTBOX";
+		/* Hardware Version Number. */
+		BOARD-REVISION = "V1.0";
+		/* Type - CPU - DDR - compile NO. - device NO. - Factory NO.-YYMM */
+		BOARD-SERIAL = "BOX-A53-0202-0000-T001-2211";
+	};
+
+	aliases {
+		/*ethernet0 = &gem3;*/
+		/* gpio0 = &gpio; */
+		/*i2c0 = &i2c0;*/
+		/*i2c1 = &i2c1;*/
+		mmc0 = &sdhci0;
+		sd0 = &sdhci1;
+		/*rtc0 = &rtc;*/
+		serial0 = &uart1;
+		/*serial1 = &uart1;*/
+		/*serial2 = &dcc;*/
+		spi0 = &qspi;
+		usb0 = &usb0;
+		spi1 = &ssi0;
+	};
+
+	chosen {
+		bootargs = "earlycon";
+		stdout-path = "serial0:115200n8";
+	};
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x0 0x00000000 0x0 0xe0000000>; //4GB
+	};
+
+};
+
+&gmac0 {
+	status = "okay";
+	phy-handle = <&phy0>;
+	phy-mode = "rgmii";
+	pinctrl-names = "default";
+	pinctrl-0 = <&gmac_pinctrl_1>;
+	mdio {
+		#address-cells = <0x1>;
+		#size-cells = <0x0>;
+		phy0: phy@0 {
+			compatible = "ethernet-phy-ieee802.3-c22";
+			device_type = "ethernet-phy";
+			reg = <0x1>;
+			phy-reset-gpios = <&porta 30 GPIO_ACTIVE_LOW>;
+		};
+	};
+};
+
+&gpio0 {
+	status = "okay";
+};
+
+&gpio1 {
+	status = "okay";
+};
+
+&gpio2 {
+	status = "okay";
+};
+
+&gpio3 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&mcu_gpio21_pinctrl &mcu_gpio22_pinctrl
+		&mcu_gpio8_pinctrl &mcu_gpio9_pinctrl &mcu_gpio10_pinctrl>;
+	/*devid1 = <&portd 21 GPIO_ACTIVE_LOW>;*/
+	/*devid2 = <&portd 22 GPIO_ACTIVE_LOW>;*/
+};
+
+&pinctrl {
+	status = "okay";
+};
+
+&mcu_pinctrl {
+	status = "okay";
+};
+
+&mcu_i2c0 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&mcu_i2c0_pinctrl>;
+	ip6103@30 {
+		compatible = "injoinic,ip6103";
+		reg = <0x30>;
+		voltage-regulators {
+			LDO0: LDO0 {
+			     regulator-name = "LDO0";
+			     regulator-min-microvolt = <700000>;
+			     regulator-max-microvolt = <3400000>;
+			};
+
+			LDO1: LDO1 {
+			     regulator-name = "LDO1";
+			     regulator-min-microvolt = <700000>;
+			     regulator-max-microvolt = <3400000>;
+			};
+
+			LDO2: LDO2 {
+			     regulator-name = "LDO2";
+			     regulator-min-microvolt = <700000>;
+			     regulator-max-microvolt = <3400000>;
+			};
+
+			LDO4: LDO4 {
+			     regulator-name = "LDO4";
+			     regulator-min-microvolt = <700000>;
+			     regulator-max-microvolt = <3400000>;
+			};
+
+			LDO5: LDO5 {
+			     regulator-name = "LDO5";
+			     regulator-min-microvolt = <700000>;
+			     regulator-max-microvolt = <3400000>;
+			};
+
+			LDO6: LDO6 {
+			     regulator-name = "LDO6";
+			     regulator-min-microvolt = <700000>;
+			     regulator-max-microvolt = <3400000>;
+			};
+
+			DCDC0: DCDC0 {
+			     regulator-name = "DCDC0";
+			     regulator-min-microvolt = <600000>;
+			     regulator-max-microvolt = <2175000>;
+			};
+
+			DCDC1: DCDC1 {
+			     regulator-name = "DCDC1";
+			     regulator-min-microvolt = <600000>;
+			     regulator-max-microvolt = <2175000>;
+			};
+
+			DCDC2: DCDC2 {
+			     regulator-name = "DCDC2";
+			     regulator-min-microvolt = <600000>;
+			     regulator-max-microvolt = <2175000>;
+			};
+
+			DCDC3: DCDC3 {
+			     regulator-name = "DCDC3";
+			     regulator-min-microvolt = <2200000>;
+			     regulator-max-microvolt = <3500000>;
+			};
+
+		};
+	};
+};
+
+&qspi {
+	status = "okay";
+	page-size = <256>;
+	block-size = <16>;
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	pinctrl-names = "default";
+	#if 0
+	pinctrl-0 = <&ospi0_pinctrl>;
+	#else
+	/* 3.3v needed */
+	/* disabled nand0 */
+	pinctrl-0 = <&ospi1_pinctrl &ospi0_gpio_pinctrl>;
+	#endif
+
+	nand1:spi-nand@0 {
+		status = "okay";
+		compatible = "spi-nand";
+		reg = <0>; /* CS0 */
+		//spi-max-frequency = <40000000>;
+		spi-max-frequency = <40000000>;
+		page-size = <2048>;
+		block-size = <131072>;
+		spi-rx-bus-width = <4>;
+		spi-tx-bus-width = <4>;
+
+		cdns,read-delay = <2>;
+		cdns,tshsl-ns = <40>;
+		cdns,tsd2d-ns = <50>;
+		cdns,tchsh-ns = <3>;
+		cdns,tslch-ns = <4>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			/* reserved for future boot direct from NAND flash
+			 * (this would use the same layout as the 8MiB NOR flash)
+			 */
+			bootloader@000000 {
+				label = "fip-uboot_a";
+				reg = <0x000000 0x200000>;
+			};
+
+			bootloader_2@200000 {
+				label = "fip_uboot_b";
+				reg = <0x200000 0x200000>;
+			};
+
+			reserved@400000 {
+				label = "reserved";
+				reg = <0x400000 0x100000>;
+			};
+
+			hw_info@500000 {
+				label = "hw_info";
+				reg = <0x500000 0x100000>;
+			};
+
+			kernel@600000 {
+				label = "kernel_a";
+				reg = <0x600000 0x1000000>;
+			};
+			kernel_2@1600000 {
+				label = "kernel_b";
+				reg = <0x1600000 0x1000000>;
+			};
+			rootfs1@2600000 {
+				label = "ubi_a";
+				reg = <0x2600000 0x6d00000>;
+			};
+
+			rootfs2@9300000 {
+				label = "ubi_b";
+				reg = <0x9300000 0x6d00000>;
+			};
+
+		};
+	};
+
+	spi-flash@0 {
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <108000000>; /* Based on DC1 spec */
+		reg = <1>; /* CS1 */
+	};
+};
+
+&ssi0 {
+	status = "okay";
+	flash@0 {
+		compatible = "jedec,spi-nor";
+	};
+};
+/*
+ *&rtc {
+ *	status = "okay";
+ *};
+ */
+
+/* SD1 with level shifter */
+&sdhci0 {
+	status = "okay";
+};
+&sdhci1 {
+	status = "okay";
+};
+
+/*
+ *&uart0 {
+ *	status = "okay";
+ *};
+ */
+&uart1 {
+	status = "okay";
+};
+
+/* ULPI SMSC USB3320 */
+
+&usb0 {
+	status = "okay";
+};
+
+&dwc3_0 {
+	status = "okay";
+};
+
+&watchdog0 {
+	status = "okay";
+	timeout-sec = <128>;
+};
+
+&nand0{
+		nand-bus-width = <8>;
+		nand-on-flash-bbt = <0>;
+		nand-ecc-mode = "hw";
+		nand-ecc-strength = <4>;
+		nand-ecc-step-size = <512>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&nf_pinctrl_0 &nf_pinctrl_1>;
+		nand-max-frequency = <40000000>;
+		/*nand-ecc-maximize;*/
+		status = "disabled";
+
+		bootloader@000000 {
+			label = "fip-uboot_a";
+			reg = <0x000000 0x200000>;
+		};
+
+		bootloader_2@200000 {
+			label = "fip_uboot_b";
+			reg = <0x200000 0x200000>;
+		};
+
+		reserved@400000 {
+			label = "reserved";
+			reg = <0x400000 0x100000>;
+		};
+
+		hw_info@500000 {
+			label = "hw_info";
+			reg = <0x500000 0x100000>;
+		};
+
+		kernel@600000 {
+			label = "kernel_a";
+			reg = <0x600000 0x1000000>;
+		};
+		kernel_2@1600000 {
+			label = "kernel_b";
+			reg = <0x1600000 0x1000000>;
+		};
+		ubi_a@2600000 {
+			label = "ubi_a";
+			reg = <0x2600000 0x6d00000>;
+		};
+
+		ubi_b@9300000 {
+			label = "ubi_b";
+			reg = <0x9300000 0x6d00000>;
+		};
+};
+
+&otpc {
+	status = "okay";
+};

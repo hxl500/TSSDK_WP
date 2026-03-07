@@ -1,0 +1,43 @@
+/*
+ * dts file for tsingmicro tx5215 board
+ *
+ * Copyright 2022 Tsingmicro, Inc.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ */
+
+/dts-v1/;
+
+#include "ts-tx52xx-ptz.dtsi"
+
+/ {
+	model = "TS TX5215CV200";
+	compatible = "tsingmicro,ts-tx5215";//smp need
+
+	aliases {
+		sd0 = &sdhci1;
+		serial0 = &uart0;
+	};
+	memory@0 {
+		device_type = "memory";
+		reg = <0x0 0x04000000>;
+	};
+	reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+		/* global autoconfigured region for contiguous allocations */
+		linux,cma {
+			compatible = "shared-dma-pool";
+			reusable;
+			reg = <0x02800000 0x01800000>;  //24M
+			linux,cma-default;
+		};
+	};
+};
+&sram {
+	status = "okay";
+};

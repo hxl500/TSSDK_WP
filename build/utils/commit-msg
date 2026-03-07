@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+import sys, os, re
+from subprocess import check_output
+
+import pdb
+
+print("commit msg template:")
+print("<type>(<scopes>): <subject>")
+print("<空行>")
+print("<body>")
+print("<空行>")
+print("<footer>")
+print('')
+#print("\n")
+
+commit_msg_filepath = sys.argv[1]
+print("commit_msg_filepath:%s"%commit_msg_filepath)
+
+if len(sys.argv) > 2:
+    commit_type = sys.argv[2]
+    print("commit_type:%s"%commit_type)
+else:
+    commit_type = ''
+
+if len(sys.argv) > 3:
+    commit_hash = sys.argv[3]
+    print("commit_hash:%s"%commit_hash)
+else:
+    commit_hash = ''
+
+#检测所在的分支
+branch = check_output(['git', 'symbolic-ref', '--short', 'HEAD']).strip()
+print("On branch:%s"%branch)
+
+header = 0
+body = 0
+footer = 0
+count = 0
+with open(commit_msg_filepath, 'r+') as f:
+    '''
+    content = f.read()
+    print("commit_msg:\n%s"%content)  #,end=''
+    print("\n")
+    '''
+    print("commit_msg:")
+    for line in f.readlines():
+        result = re.match('^#', line)
+        if result is None:
+            print("%s"%line, end='')
+    print('')   
+with open(commit_msg_filepath, 'r+') as f:
+    for line in f.readlines():
+        result = re.match('^#', line)
+        if result is None:
+            #print("%s"%line,end='')
+            count += 1
+            if (count == 1):
+                # ignore merge
+                if line.startswith('Merge'):
+                    sys.exit(0)
+                me_result = re.match('(feat|func|fix|refactor|impr|perf|chore|docs|style|test|typo|wip|build|ci|revert|release)\(([\w+,.\-_*]+?)\): .+\w$', line)
+                if me_result is None:
+                   print("ERROR: Header not match pattern '<type>(<scopes>): <subject>'")
+                   sys.exit(1)
+                print(me_result)
+            if (count == 2):
+                me_result = re.match('^\n', line)
+                if me_result is None:
+                   print("ERROR: The second line must be 空行")
+                   sys.exit(1)
+            if (count >= 1):
+                me_result = re.match('^\n', line)
+                if me_result is None:
+                    if (len(line) > 80):
+                        print("ERROR: The line len must be less than 80")
+                        print("len > 80: %s"%line,end='')
+                        sys.exit(1)
+    sys.exit(0)
+#print("total line count=%d"%count)

@@ -1,0 +1,123 @@
+#!/bin/sh
+#
+# Run the mdev daemon
+#
+
+LIBPATH="/system/system/modules"
+
+#wifi pwr
+if [ -f /addfs/wifi/aic8800_fdrv.ko ];then
+	echo "power for wifi module"
+	echo 503 > /sys/class/gpio/export
+	echo out > /sys/class/gpio/gpio503/direction
+	echo 0 > /sys/class/gpio/gpio503/value
+fi
+
+
+insert_isp()
+{
+  insmod $LIBPATH/ts_tmr.ko
+  insmod $LIBPATH/ts_camisp.ko
+}
+
+remove_isp()
+{
+  rmmod $LIBPATH/ts_camisp.ko
+  rmmod $LIBPATH/ts_tmr.ko
+}
+
+start() {
+	echo "insmod video ko"
+
+	if [ -f $LIBPATH/sys.ko ];then
+		insmod $LIBPATH/sys.ko
+	fi
+
+	if [ -f $LIBPATH/vpe.ko ];then
+		insmod $LIBPATH/vpe.ko
+	fi
+
+  insert_isp
+
+	if [ -f $LIBPATH/hx280enc.ko ];then
+		insmod $LIBPATH/hx280enc.ko
+	fi
+
+	if [ -f $LIBPATH/vpu_h265_v1.ko ];then
+		insmod $LIBPATH/vpu_h265_v1.ko
+	fi
+
+	if [ -f $LIBPATH/ts_codec.ko ];then
+		insmod $LIBPATH/ts_codec.ko
+	fi
+
+	if [ -f $LIBPATH/mpp.ko ];then
+		insmod $LIBPATH/mpp.ko
+	fi
+
+	if [ -f $LIBPATH/rne_driver.ko ];then
+		insmod $LIBPATH/rne_driver.ko
+	fi
+
+	if [ -f $LIBPATH/vp_gpio_drv.ko ];then
+		insmod $LIBPATH/vp_gpio_drv.ko
+	fi
+	
+	if [ -f $LIBPATH/pwm-ts.ko ];then
+		insmod $LIBPATH/pwm-ts.ko
+	fi
+}
+
+stop() {
+	echo "rmmod video ko"
+
+	if [ -f $LIBPATH/hx280enc.ko ];then
+		rmmod $LIBPATH/hx280enc.ko
+	fi
+
+	if [ -f $LIBPATH/vpu_h265_v1.ko ];then
+		rmmod $LIBPATH/vpu_h265_v1.ko
+	fi
+
+  remove_isp
+
+	if [ -f $LIBPATH/vpe.ko ];then
+		rmmod $LIBPATH/vpe.ko
+	fi
+	if [ -f $LIBPATH/sys.ko ];then
+		rmmod $LIBPATH/sys.ko
+	fi
+
+	if [ -f $LIBPATH/mpp.ko ];then
+		rmmod $LIBPATH/mpp.ko
+	fi
+
+	if [ -f $LIBPATH/ts_codec.ko ];then
+		rmmod $LIBPATH/ts_codec.ko
+	fi
+
+
+	if [ -f $LIBPATH/rne_driver.ko ];then
+		rmmod $LIBPATH/rne_driver.ko
+	fi
+
+	if [ -f $LIBPATH/vp_gpio_drv.ko ];then
+		rmmod $LIBPATH/vp_gpio_drv.ko
+	fi
+}
+
+restart() {
+	stop
+	start
+}
+
+case "$1" in
+  start|stop|restart)
+	"$1"
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

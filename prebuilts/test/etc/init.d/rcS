@@ -1,0 +1,58 @@
+#!/bin/sh
+
+#Set mdev
+echo /sbin/mdev > /proc/sys/kernel/hotplug
+/sbin/mdev -s && echo "mdev is ok......"
+
+# Set Global Environment
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin
+export PATH=/system/system/bin:$PATH
+export LD_LIBRARY_PATH=/system/system/lib
+
+
+#networking
+ifconfig lo up
+
+#mount system
+ubiattach -m 3 -d 1 /dev/ubi_ctrl
+if [ $? -ne 0 ]; then
+	echo "system mtdpart is bad data, need erase "	
+	flash_erase /dev/mtd3 0 0
+	ubiattach -m 3 -d 1 /dev/ubi_ctrl
+fi
+mount -t ubifs ubi1_0 -o ro /system/system/	
+if [ $? -ne 0 ]; then	
+	ubimkvol /dev/ubi1 -N ubi_system -m
+	mount -t ubifs ubi1_0 -o ro /system/system
+fi
+
+#mount www
+ubiattach -m 4 -d 2 /dev/ubi_ctrl
+if [ $? -ne 0 ]; then
+	echo "www mtdpart is bad data, need erase "	
+	flash_erase /dev/mtd4 0 0
+	ubiattach -m 4 -d 2 /dev/ubi_ctrl
+fi
+mount -t ubifs ubi2_0 -o ro /system/www/	
+if [ $? -ne 0 ]; then	
+	ubimkvol /dev/ubi2 -N ubi_www -m
+	mount -t ubifs ubi2_0 -o ro sync /system/www
+fi
+
+#mount model
+ubiattach -m 5 -d 3 /dev/ubi_ctrl
+if [ $? -ne 0 ]; then
+	echo "model mtdpart is bad data, need erase "	
+	flash_erase /dev/mtd5 0 0
+	ubiattach -m 5 -d 3 /dev/ubi_ctrl
+fi
+mount -t ubifs ubi3_0 -o sync /model
+if [ $? -ne 0 ]; then	
+	ubimkvol /dev/ubi3 -N ubi_model -m
+	mount -t ubifs ubi3_0 -o sync /model
+fi
+
+/system/system/init/ipcam.sh
+
+sleep 3
+/usr/sbin/auto_ota &

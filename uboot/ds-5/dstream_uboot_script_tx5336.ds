@@ -1,0 +1,38 @@
+# allow access El1 memory from EL3, for setting breakpoint
+set debug-agent ALLOW_EL1_MEMACC_FROM_EL3 1
+
+# reset target for EL3->EL1
+memory set EL3<verify=0>:0xF0D95014   32 0x0
+reset
+# wait reset deassert? commands windows show "Target has been reset" after this instruction
+wait
+
+# load init file
+##loadfile  "uboot/ds-5/tx536_el1_3_init.axf" EL3:0x0
+# set breakpoint on function main()
+##break -p main
+##run
+# wait tx536_ddr_init_xxxM.axf to stop at main()
+##wait
+##clear main
+
+# release SYSCNT and set clock rate
+memory set EL3<verify=0>:0xf12a20f8  32  0
+#memory set EL3<verify=0>:0xf12a2110  32  0x1971
+memory set EL3<verify=0>:0xf12a4020  32  1000000
+memory set EL3<verify=0>:0xf12a4000  32  0x3
+set $cntfrq_el0 = 1000000
+
+# ddr init
+memory set EL3<verify=0>:0xf12a2040         32 0x0
+memory set EL3<verify=0>:0xf12a2040         32 0x80000000
+memory set EL3<verify=0>:0xf12a2048         32 0x80000202
+memory set EL3<verify=0>:0xf0d9b130         32 0x3f
+memory set EL3<verify=0>:0xf0d9b134         32 0x3
+memory set EL3<verify=0>:0xf0d9b138         32 0x3
+memory set EL3<verify=0>:0xf0d9b13c         32 0x0
+memory set EL3<verify=0>:0xf0d9b138         32 0x1
+memory set EL3<verify=0>:0xf0d9b134         32 0x2
+memory set EL3<verify=0>:0xf0d9b130         32 0x0
+memory set EL3<verify=0>:0xf0d9b134         32 0x0
+memory set EL3<verify=0>:0xf0d9b138         32 0x0

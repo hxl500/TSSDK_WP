@@ -1,0 +1,155 @@
+
+
+#ifndef __SAMPLE_COMM_BASE_H__
+#define __SAMPLE_COMM_BASE_H__
+
+#include <pthread.h>
+
+#include "ts_type.h"
+#include "ts_comm_video.h"
+#include "ts_comm_isp.h"
+
+/*******************************************************
+ *    macro define
+ *******************************************************/
+#define FILE_NAME_LEN               128
+
+#define TLV320_FILE "/dev/tlv320aic31"
+#define COLOR_RGB_RED      0xFF0000
+#define COLOR_RGB_GREEN    0x00FF00
+#define COLOR_RGB_BLUE     0x0000FF
+#define COLOR_RGB_BLACK    0x000000
+#define COLOR_RGB_YELLOW   0xFFFF00
+#define COLOR_RGB_CYN      0x00ffff
+#define COLOR_RGB_WHITE    0xffffff
+
+#define SAMPLE_VO_DEV_DHD0 0                  /* VO's device HD0 */
+#define SAMPLE_VO_DEV_DHD1 1                  /* VO's device HD1 */
+#define SAMPLE_VO_DEV_UHD  SAMPLE_VO_DEV_DHD0 /* VO's ultra HD device:HD0 */
+#define SAMPLE_VO_DEV_HD   SAMPLE_VO_DEV_DHD1 /* VO's HD device:HD1 */
+#define SAMPLE_VO_LAYER_VHD0 0
+#define SAMPLE_VO_LAYER_VHD1 1
+#define SAMPLE_VO_LAYER_VHD2 2
+#define SAMPLE_VO_LAYER_PIP  SAMPLE_VO_LAYER_VHD2
+
+#define SAMPLE_AUDIO_EXTERN_AI_DEV 0
+#define SAMPLE_AUDIO_EXTERN_AO_DEV 0
+#define SAMPLE_AUDIO_INNER_AI_DEV 0
+#define SAMPLE_AUDIO_INNER_AO_DEV 0
+#define SAMPLE_AUDIO_INNER_HDMI_AO_DEV 1
+
+#define SAMPLE_AUDIO_PTNUMPERFRM   480
+
+#define WDR_MAX_PIPE_NUM        4
+
+#define ALG_DETECT_IMAGE_H 360
+#define ALG_DETECT_IMAGE_W 640
+
+#define ALG_TOP_PADDING_H 12
+#define ALG_BOTTOM_PADDING_H 12
+
+#define ALG_DETECT_ENTIRE_H (ALG_DETECT_IMAGE_H + ALG_TOP_PADDING_H + ALG_BOTTOM_PADDING_H)
+
+//#define	SAMPLE_VENC_CAM_NUM	2
+
+/*******************************************************
+ *   enum define
+ *******************************************************/
+
+typedef enum tsPIC_SIZE_E {
+	PIC_CIF,
+	PIC_D1_PAL,    /* 720 * 576 */
+	PIC_D1_NTSC,   /* 720 * 480 */
+	PIC_360P,	   /* 1280 * 720  */
+	PIC_720P,      /* 1280 * 720  */
+	PIC_576P,		/* 704*576 */
+	PIC_1080P,     /* 1920 * 1080 */
+	PIC_1080x1920, /* 1080 * 1920 */
+	PIC_2304x1296,
+	PIC_2560x1440,
+	PIC_1440x2560,
+	PIC_2592x1520,
+	PIC_2592x1536,
+	PIC_2592x1944,
+	PIC_2688x1520,
+    PIC_2688x1860,
+	PIC_2716x1524,
+	PIC_2880x1624,
+	PIC_3840x2160,
+	PIC_4096x2160,
+	PIC_3000x3000,
+	PIC_4000x3000,
+	PIC_7680x4320,
+	PIC_8192x8192,
+	PIC_3840x8640,
+	PIC_2880x1620,
+	PIC_3200x1800,
+	PIC_2560x2560,
+	PIC_1280x720,
+	PIC_1366x768,
+	PIC_704x576,
+	PIC_176x144,
+	PIC_480x270,
+	PIC_240x320,
+	PIC_240x160,
+	PIC_1080EX,
+	PIC_360EX,
+	PIC_PATTERN,
+	PIC_BUTT
+} PIC_SIZE_E;
+
+typedef enum tsSAMPLE_SNS_TYPE_E {
+	HAPS_ARMISP,
+	EVB_SENSOR,//1080P 30fps NV12
+	EVB_SENSOR_2MP,//1080P 30fps NV12
+	EVB_SENSOR_4MP,
+	EVB_SENSOR_1520P,
+	EVB_SENSOR_5MP,//2688*1860
+	EVB_SENSOR_5MP_2592x1944,
+	EVB_SENSOR_5MP_2592x1520,
+	EVB_SENSOR_5MP_2880x1620,
+	EVB_SENSOR_5MP_2880x1624,
+	EVB_SENSOR_6MP_2560x2560,
+	EVB_SENSOR_4K,//4K 20fps NV12
+	EVB_SENSOR_2304x1296,
+	X86_LOGITECH_HD1080,
+	X86_LOGITECH_HD720,
+	EVB_SENSOR_360P,
+	EVB_SENSOR_1800P,
+	EVB_SENSOR_720P,
+	EVB_SENSOR_768P,
+	EVB_SENSOR_D1,
+	EVB_SENSOR_QCIF,
+	SAMPLE_SNS_TYPE_BUTT,
+} SAMPLE_SNS_TYPE_E;
+	
+typedef enum tsSAMPLE_RC_E
+{
+    SAMPLE_RC_CBR = 0,
+    SAMPLE_RC_VBR,
+    SAMPLE_RC_AVBR,
+    SAMPLE_RC_QVBR,
+    SAMPLE_RC_CVBR,
+    SAMPLE_RC_QPMAP,
+    SAMPLE_RC_FIXQP
+} SAMPLE_RC_E;
+
+typedef	struct tsMODE_SETTING_S{
+	TS_U8       numCam;
+	TS_BOOL     isOnLine;
+	PIC_SIZE_E	enSize;
+	TS_U16		minFps;
+	TS_U16		maxFps;
+	WDR_MODE_E	wdr_mode;
+	DATA_BITWIDTH_E	bit_width;
+	ISP_BAYER_FORMAT_E  enBayer;
+	TS_CHAR		alias[64];
+}MODE_SETTING_S;
+
+typedef	enum{
+	SAMPLE_VENC_FILE = 0,
+	SAMPLE_VENC_RTSP,
+	SAMPLE_VENC_BOTH
+}SAMPLE_VENC_CONSUME_TYPE;
+
+#endif /* End of #ifndef __SAMPLE_COMMON_H__ */

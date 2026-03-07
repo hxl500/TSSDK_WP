@@ -1,0 +1,13 @@
+kwstp_conv_8k_cfg.h:
+size:4513, crc32:a49f4460
+program done
+
+
+kwstp_conv_8k_weight.h:
+size:556608, crc32:b605de4e
+program done
+
+
+The blobs memory size       : 2320 BYTE.
+--res-version               : kwstp_conv_v05
+--chip                      : TX5215DV200

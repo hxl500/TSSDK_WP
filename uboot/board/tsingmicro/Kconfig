@@ -1,0 +1,17 @@
+# tsingmicro-License-Identifier: GPL-2.0
+#
+# Copyright (c) 2018, captain Tsingmicro <captain@tsingmicro.com>
+
+config BOOT_SCRIPT_OFFSET
+	hex "Boot script offset"
+	depends on ARCH_TS
+	default 0x3E80000 if ARCH_TS
+	help
+	   Specifies distro boot script offset in NAND/NOR flash.
+
+config ON_FPGA
+	bool "is run on fpga"
+	default n
+	depends on ARCH_TS
+
+source "board/tsingmicro/tx5112/Kconfig"

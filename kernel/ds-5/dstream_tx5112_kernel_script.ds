@@ -1,0 +1,19 @@
+# atf and uboot run from storage media, program stop at uboot cmd
+# try to attach CPU, and download FIT(kernel,dtb,rootfs), then bootm
+
+
+
+# stop A7 core
+stop
+#set arch timer
+
+#download linux kernel image
+#restore sdk\prebuilts\tx5215\rootfs.ext4.gz binary 0xc2000000
+#restore sdk\prebuilts\tx5215\rootfs.ext4.gz binary 0xc4000000
+restore ..\out\ts-tx5112.itb binary 0x10000000
+#restore sdk/kernel/arch/arm/boot/zImage binary S:0x80800000
+#restore sdk/kernel/arch/arm/boot/dts/tsingmicro/tsm-tx5215-fpga.dtb binary S:0x83000000
+
+add-symbol-file  ..\kernel\vmlinux  S:0
+
+continue

@@ -1,0 +1,23 @@
+#!/bin/sh
+set -e
+MAKEDEVS=${TARGET_BUILD_DIR}/tools/cpio/makedevs
+
+FULL_DEVICES_TABLE=${TARGET_BUILD_DIR}/tools/cpio/full_devices_table.txt
+
+mkdir -p ${TARGET_OUT_DIR}/cpio
+
+rsync -auH --exclude=/THIS_IS_NOT_YOUR_ROOT_FILESYSTEM ${TARGET_OUT_DIR}/rootfs/* ${TARGET_OUT_DIR}/cpio
+
+chown -h -R 0:0 ${TARGET_OUT_DIR}/cpio
+${MAKEDEVS} -d  ${FULL_DEVICES_TABLE}  ${TARGET_OUT_DIR}/cpio &
+
+rm -f ${TARGET_OUT_DIR}/rootfs.cpio
+rm -f ${TARGET_OUT_DIR}/rootfs.cpio.gz
+   	if [ ! -e ${TARGET_OUT_DIR}/cpio/init ]; then /usr/bin/install -m 0755 fs/cpio/init ${TARGET_OUT_DIR}/cpio/init; fi
+	mkdir -p ${TARGET_OUT_DIR}/cpio/dev
+	mknod -m 0622 ${TARGET_OUT_DIR}/cpio/dev/console c 5 1
+
+
+   	cd ${TARGET_OUT_DIR}/cpio && find . | LC_ALL=C sort | cpio  --quiet -o -H newc > ${TARGET_OUT_DIR}/rootfs.cpio
+ gzip -9 -c -n ${TARGET_OUT_DIR}/rootfs.cpio > ${TARGET_OUT_DIR}/rootfs.cpio.gz
+# FAKEROOTDONTTRYCHOWN=1 fakeroot -- cpio/fakeroot

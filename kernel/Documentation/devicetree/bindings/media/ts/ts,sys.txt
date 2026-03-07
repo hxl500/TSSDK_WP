@@ -1,0 +1,21 @@
+Tsingmicro media system module
+-------------------------------
+
+General concept
+---------------
+Media system module is responsible for:
+creating sysfs config file
+allocating buffer for user
+
+
+Required properties:
+
+- compatible: Must be "ts,sys".
+
+
+Example:
+
+	sys: sys {
+		compatible = "ts,sys";
+		status = "disabled";
+	};

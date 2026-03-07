@@ -1,0 +1,675 @@
+/*
+ * dts file for tsingmicro tx536
+ *
+ * Copyright 2022 Tsingmicro, Inc.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ */
+
+
+#include <dt-bindings/clock/ts-tx5336-clk.h>
+/ {
+	misc_clk: misc_clk {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		/*clock-frequency = <5000000>;*/
+		clock-frequency = <7379713>;
+	};
+
+	osc24m: osc24m_clk {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <24000000>;
+		clock-accuracy = <100>;
+	};
+
+	osc32k: osc32k {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <32768>;
+		clock-accuracy = <100>;
+	};
+
+
+	ts_clk: tx536-clock-controller {
+		compatible = "ts,ts-common-clk";
+		reg = <0x0 0xF038A000 0x0 0x1000>;
+		reg-io-width = <4>;
+		#clock-cells = <1>;
+		clocks = <&osc24m>;
+
+		/* clk provider assign clocks that has no mounting at any device */
+		assigned-clocks = <&ts_clk TS_CLK_TX5336_CPU_CCLK>,
+								<&ts_clk TS_CLK_TX5336_PLL_MUX>,
+								<&ts_clk TS_CLK_TX5336_CPU_ACLK>;
+		assigned-clock-parents = <&ts_clk TS_CLK_TX5336_PLL_MUX>,
+									<&ts_clk TS_CLK_TX5336_CPU_PLL1_CCLK>,
+									<0>;
+		assigned-clock-rates = <1000000000>,
+									<1000000000>,
+									<500000000>;
+	};
+};
+
+&pwm {
+	clocks = <&ts_clk TS_CLK_TX5336_PWM_APB_CLK>;
+};
+
+&systimer0_1 {
+	clocks = <&osc32k>, <&ts_clk TS_CLK_TX5336_TIME0_APB_CLK>;
+	clock-names = "timer", "pclk";
+};
+
+&systimer0_2 {
+	clocks = <&osc32k>, <&ts_clk TS_CLK_TX5336_TIME0_APB_CLK>;
+	clock-names = "timer", "pclk";
+};
+
+&systimer0_3 {
+	clocks = <&ts_clk TS_CLK_TX5336_TIME0_3_CLK>, <&ts_clk TS_CLK_TX5336_TIME0_APB_CLK>;
+	clock-names = "timer", "pclk";
+};
+
+&systimer0_4 {
+	clocks = <&ts_clk TS_CLK_TX5336_TIME0_4_CLK>, <&ts_clk TS_CLK_TX5336_TIME0_APB_CLK>;
+	clock-names = "timer", "pclk";
+};
+
+&systimer0_5 {
+	clocks = <&ts_clk TS_CLK_TX5336_TIME0_5_CLK>, <&ts_clk TS_CLK_TX5336_TIME0_APB_CLK>;
+	clock-names = "timer", "pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_TIME0_5_CLK>;
+	assigned-clock-rates = <12000000>;  /*default*/
+    // assigned-clock-rates = <25000000>;  /*max*/
+    // assigned-clock-rates = <781250>;  /*max*/
+};
+
+&systimer0_6 {
+	clocks = <&ts_clk TS_CLK_TX5336_TIME0_6_CLK>, <&ts_clk TS_CLK_TX5336_TIME0_APB_CLK>;
+	clock-names = "timer", "pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_TIME0_6_CLK>;
+	assigned-clock-rates = <12000000>;  /*default*/
+    // assigned-clock-rates = <25000000>;  /*max*/
+    // assigned-clock-rates = <781250>;  /*max*/
+};
+
+&systimer0_7 {
+	clocks = <&ts_clk TS_CLK_TX5336_TIME0_7_CLK>, <&ts_clk TS_CLK_TX5336_TIME0_APB_CLK>;
+	clock-names = "timer", "pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_TIME0_7_CLK>;
+	// assigned-clock-rates = <250000000>;     /* max */
+    assigned-clock-rates = <125000000>;     /* default */
+    // assigned-clock-rates = <7812500>;     /* min */
+};
+
+&systimer0_8 {
+	clocks = <&ts_clk TS_CLK_TX5336_TIME0_8_CLK>, <&ts_clk TS_CLK_TX5336_TIME0_APB_CLK>;
+	clock-names = "timer", "pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_TIME0_7_CLK>;
+	assigned-clock-rates = <250000000>;     /* max */
+    // assigned-clock-rates = <7812500>;      /* min */
+};
+
+&systimer1_1 {
+	clocks = <&osc32k>, <&ts_clk TS_CLK_TX5336_TIME1_APB_CLK>;
+	clock-names = "timer", "pclk";
+};
+
+&systimer1_2 {
+	clocks = <&osc32k>, <&ts_clk TS_CLK_TX5336_TIME1_APB_CLK>;
+	clock-names = "timer", "pclk";
+};
+
+&systimer1_3 {
+	clocks = <&ts_clk TS_CLK_TX5336_TIME1_3_CLK>, <&ts_clk TS_CLK_TX5336_TIME1_APB_CLK>;
+	clock-names = "timer", "pclk";
+};
+
+&systimer1_4 {
+	clocks = <&ts_clk TS_CLK_TX5336_TIME1_4_CLK>, <&ts_clk TS_CLK_TX5336_TIME1_APB_CLK>;
+	clock-names = "timer", "pclk";
+};
+
+&systimer1_5 {
+	clocks = <&ts_clk TS_CLK_TX5336_TIME1_5_CLK>, <&ts_clk TS_CLK_TX5336_TIME1_APB_CLK>;
+	clock-names = "timer", "pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_TIME1_5_CLK>;
+	assigned-clock-rates = <12000000>;  /*default*/
+    // assigned-clock-rates = <25000000>;  /*max*/
+    // assigned-clock-rates = <781250>;  /*min*/
+};
+
+&systimer1_6 {
+	clocks = <&ts_clk TS_CLK_TX5336_TIME1_6_CLK>, <&ts_clk TS_CLK_TX5336_TIME1_APB_CLK>;
+	clock-names = "timer", "pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_TIME1_6_CLK>;
+	assigned-clock-rates = <12000000>;  /*default*/
+    // assigned-clock-rates = <25000000>;  /*max*/
+    // assigned-clock-rates = <781250>;  /*max*/
+};
+
+&systimer1_7 {
+	clocks = <&ts_clk TS_CLK_TX5336_TIME1_7_CLK>, <&ts_clk TS_CLK_TX5336_TIME1_APB_CLK>;
+	clock-names = "timer", "pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_TIME1_7_CLK>;
+	assigned-clock-rates = <250000000>;     /* max */
+    // assigned-clock-rates = <7812500>;     /* min */
+};
+
+&systimer1_8 {
+	clocks = <&ts_clk TS_CLK_TX5336_TIME1_8_CLK>, <&ts_clk TS_CLK_TX5336_TIME1_APB_CLK>;
+	clock-names = "timer", "pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_TIME1_7_CLK>;
+	assigned-clock-rates = <250000000>;     /* max */
+    // assigned-clock-rates = <7812500>;     /* min */
+};
+
+&usart0 {
+	clocks = <&usi_clk>;
+	clocks = <&ts_clk TS_CLK_TX5336_USI0_APB_CLK>;
+};
+
+&usart1 {
+	clock-names = "usi_clk";
+	clocks = <&ts_clk TS_CLK_TX5336_USI1_APB_CLK>;
+};
+
+&watchdog {
+	clocks = <&ts_clk TS_CLK_TX5336_WDT_APB_CLK>, <&osc32k>;
+	clock-names = "pclk", "work_clk";
+};
+
+&gpio0 {
+	clocks = <&ts_clk TS_CLK_TX5336_GPIO_APB_CLK>;
+	clock-names = "pclk";
+};
+
+&gpio1 {
+	clocks = <&ts_clk TS_CLK_TX5336_GPIO_APB_CLK>;
+	clock-names = "pclk";
+};
+
+
+&gpio2 {
+	clocks = <&ts_clk TS_CLK_TX5336_GPIO_APB_CLK>;
+	clock-names = "pclk";
+};
+
+&sdhci0 {
+	clocks = <&ts_clk TS_CLK_TX5336_SDHC0_CCLK>, <&ts_clk TS_CLK_TX5336_SDHC0_AHB_CLK>, <&ts_clk TS_CLK_TX5336_SDHC0_SMPL_CLK>;
+	clock-names = "ciu","hiu", "smpl_clk";
+
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_SDHC0_CCLK>;
+	assigned-clock-rates = <200000000>;
+};
+
+&sdhci1 {
+	clocks = <&ts_clk TS_CLK_TX5336_SDHC1_CCLK>, <&ts_clk TS_CLK_TX5336_SDHC1_AHB_CLK>;
+	clock-names = "ciu","hiu";
+
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_SDHC1_CCLK>;
+	assigned-clock-rates = <200000000>; /* max */
+	// assigned-clock-rates = <31250000>; /* min */
+};
+
+&uart0 {
+	clocks = <&misc_clk &misc_clk>;
+	clock-names = "uart_clk", "pclk";
+};
+
+&uart1 {
+	clock-names = "baudclk", "apb_pclk";
+	clocks = <&ts_clk TS_CLK_TX5336_UART1_CORE_CLK>,
+			 <&ts_clk TS_CLK_TX5336_UART1_APB_CLK>;
+
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_UART1_CORE_CLK>;
+	assigned-clock-parents = <&ts_clk TS_CLK_TX5336_PLL0_D8>;
+	assigned-clock-rates = <48000000>;  /* default */
+    // assigned-clock-rates = <250000000>;  /* max */
+    // assigned-clock-rates = <50000000>;  /* min */
+};
+
+&uart2 {
+	clock-names = "baudclk", "apb_pclk";
+	clocks = <&ts_clk TS_CLK_TX5336_UART2_CORE_CLK>,
+			 <&ts_clk TS_CLK_TX5336_UART2_APB_CLK>;
+
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_UART2_CORE_CLK>;
+	assigned-clock-parents = <&ts_clk TS_CLK_TX5336_PLL0_D8>;
+	assigned-clock-rates = <48000000>;  /* default */
+    // assigned-clock-rates = <250000000>;  /* max */
+    // assigned-clock-rates = <50000000>;  /* min */
+};
+
+&uart3 {
+	clock-names = "baudclk", "apb_pclk";
+	clocks = <&ts_clk TS_CLK_TX5336_UART3_CORE_CLK>,
+			 <&ts_clk TS_CLK_TX5336_UART3_APB_CLK>;
+			 
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_UART3_CORE_CLK>;
+	assigned-clock-parents = <&ts_clk TS_CLK_TX5336_PLL0_D8>;
+	assigned-clock-rates = <48000000>;  /* default */
+    // assigned-clock-rates = <250000000>;  /* max */
+    // assigned-clock-rates = <50000000>;  /* min */
+};
+
+&ts_codec {
+	clocks = <&ts_clk TS_CLK_TX5336_AUD_CODEC_AHB_CLK>,
+			<&ts_clk TS_CLK_TX5336_AUD_DAC_CCLK>,
+			<&ts_clk TS_CLK_TX5336_AUD_DAC_PBCLK>,
+			<&ts_clk TS_CLK_TX5336_AUD_ADC_CCLK>,
+			<&ts_clk TS_CLK_TX5336_AUD_ED_TMR_STRB_CLK>;
+	clock-names = "aud_codec_ahb_clk","dac_cclk","dac_pbclk", "adc_cclk","ed_tmr_strb";
+
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_AUD_CODEC_AHB_CLK>,        
+						<&ts_clk TS_CLK_TX5336_AUD_DAC_CCLK>,           
+						<&ts_clk TS_CLK_TX5336_AUD_DAC_PBCLK>,          
+						<&ts_clk TS_CLK_TX5336_AUD_ADC_CCLK>,           
+						<&ts_clk TS_CLK_TX5336_AUD_ED_TMR_STRB_CLK>;
+	assigned-clock-rates = <200000000>, <87739286>, <6749176>, <6144000>, <0>; /* max, DAC_PBCLK and ED_TMR_STRB_CLK follow DAC_CCLK*/
+	// assigned-clock-rates = <62500000>, <300000>, <0>, <300000>, <0>; /* min */
+};
+
+&osr_pke {
+	clocks = <&ts_clk TS_CLK_TX5336_PKE_CLK>;
+};
+
+&osr_hash {
+	clocks = <&ts_clk TS_CLK_TX5336_HASH_CLK>;
+};
+
+&osr_ske {
+	clocks = <&ts_clk TS_CLK_TX5336_SKE_CLK>;
+};
+
+&osr_trng {
+	clocks = <&ts_clk TS_CLK_TX5336_TRNG_CLK>;
+};
+
+&vpe {  /* note */
+	clocks = <&ts_clk TS_CLK_TX5336_VPE_AHB_CLK>,
+		   <&ts_clk TS_CLK_TX5336_VPE_AXI_CLK>,
+		   <&ts_clk TS_CLK_TX5336_VPE_CORE_CLK>;
+	clock-names = "vpe_hclk","vpe_aclk", "vpe_cclk";
+
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_VPE_CORE_CLK>, <&ts_clk TS_CLK_TX5336_VPE_AXI_CLK>, <&ts_clk TS_CLK_TX5336_VPE_CORE_PLL1_D2_CLK>;
+	assigned-clock-parents = <&ts_clk TS_CLK_TX5336_VPE_CORE_PLL1_D2_CLK>,  <&ts_clk TS_CLK_TX5336_VPE_AXI_PLL1_D2_CLK>;
+	assigned-clock-rates =<0>, <614175000>, <614175000>;          
+};
+
+&i2s {
+	clocks = <&ts_clk TS_CLK_TX5336_I2S_APB_CLK>,
+			<&ts_clk TS_CLK_TX5336_I2S_M_CLK>,
+			<&ts_clk TS_CLK_TX5336_I2S_O_CLK>,
+			<&ts_clk TS_CLK_TX5336_I2S_O_CLK_O>;
+	clock-names = "pclk","mclk","oclk","oclk_en";
+
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_I2S_M_CLK>, <&ts_clk TS_CLK_TX5336_I2S_O_CLK>;
+	// assigned-clock-rates = <150000>, <150000>;  /* min */
+	assigned-clock-rates = <19200000>, <38400000>;  /* max */
+};
+
+&isp {
+	clock-names = "core", "axi", "drv", "vi_ahb", "vi_apb", "vi_noc", "vpe_isp";
+	clocks = <&ts_clk TS_CLK_TX5336_ISP_CORE_CLK>,
+		<&ts_clk TS_CLK_TX5336_ISP_AXI_CLK>,
+		<&ts_clk TS_CLK_TX5336_ISP_DRV_CLK>,
+		<&ts_clk TS_CLK_TX5336_VI_AHB_CLK>,
+		<&ts_clk TS_CLK_TX5336_VI_APB_CLK>,
+		<&ts_clk TS_CLK_TX5336_VI_NOC_CLK>,
+		<&ts_clk TS_CLK_TX5336_VPE_ISP_CLK>;
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_ISP_DRV_CLK>;
+	assigned-clock-parents = <&ts_clk TS_CLK_TX5336_ISP_DRV_PLL1_D2_CLK>;
+	// assigned-clock-rates = <204725000>; //204.725M
+	assigned-clock-rates = <409450000>; //409.45M
+};
+
+&mipi_csi2host0 {
+	clocks = <&ts_clk TS_CLK_TX5336_MIPI_CSI0_APB_CLK>,
+		<&ts_clk TS_CLK_TX5336_MIPI_CSI0_IPI0_CLK>,
+		<&ts_clk TS_CLK_TX5336_MIPI_CSI0_IPI1_CLK>,
+		<&ts_clk TS_CLK_TX5336_MIPI_RXPHY0_APB_CLK>;
+
+	clock-names = "apb", "ipi0", "ipi1", "rxphy0_apb";
+
+};
+
+&mipi_csi2host1 {
+	clocks = <&ts_clk TS_CLK_TX5336_MIPI_CSI1_APB_CLK>,
+		<&ts_clk TS_CLK_TX5336_MIPI_CSI1_IPI_CLK>,
+		<&ts_clk TS_CLK_TX5336_MIPI_RXPHY0_APB_CLK>;
+
+	clock-names = "apb", "ipi", "rxphy0_apb";
+};
+
+&mipi_csi2host2 {
+	clocks = <&ts_clk TS_CLK_TX5336_MIPI_CSI2_APB_CLK>,
+		<&ts_clk TS_CLK_TX5336_MIPI_CSI2_IPI0_CLK>,
+		<&ts_clk TS_CLK_TX5336_MIPI_CSI2_IPI1_CLK>,
+		<&ts_clk TS_CLK_TX5336_MIPI_RXPHY1_APB_CLK>;
+
+	clock-names = "apb", "ipi0", "ipi1", "rxphy1_apb";
+};
+
+&mipi_csi2host3 {
+	clocks = <&ts_clk TS_CLK_TX5336_MIPI_CSI3_APB_CLK>,
+		<&ts_clk TS_CLK_TX5336_MIPI_CSI3_IPI_CLK>,
+		<&ts_clk TS_CLK_TX5336_MIPI_RXPHY1_APB_CLK>;
+
+	clock-names = "apb", "ipi", "rxphy1_apb";
+};
+
+&dof {
+	clock-names = "apb", "core", "axi";
+	clocks = <&ts_clk TS_CLK_TX5336_DOF_APB_CLK>,
+			<&ts_clk TS_CLK_TX5336_DOF_CORE_CLK>,
+			<&ts_clk TS_CLK_TX5336_DOF_AXI_CLK>;
+};
+
+&ebd {
+	clock-names = "ahb", "core", "axi";
+	clocks = <&ts_clk TS_CLK_TX5336_EBD_AHB_CLK>,
+			<&ts_clk TS_CLK_TX5336_EBD_CORE_CLK>,
+			<&ts_clk TS_CLK_TX5336_EBD_AXI_CLK>;
+
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_EBD_AXI_CLK>;
+	assigned-clock-rates = <500000000>;  /* max */
+	// assigned-clock-rates = <125000000>;     /* min*/
+};
+
+&pdmic0 {
+	clocks = <&ts_clk TS_CLK_TX5336_PDM0_APB_CLK>, <&ts_clk TS_CLK_TX5336_PDM0_M_CLK>;
+	clock-names = "pdm_pclk", "pdm_mclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_PDM0_M_CLK>;
+	assigned-clock-rates = <61440000>;
+	// assigned-clock-rates = <30720000>;  /* min */
+};
+
+&pdmic1 {   
+	clocks = <&ts_clk TS_CLK_TX5336_PDM1_APB_CLK>, <&ts_clk TS_CLK_TX5336_PDM1_M_CLK>;
+	clock-names = "pdm_pclk", "pdm_mclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_PDM1_M_CLK>;
+	assigned-clock-rates = <61440000>;
+	// assigned-clock-rates = <1200000>;  /* min */
+};
+
+&pdmic2 {
+	clocks = <&ts_clk TS_CLK_TX5336_PDM2_APB_CLK>, <&ts_clk TS_CLK_TX5336_PDM2_M_CLK>;
+	clock-names = "pdm_pclk", "pdm_mclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_PDM2_M_CLK>;
+	assigned-clock-rates = <61440000>;  /* max */
+	// assigned-clock-rates = <1200000>;  /* min */
+};
+
+&pdmic3 {
+	clocks = <&ts_clk TS_CLK_TX5336_PDM3_APB_CLK>, <&ts_clk TS_CLK_TX5336_PDM3_M_CLK>;
+	clock-names = "pdm_pclk", "pdm_mclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_PDM3_M_CLK>;
+	assigned-clock-rates = <61440000>;  /* max */
+	// assigned-clock-rates = <1200000>;  /* min */
+};
+
+&gpadc {
+	clocks = <&ts_clk TS_CLK_TX5336_GPADC_APB_CLK>;
+	clock-names = "adc_pclk";
+};
+
+&amr {
+	clocks = <&ts_clk TS_CLK_TX5336_AMR_AHB_CLK>,
+			<&ts_clk TS_CLK_TX5336_AMR_AXI_CLK>,
+			<&ts_clk TS_CLK_TX5336_AMR_CORE_CLK>;
+			clock-names = "amr_hclk","amr_aclk","amr_cclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_AMR_CORE_CLK>, <&ts_clk TS_CLK_TX5336_AMR_AXI_CLK>;
+	assigned-clock-rates = <500000000>, <500000000>;    /* max */
+	// assigned-clock-rates = <125000000>, <125000000>;    /* min */
+};
+
+&vpu {
+	clock-names = "core", "noc";
+	clocks = <&ts_clk TS_CLK_TX5336_VPU_CORE_CLK>,
+		<&ts_clk TS_CLK_TX5336_VPU_NOC_CLK>;
+
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_VPU_CORE_CLK>, <&ts_clk TS_CLK_TX5336_VPU_NOC_CLK>;
+	assigned-clock-parents = <0>, <&ts_clk TS_CLK_TX5336_VPU_NOC_PLL1_D2_CLK>;
+	assigned-clock-rates = <750000000>, <614175000>;    /* max */
+	// assigned-clock-rates = <70312500>, <76800000>;    /* min */
+};
+
+&ocotp {
+	clocks = <&ts_clk TS_CLK_TX5336_OTPC_APB_CLK>;
+	clock-names = "otpc_pclk";
+};
+
+&i2c0 {
+	clocks = <&ts_clk TS_CLK_TX5336_I2C0_CCLK>,
+			<&ts_clk TS_CLK_TX5336_I2C0_APB_CLK>;
+	clock-names = "icclk", "pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_I2C0_CCLK>;
+	assigned-clock-rates = <50000000>;      /* default */
+	// assigned-clock-rates = <125000000>;      /* max */
+};
+
+&i2c1 {
+	clocks = <&ts_clk TS_CLK_TX5336_I2C1_CCLK>,
+			<&ts_clk TS_CLK_TX5336_I2C1_APB_CLK>;
+	clock-names = "icclk", "pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_I2C1_CCLK>;
+	assigned-clock-rates = <50000000>;      /* default */
+	// assigned-clock-rates = <125000000>;      /* max */
+};
+
+&i2c2 {
+	clocks = <&ts_clk TS_CLK_TX5336_I2C2_CCLK>,
+			<&ts_clk TS_CLK_TX5336_I2C2_APB_CLK>;
+	clock-names = "icclk", "pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_I2C2_CCLK>;
+	assigned-clock-rates = <50000000>;      /* default */
+	// assigned-clock-rates = <125000000>;      /* max */
+};
+
+&i2c3 {
+	clocks = <&ts_clk TS_CLK_TX5336_I2C3_CCLK>,
+			<&ts_clk TS_CLK_TX5336_I2C3_APB_CLK>;
+	clock-names = "icclk", "pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_I2C3_CCLK>;
+	assigned-clock-rates = <50000000>;      /* default */
+	// assigned-clock-rates = <125000000>;      /* max */
+};
+
+&i2c4 {
+	clocks = <&ts_clk TS_CLK_TX5336_I2C4_CCLK>,
+			<&ts_clk TS_CLK_TX5336_I2C4_APB_CLK>;
+	clock-names = "icclk", "pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_I2C4_CCLK>;
+	assigned-clock-rates = <50000000>;      /* default */
+	// assigned-clock-rates = <125000000>;      /* max */
+};
+
+&i2c5 {
+	clocks = <&ts_clk TS_CLK_TX5336_I2C5_CCLK>,
+			<&ts_clk TS_CLK_TX5336_I2C5_APB_CLK>;
+	clock-names = "icclk", "pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_I2C5_CCLK>;
+	assigned-clock-rates = <50000000>;      /* default */
+	// assigned-clock-rates = <125000000>;      /* max */
+};
+
+&i2c6 {
+	clocks = <&ts_clk TS_CLK_TX5336_I2C6_CCLK>,
+			<&ts_clk TS_CLK_TX5336_I2C6_APB_CLK>;
+	clock-names = "icclk", "pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_I2C6_CCLK>;
+	assigned-clock-rates = <50000000>;      /* default */
+	// assigned-clock-rates = <125000000>;      /* max */
+};
+
+&ui2c0 {
+	clock-names = "usi_clk";
+	clocks = <&ts_clk TS_CLK_TX5336_USI0_APB_CLK>;
+};
+
+&ui2c1 {
+	clock-names = "usi_clk";
+	clocks = <&ts_clk TS_CLK_TX5336_USI1_APB_CLK>;
+};
+
+#if 0
+&can0 {
+	clocks = <&misc_clk &misc_clk>;
+};
+
+&can1 {
+	clocks = <&misc_clk &misc_clk>;
+};
+
+&gpio {
+	clocks = <&misc_clk>;
+};
+
+&sata {
+	clocks = <&sata_clk>;
+};
+
+#endif
+
+&usb0 {
+	/* peri2_ahb_clk -> usb_ahb_clk 200MHz, pll0_d4_usb_ref_clk(500MHz) / osc_usb_ref_clk -> usb_ref */
+	clocks = <&ts_clk TS_CLK_TX5336_USB_REF_CLK>,<&ts_clk TS_CLK_TX5336_USB_AHB_CLK>;
+	//clock-names = "phy_clk","otg";
+	clock-names = "usb_ref_clk","usb_ahb_clk";
+
+	#if 1
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_USB_REF_CLK>;
+	assigned-clock-parents = <&ts_clk TS_CLK_TX5336_OSC_24M>;  //24M
+	assigned-clock-rates = <24000000>;
+	//assigned-clock-parents = <&ts_clk TS_CLK_TX5336_USB_REF_PLL0_D4_CLK>;  //50M
+	//assigned-clock-rates = <50000000>;
+	#endif
+};
+
+&rne_dma {
+	clocks = <&ts_clk TS_CLK_TX5336_RNE_AHB_CLK>, <&ts_clk TS_CLK_TX5336_RNE_AXI_CLK>,
+		<&ts_clk TS_CLK_TX5336_RNE_CORE_CLK>, <&ts_clk TS_CLK_TX5336_RNE_CORE_PLL_CLK>,
+		<&ts_clk TS_CLK_TX5336_RNE_CORE_PLL0_CLK>;
+	clock-names = "rne_ahb_clk", "rne_axi_clk", "rne_core_clk", "rne_core_pll01",
+		"rne_core_pll1_d2_clk";
+
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_RNE_CORE_CLK>,
+		<&ts_clk TS_CLK_TX5336_RNE_CORE_PLL_CLK>,
+		<&ts_clk TS_CLK_TX5336_RNE_CORE_PLL1_D2_CLK>;
+	assigned-clock-parents = <&ts_clk TS_CLK_TX5336_RNE_CORE_PLL_CLK>,
+		<&ts_clk TS_CLK_TX5336_RNE_CORE_PLL1_D2_CLK>,
+		<&ts_clk TS_CLK_TX5336_PLL1_D2>;
+	assigned-clock-rates = <0>, <0>, <615000000>;
+};
+
+&qspi {
+	clocks = <&ts_clk TS_CLK_TX5336_QSPI_REF_CLK>,
+			<&ts_clk TS_CLK_TX5336_QSPI_AHB_CLK>,
+			<&ts_clk TS_CLK_TX5336_QSPI_APB_CLK>;
+	clock-names = "ospi_refclk", "ospi_hclk", "ospi_pclk";
+
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_QSPI_REF_CLK>;
+	assigned-clock-rates = <200000000>; /* default */
+	// assigned-clock-rates = <500000000>; /* max */
+};
+
+&spi0 {
+	clocks = <&ts_clk TS_CLK_TX5336_SPI0_CORE_CLK>, <&ts_clk TS_CLK_TX5336_SPI0_APB_CLK>;
+	clock-names = "ref_clk", "pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_SPI0_CORE_CLK>;
+	assigned-clock-rates = <200000000>;     /* default */
+	// assigned-clock-rates = <62500000>;      /* min*/
+	assigned-clock-parents = <&ts_clk TS_CLK_TX5336_PLL0_D2>;
+};
+
+&spi1 {
+	clocks = <&ts_clk TS_CLK_TX5336_SPI1_CORE_CLK>, <&ts_clk TS_CLK_TX5336_SPI1_APB_CLK>;
+	clock-names = "ref_clk", "pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_SPI1_CORE_CLK>;
+	assigned-clock-rates = <200000000>;     /* default */
+	// assigned-clock-rates = <62500000>;      /* min*/
+	assigned-clock-parents = <&ts_clk TS_CLK_TX5336_PLL0_D2>;
+};
+
+&uspi0 {
+	clocks = <&ts_clk TS_CLK_TX5336_USI0_APB_CLK>;
+	clock-names = "usi_clk";
+};
+
+&uspi1 {
+	clocks = <&ts_clk TS_CLK_TX5336_USI1_APB_CLK>;
+	clock-names = "usi_clk";
+};
+
+&dwahbdma0 {
+	clocks = <&ts_clk TS_CLK_TX5336_HDMA0_AHB_CLK>;
+};
+
+&dwahbdma1 {
+	clocks = <&ts_clk TS_CLK_TX5336_HDMA1_AHB_CLK>;
+};
+
+&dw_axi_dmac {
+	clock-names = "ahb", "axi";
+	clocks = <&ts_clk TS_CLK_TX5336_ADMA_AHB_CLK>,
+			<&ts_clk TS_CLK_TX5336_ADMA_AXI_CLK>;
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_ADMA_AXI_CLK>;
+	assigned-clock-rates = <500000000>;     /* max */
+	// assigned-clock-rates = <125000000>;     /* min */
+};
+
+&dp0 {
+	clocks = <&ts_clk TS_CLK_TX5336_DPU_AHB_CLK>,
+	 <&ts_clk TS_CLK_TX5336_DPU_AXI_CLK>,
+	 <&ts_clk TS_CLK_TX5336_DPU_CORE_CLK>;
+	clock-names = "hclk", "aclk", "cclk";
+};
+
+&mipi_dsi {
+	clocks = <&ts_clk TS_CLK_TX5336_MIPI_DSI_APB_CLK>,
+		 <&ts_clk TS_CLK_TX5336_MIPI_TXPHY_APB_CLK>,
+		 <&ts_clk TS_CLK_TX5336_MIPI_REF_CLK>,
+		<&ts_clk TS_CLK_TX5336_MIPI_TXCLKESC_CLK>;
+	clock-names = "mipi_dsi_apb", "mipi_txphy_apb", "mipi_ref","mipi_txclkesc";
+};
+
+&cve {
+	clocks = <&ts_clk TS_CLK_TX5336_CVE_AHB_CLK>,
+			 <&ts_clk TS_CLK_TX5336_CVE_AXI_CLK>,
+		 	<&ts_clk TS_CLK_TX5336_CVE_CORE_CLK>;
+	clock-names = "cve_hclk", "cve_aclk", "cve_cclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_CVE_CORE_CLK>, <&ts_clk TS_CLK_TX5336_CVE_AXI_CLK>;
+	assigned-clock-rates =<500000000>, <500000000>;      /* max */
+	// assigned-clock-rates =<125000000>, <125000000>;         /* min */
+};
+
+&bis {
+	clocks = <&ts_clk TS_CLK_TX5336_BIS_APB_CLK>,
+		 <&ts_clk TS_CLK_TX5336_BIS_AXI_CLK>,
+		 <&ts_clk TS_CLK_TX5336_BIS_CORE_CLK>;
+	clock-names = "bis_pclk", "bis_aclk", "bis_cclk";
+
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_BIS_CORE_CLK>, <&ts_clk TS_CLK_TX5336_BIS_CORE_PLL1_D2_CLK>;
+	assigned-clock-parents = <&ts_clk TS_CLK_TX5336_BIS_CORE_PLL1_D2_CLK>, <0>;
+	assigned-clock-rates =<0>, <614175000>;         /* max */
+};
+
+&gdc {
+	clocks = <&ts_clk TS_CLK_TX5336_GDC_APB_CLK>,
+		 <&ts_clk TS_CLK_TX5336_GDC_AXI_CLK>,
+		 <&ts_clk TS_CLK_TX5336_GDC_CORE_CLK>;
+	clock-names = "gdc_hclk", "gdc_aclk", "gdc_cclk";
+
+	assigned-clocks = <&ts_clk TS_CLK_TX5336_GDC_CORE_PLL1_D2_CLK>,
+                            <&ts_clk TS_CLK_TX5336_GDC_CORE_CLK>,
+                                <&ts_clk TS_CLK_TX5336_GDC_AXI_CLK>;
+	assigned-clock-parents = <0>,
+                                <&ts_clk TS_CLK_TX5336_GDC_CORE_PLL1_D2_CLK>,
+                                    <0>;
+	assigned-clock-rates =<614400000>, <0>, <500000000>;        /* max */
+	// assigned-clock-rates =<614400000>, <0>, <125000000>;        /* max */    
+};

@@ -1,0 +1,89 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * dts file for tsingmicro tx536
+ *
+ * Copyright 2022 Beijing Tsingmicro Intelligent Technology Co.,Ltd.
+ *
+ */
+
+#include <dt-bindings/reset/ts-tx536-resets.h>
+/ {
+	ts_reset: reset-controller {
+		compatible = "ts,tx536-reset";
+		reg = <0x0 0xF0D9B000 0x0 0x1000>,
+			  <0x0 0xF128B000 0x0 0x1000>;
+		#reset-cells = <1>;
+	};
+};
+
+&qspi {
+	resets = <&ts_reset TS_RST_OSPI_APB>, <&ts_reset TS_RST_OSPI_AHB>,
+			 <&ts_reset TS_RST_OSPI_SPI_INTF>, <&ts_reset TS_RST_OSPI_GLOBAL>;
+	reset-name = "ospi_apb", "ospi_ahb", "ospi_intf", "ospi_global";
+};
+
+&nand0 {
+	resets = <&ts_reset TS_RST_NFC_AHB>, <&ts_reset TS_RST_NFC_FUNC_BLOCK>,
+			 <&ts_reset TS_RST_NFC_GLOBAL>;
+	reset-name = "nfc_ahb", "nfc_func_block", "nfc_global";
+};
+
+&ssi0 {
+	resets = <&ts_reset TS_RST_SPI0_APB>, <&ts_reset TS_RST_SPI0_SERIAL_INTF>,
+			 <&ts_reset TS_RST_SPI0_GLOBAL>;
+};
+
+&gmac0 {
+	resets = <&ts_reset TS_RST_GMAC_AXI>, <&ts_reset TS_RST_GMAC_AHB>,
+			 <&ts_reset TS_RST_GMAC_GLOBAL>;
+};
+
+#if 0
+&ssi1 {
+	resets = <&ts_reset TS_RST_SPI1_APB>, <&ts_reset TS_RST_SPI1_SERIAL_INTF>,
+			 <&ts_reset TS_RST_SPI1_GLOBAL>;
+};
+
+&ssi2 {
+	resets = <&ts_reset TS_RST_SPI2_APB>, <&ts_reset TS_RST_SPI2_SERIAL_INTF>,
+			 <&ts_reset TS_RST_SPI2_GLOBAL>;
+};
+
+&ssi3 {
+	resets = <&ts_reset TS_RST_SPI3_APB>, <&ts_reset TS_RST_SPI3_SERIAL_INTF>,
+			 <&ts_reset TS_RST_SPI3_GLOBAL>;
+};
+
+&ssi4 {
+	resets = <&ts_reset TS_RST_SPI4_APB>, <&ts_reset TS_RST_SPI4_SERIAL_INTF>,
+			 <&ts_reset TS_RST_SPI4_GLOBAL>;
+};
+#endif
+
+&sdhci0 {
+	resets = <&ts_reset TS_RST_MSHC0_SLAVE>, <&ts_reset TS_RST_MSHC0_MASTER>,
+		 <&ts_reset TS_RST_MSHC0_BASE_CLK>, <&ts_reset TS_RST_MSHC0_GLOBAL>,
+		 <&ts_reset TS_RST_MSHC0_LOWFREQ_CLK>, <&ts_reset TS_RST_MSHC0_TIMER>;
+};
+
+&sdhci1 {
+	resets = <&ts_reset TS_RST_MSHC1_SLAVE>, <&ts_reset TS_RST_MSHC1_MASTER>,
+		 <&ts_reset TS_RST_MSHC1_BASE_CLK>, <&ts_reset TS_RST_MSHC1_GLOBAL>,
+		 <&ts_reset TS_RST_MSHC1_LOWFREQ_CLK>, <&ts_reset TS_RST_MSHC1_TIMER>;
+};
+
+&usb0 {
+	resets = <&ts_reset TS_RST_USB3C>;
+};
+
+&watchdog0 {
+	resets = <&ts_reset TS_RST_TOP_WDT_APB>,
+		 <&ts_reset TS_RST_TOP_WDT_TICK_TIMER>,
+		 <&ts_reset TS_RST_TOP_WDT_GLOBAL>;
+	reset-names = "apb_rst", "tick_rst", "glb_rst";
+};
+
+&otpc {
+	resets = <&ts_reset TS_RST_TOP_OTPC>;
+	reset-names = "ts_otpc";
+};

@@ -1,0 +1,80 @@
+{
+  "service": [
+    {
+    "uuid": [
+      "0xfb",
+      "0x34",
+      "0x9b",
+      "0x5f",
+      "0x80",
+      "0x00",
+      "0x00",
+      "0x80",
+      "0x00",
+      "0x10",
+      "0x00",
+      "0x00",
+      "0xf0",
+      "0xff",
+      "0x00",
+      "0x00"
+      ],
+      "sec_en": 0,
+      "characteristic": [
+    {
+      "uuid": [
+        "0xfb",
+        "0x34",
+        "0x9b",
+        "0x5f",
+        "0x80",
+        "0x00",
+        "0x00",
+        "0x80",
+        "0x00",
+        "0x10",
+        "0x00",
+        "0x00",
+        "0xf1",
+        "0xff",
+        "0x00",
+        "0x00"
+      ],
+      "properties": [
+	"write",
+        "notification",
+        "indication",
+        "read",
+	"write_no_response"
+      ],
+      "max_len": 200
+    },
+    {
+      "uuid": [
+        "0xfb",
+        "0x34",
+        "0x9b",
+        "0x5f",
+        "0x80",
+        "0x00",
+        "0x00",
+        "0x80",
+        "0x00",
+        "0x10",
+        "0x00",
+        "0x00",
+        "0xf6",
+        "0xff",
+        "0x00",
+        "0x00"
+      ],
+      "properties": [
+        "write",
+	"indication"
+      ],
+      "max_len": 200
+        }
+      ]
+    }
+  ]
+}

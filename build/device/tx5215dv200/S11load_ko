@@ -1,0 +1,114 @@
+#!/bin/sh
+#
+# Run the mdev daemon
+#
+
+LIBPAHT="/usr/lib/modules"
+
+insert_isp()
+{
+  insmod $LIBPAHT/ts_camio.ko
+  insmod $LIBPAHT/ts_camvid.ko
+  insmod $LIBPAHT/ts_camsta.ko
+  insmod $LIBPAHT/ts_camisp.ko
+  insmod $LIBPAHT/ts_camcis.ko
+}
+
+remove_isp()
+{
+  # insmod $LIBPAHT/ts_camcis.ko
+  rmmod $LIBPAHT/ts_camisp.ko
+  rmmod $LIBPAHT/ts_camsta.ko
+  rmmod $LIBPAHT/ts_camvid.ko
+  rmmod $LIBPAHT/ts_camio.ko
+}
+
+start() {
+	echo "insmod video ko"
+
+	if [ -f $LIBPAHT/sys.ko ];then
+		insmod $LIBPAHT/sys.ko
+	fi
+
+	if [ -f $LIBPAHT/vpe.ko ];then
+		insmod $LIBPAHT/vpe.ko
+	fi
+
+  insert_isp
+
+	if [ -f $LIBPAHT/hx280enc.ko ];then
+		insmod $LIBPAHT/hx280enc.ko
+	fi
+
+	if [ -f $LIBPAHT/vpu_h265_v1.ko ];then
+		insmod $LIBPAHT/vpu_h265_v1.ko
+	fi
+
+	if [ -f $LIBPAHT/ts_codec.ko ];then
+		insmod $LIBPAHT/ts_codec.ko
+	fi
+
+#	if [ -f $LIBPAHT/jpu.ko ];then
+#		insmod $LIBPAHT/jpu.ko
+#	fi
+	if [ -f $LIBPAHT/mpp.ko ];then
+		insmod $LIBPAHT/mpp.ko
+	fi
+#	if [ -f $LIBPAHT/rne_driver.ko ];then
+#		insmod $LIBPAHT/rne_driver.ko rne_mem_pool_size=32768
+#	fi
+}
+
+stop() {
+	echo "rmmod video ko"
+
+	if [ -f $LIBPAHT/hx280enc.ko ];then
+		rmmod $LIBPAHT/hx280enc.ko
+	fi
+
+	if [ -f $LIBPAHT/vpu_h265_v1.ko ];then
+		rmmod $LIBPAHT/vpu_h265_v1.ko
+	fi
+
+#	if [ -f $LIBPAHT/jpu.ko ];then
+#		rmmod $LIBPAHT/jpu.ko
+#	fi
+
+  remove_isp
+
+	if [ -f $LIBPAHT/vpe.ko ];then
+		rmmod $LIBPAHT/vpe.ko
+	fi
+	if [ -f $LIBPAHT/sys.ko ];then
+		rmmod $LIBPAHT/sys.ko
+	fi
+
+	if [ -f $LIBPAHT/mpp.ko ];then
+		rmmod $LIBPAHT/mpp.ko
+	fi
+
+	if [ -f $LIBPAHT/ts_codec.ko ];then
+		rmmod $LIBPAHT/ts_codec.ko
+	fi
+
+
+#	if [ -f $LIBPAHT/rne_driver.ko ];then
+#		rmmod $LIBPAHT/rne_driver.ko
+#	fi
+}
+
+restart() {
+	stop
+	start
+}
+
+case "$1" in
+  start|stop|restart)
+	"$1"
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

@@ -1,0 +1,21 @@
+Setup COMPILER_PATH, SRC_PATH and OUTPUT_PATH in env_setup.sh
+
+- Build command:
+
+$ ./launch_build
+
+- Clean command:
+
+$ ./clean.sh
+
+ANNOTATIONS:
+
+- Run launch_build and follow the guidance to start compilation
+
+- Build processes of PC_LINUX, EMBEDDED_LINUX and EMBEDDED_BAREMENTAL are all integrated in launch_build
+
+- Default compilation options can be adjust in the first part of launch_build
+
+- Running clean.sh before launch_build is recommended
+
+- Compilation time-consumption statics is supported in launch_build

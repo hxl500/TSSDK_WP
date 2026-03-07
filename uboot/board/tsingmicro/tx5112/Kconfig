@@ -1,0 +1,14 @@
+# Copyright (c) 2023, Tsingmicro, Inc.
+#
+# SPDX-License-Identifier: GPL-2.0
+
+if ARCH_TS_TX5112
+
+config GMAC_PHY_SPI_CLK_INIT
+	bool "Enable Spi Clk To Phy"
+	default n
+	help
+	   when use tx51xx chip, use mac_txclk provide clk for phy, when in 10m/s
+	   speed, need spi clk provide 25mhz instead of mac_txclk.
+
+endif

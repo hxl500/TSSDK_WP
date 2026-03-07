@@ -1,0 +1,11 @@
+#memory set <verify=0>:0xf24e0120         32 0x1
+#set arch timer
+memory set <verify=0>:0xf1004948         32 0xffffffff
+#syscnt dereset
+memory set <verify=0>:0xf24e0110         32 0x0
+#syscnt count
+memory set <verify=0>:0xf24e5020         32 0xf4240
+#syscnt start
+memory set <verify=0>:0xf24e5000         32 0x3
+#int collect reset
+memory set <verify=0>:0xf1004948         32 0x0

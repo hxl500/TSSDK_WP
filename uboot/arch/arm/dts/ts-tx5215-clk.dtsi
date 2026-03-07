@@ -1,0 +1,91 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * dts file for tsingmicro tx5215
+ *
+ * Copyright 2022 Beijing Tsingmicro Intelligent Technology Co.,Ltd.
+ *
+ */
+
+#include <dt-bindings/clock/ts-tx5215-clk.h>
+/ {
+	uart_fixed: uart_fixed {
+		u-boot,dm-pre-reloc;
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <9216000>;
+		clock-accuracy = <100>;
+	};
+	osc24m: osc24m_clk {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <24000000>;
+		clock-accuracy = <100>;
+	};
+	ts_clk: tx5215-clock-controller {
+		reg = <0xF1004000 0x1000>;
+		reg-io-width = <4>;
+		#clock-cells = <1>;
+		compatible = "ts,ts-common-clk";
+		clocks = <&osc24m>;
+	};
+};
+&uart0 {
+	clocks = <&uart_fixed>;
+};
+
+&gpio0 {
+	clocks = <&ts_clk TS_CLK_TX5215_GPIO_A_PCLK>;
+	clock-names = "pclk";
+};
+
+&gpio1 {
+	clocks = <&ts_clk TS_CLK_TX5215_GPIO_B_PCLK>;
+	clock-names = "pclk";
+};
+
+&qspi {
+	clocks = <&ts_clk TS_CLK_TX5215_OSPI_REF_CLK>, <&ts_clk TS_CLK_TX5215_OSPI_HCLK>, <&ts_clk TS_CLK_TX5215_OSPI_PCLK>;
+	clock-names = "ospi_refclk", "ospi_hclk", "ospi_pclk";
+
+	assigned-clocks = <&ts_clk TS_CLK_TX5215_OSPI_REF_CLK>;
+	assigned-clock-parents = <&ts_clk TS_CLK_TX5215_PLL1>;
+	assigned-clock-rates = <307200000>;
+};
+
+&sdhci0 {
+	clocks = <&ts_clk TS_CLK_TX5215_SD0_CCLK_DIV2>, <&ts_clk TS_CLK_TX5215_SD0_CCLK_SMPL>, <&ts_clk TS_CLK_TX5215_SD0_CCLK_DRV>, <&ts_clk TS_CLK_TX5215_SDHC0_HCLK>;
+	clock-names = "ciu", "siu", "diu", "hiu";
+	assigned-clocks = <&ts_clk TS_CLK_TX5215_SD0_CCLK_DIV2>;
+	assigned-clock-rates = <100000000>;
+	assigned-clocks = <&ts_clk TS_CLK_TX5215_SD0_CCLK_SMPL>, <&ts_clk TS_CLK_TX5215_SD0_CCLK_DRV>;
+	assigned-clock-parents = <&ts_clk TS_CLK_TX5215_SD0_CCLK_ALIEND>, <&ts_clk TS_CLK_TX5215_SD0_CCLK_ALIEND>;
+};
+
+&sdhci1 {
+	clocks = <&ts_clk TS_CLK_TX5215_SD1_CCLK_DIV2>, <&ts_clk TS_CLK_TX5215_SD1_CCLK_SMPL>, <&ts_clk TS_CLK_TX5215_SD1_CCLK_DRV>, <&ts_clk TS_CLK_TX5215_SDHC1_HCLK>;
+	clock-names = "ciu", "siu", "diu", "hiu";
+	assigned-clocks = <&ts_clk TS_CLK_TX5215_SD1_CCLK_DIV2>;
+	assigned-clock-rates = <100000000>;
+	assigned-clocks = <&ts_clk TS_CLK_TX5215_SD1_CCLK_SMPL>, <&ts_clk TS_CLK_TX5215_SD1_CCLK_DRV>;
+	assigned-clock-parents = <&ts_clk TS_CLK_TX5215_SD1_CCLK_ALIEND>, <&ts_clk TS_CLK_TX5215_SD1_CCLK_ALIEND>;
+};
+
+&otpc {
+	clocks = <&ts_clk TS_CLK_TX5215_OTPC_PCLK>;
+	clock-names = "otpc_pclk";
+};
+
+&ts_ske {
+	clocks = <&ts_clk TS_CLK_TX5215_SKE_CLK>;
+	clock-names = "ske_clk";
+};
+
+&ts_hash {
+	clocks = <&ts_clk TS_CLK_TX5215_HASH_CLK>;
+	clock-names = "hash_clk";
+};
+
+&ts_pke {
+	clocks = <&ts_clk TS_CLK_TX5215_PKE_CLK>;
+	clock-names = "pke_clk";
+};

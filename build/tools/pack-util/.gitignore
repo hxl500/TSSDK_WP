@@ -1,0 +1,14 @@
+*.o
+*.elf
+*.i
+*.dis
+*.map
+#pack-util
+*.bin
+*.txt
+*.swp
+*.img
+#*.key
+*.pat
+*.sd
+tags

@@ -1,0 +1,21 @@
+#release SYSCNT and set clock rate
+memory set EL3<verify=0>:0xf12a20f8  32  0
+memory set EL3<verify=0>:0xf12a2110  32  0x1971
+memory set EL3<verify=0>:0xf12a4020  32  0x100000
+memory set EL3<verify=0>:0xf12a4000  32  0x3
+set $cntfrq_el0 = 0x100000
+
+#add symbol-table with offset=-0xffffff8000000000
+add-symbol-file  TX536_fpga_kernel\vmlinux EL1N:-0xffffff8000000000
+b __enable_mmu+0x38
+c
+wait
+clear __enable_mmu+0x38
+
+#use original symbol-table
+discard-symbol-file TX536_fpga_kernel\vmlinux
+add-symbol-file  TX536_fpga_kernel\vmlinux EL1N:0
+b start_kernel
+c
+wait
+clear start_kernel

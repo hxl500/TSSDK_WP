@@ -1,0 +1,57 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * dts file for tsingmicro tx5212
+ *
+ * (C) Copyright 2017 - 2020, Xilinx, Inc.
+ *
+ */
+
+#include <dt-bindings/clock/ts-tx5112-clk.h>
+/ {
+	fpga_pll1_1: fpga_pll1_1 {
+		u-boot,dm-pre-reloc;
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <20000000>;
+		clock-accuracy = <100>;
+	};
+
+	osc24m: osc24m_clk {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <24000000>;
+		clock-accuracy = <100>;	
+	};
+
+	ts_clk: tx5112-clock-controller {
+		reg = <0xF1004000 0x1000>;
+		reg-io-width = <4>;
+		#clock-cells = <1>;
+		compatible = "ts,ts-common-clk";
+		clocks = <&osc24m>;					
+		/* clkcfg_num = <2>; */
+		/* clkcfg_arr = <TS_CLK_BT1120TX_HCLK 0 3675000>, <TS_CLK_GDC_MCLK 0 249000000>; */	
+	};
+
+};
+#if 1
+&qspi {
+	clocks = <&ts_clk TS_CLK_TX5112_OSPI_REF_CLK>;
+	clock-names = "ospi_refclk";
+};
+
+
+&sdhci0 {
+	clocks = <&ts_clk TS_CLK_TX5112_SDHC0_HCLK>, <&ts_clk TS_CLK_TX5112_SD0_CCLK_DRV>;
+	clock-names = "biu", "ciu";
+};
+
+&sdhci1 {
+	clocks = <&ts_clk TS_CLK_TX5112_SDHC1_HCLK>, <&ts_clk TS_CLK_TX5112_SD1_CCLK_DRV>;
+	clock-names = "biu", "ciu";
+};
+#endif
+&uart0 {
+	clocks = <&fpga_pll1_1>, <&ts_clk TS_CLK_TX5112_UART0_PCLK>;
+};
+

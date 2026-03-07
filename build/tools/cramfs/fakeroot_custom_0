@@ -1,0 +1,61 @@
+#!/bin/sh
+set -e
+
+MAKEDEVS=${TARGET_BUILD_DIR}/tools/ext4/makedevs
+FULL_DEVICES_TABLE=${TARGET_BUILD_DIR}/tools/ext4/full_devices_table.txt
+
+mkdir -p ${TARGET_OUT_DIR}/cramfs/rootfs/usr
+mkdir -p ${TARGET_OUT_DIR}/cramfs/rootfs/opt
+mkdir -p ${TARGET_OUT_DIR}/cramfs/rootfs/opt/app
+mkdir -p ${TARGET_OUT_DIR}/cramfs/rootfs/opt/backup
+mkdir -p ${TARGET_OUT_DIR}/cramfs/usr
+mkdir -p ${TARGET_OUT_DIR}/cramfs/opt/app
+mkdir -p ${TARGET_OUT_DIR}/cramfs/opt/backup
+rsync -auH --exclude=/THIS_IS_NOT_YOUR_ROOT_FILESYSTEM  --exclude=/usr --exclude=/opt/app --exclude=/opt/backup ${TARGET_OUT_DIR}/rootfs/* ${TARGET_OUT_DIR}/cramfs/rootfs
+rsync -auH  ${TARGET_OUT_DIR}/rootfs/usr/* ${TARGET_OUT_DIR}/cramfs/usr
+
+if [ -d ${TARGET_OUT_DIR}/rootfs/opt/app/* ] ; then
+	rsync -auH  ${TARGET_OUT_DIR}/rootfs/opt/app/* ${TARGET_OUT_DIR}/cramfs/opt/app
+else
+	rsync -auH  ${TARGET_OUT_DIR}/rootfs/opt/app/ ${TARGET_OUT_DIR}/cramfs/opt/app
+fi
+
+rsync -auH  ${TARGET_OUT_DIR}/rootfs/opt/backup/ ${TARGET_OUT_DIR}/cramfs/opt/backup
+
+chown -h -R 0:0 ${TARGET_OUT_DIR}/cramfs/rootfs
+chown -h -R 0:0 ${TARGET_OUT_DIR}/cramfs/usr
+chown -h -R 0:0 ${TARGET_OUT_DIR}/cramfs/opt/app
+chown -h -R 0:0 ${TARGET_OUT_DIR}/cramfs/opt/backup
+${MAKEDEVS} -d  ${FULL_DEVICES_TABLE}  ${TARGET_OUT_DIR}/cramfs/rootfs
+
+	rm -f ${TARGET_OUT_DIR}/rootfs.cramfs
+	rm -f ${TARGET_OUT_DIR}/usr.cramfs
+	rm -f ${TARGET_OUT_DIR}/app.cramfs
+	rm -f ${TARGET_OUT_DIR}/backup.cramfs
+   	rm -rf ${TARGET_OUT_DIR}/cramfs/rootfs/etc/udev/hwdb.d/
+	#mkcramfs -L ${TARGET_OUT_DIR}/cramfs ${TARGET_OUT_DIR}/rootfs.cramfs
+
+dd if=/dev/zero of=${TARGET_OUT_DIR}/rootfs.cramfs bs=1K count=2560 conv=notrunc,sync
+dd if=/dev/zero of=${TARGET_OUT_DIR}/usr.cramfs bs=1K count=3584 conv=notrunc,sync
+dd if=/dev/zero of=${TARGET_OUT_DIR}/app.cramfs bs=1K count=2432 conv=notrunc,sync
+dd if=/dev/zero of=${TARGET_OUT_DIR}/backup.cramfs bs=1K count=2432 conv=notrunc,sync
+
+mkfs.cramfs -N little ${TARGET_OUT_DIR}/cramfs/rootfs ${TARGET_OUT_DIR}/rootfs.tmp
+mkfs.cramfs -N little ${TARGET_OUT_DIR}/cramfs/usr ${TARGET_OUT_DIR}/usr.tmp
+mkfs.cramfs -N little ${TARGET_OUT_DIR}/cramfs/opt/app ${TARGET_OUT_DIR}/app.tmp
+mkfs.cramfs -N little ${TARGET_OUT_DIR}/cramfs/opt/backup ${TARGET_OUT_DIR}/backup.tmp
+
+dd if=${TARGET_OUT_DIR}/rootfs.tmp of=${TARGET_OUT_DIR}/rootfs.cramfs bs=1K conv=notrunc
+dd if=${TARGET_OUT_DIR}/usr.tmp of=${TARGET_OUT_DIR}/usr.cramfs bs=1K conv=notrunc
+dd if=${TARGET_OUT_DIR}/app.tmp of=${TARGET_OUT_DIR}/app.cramfs bs=1K conv=notrunc
+dd if=${TARGET_OUT_DIR}/backup.tmp of=${TARGET_OUT_DIR}/backup.cramfs bs=1K conv=notrunc
+
+rm ${TARGET_OUT_DIR}/rootfs.tmp
+rm ${TARGET_OUT_DIR}/usr.tmp
+rm ${TARGET_OUT_DIR}/app.tmp
+rm ${TARGET_OUT_DIR}/backup.tmp
+
+
+
+
+rm -rf ${TARGET_OUT_DIR}/cramfs

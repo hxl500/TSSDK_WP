@@ -1,0 +1,184 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * dts file for tsingmicro tx51xx
+ *
+ * Copyright 2022 Beijing Tsingmicro Intelligent Technology Co.,Ltd.
+ *
+ */
+
+#include <dt-bindings/phy/phy.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+#include "ts_tx5112.dtsi"
+#include "ts-tx5112-clk.dtsi"
+#include "ts-tx5112-reset.dtsi"
+#include "ts-tx51xx-aov-fast-pinctrl.dtsi"
+
+/ {
+	chosen {
+		bootargs = "earlycon";
+		stdout-path = "serial0:115200n8";
+	};
+};
+
+&gmac0 {
+	status = "okay";
+	phy-handle = <&phy0>;
+	phy-mode = "rmii";
+	pinctrl-names = "default";
+	pinctrl-0 = <&mac0_pinctrl0>, <&mac0_pinctrl1>, <&mac0_pinctrl_clk>, <&mac0_rst_pinctrl>;
+	mdio {
+		#address-cells = <0x1>;
+		#size-cells = <0x0>;
+		phy0: phy@0 {
+			compatible = "ethernet-phy-ieee802.3-c22";
+			device_type = "ethernet-phy";
+			reg = <0x3>;
+			phy-reset-gpios = <&porta 1 GPIO_ACTIVE_LOW>;
+		};
+	};
+};
+
+&qspi {
+	/*conflict with emmc*/
+	status = "okay";
+	page-size = <256>;
+	block-size = <16>;
+	#address-cells = <1>;
+	#size-cells = <0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&qspi_pinctrl>, <&wakeup_pin_pinctrl>;
+	wakeup-gpios = <&porta 21 GPIO_ACTIVE_HIGH>;
+#if 0
+	nand1:spi-nand@0 {
+		status = "okay";
+		compatible = "spi-nand";
+		reg = <0>; /* CS0 */
+		//spi-max-frequency = <40000000>;
+		spi-max-frequency = <20000000>;
+		page-size = <2048>;
+		block-size = <131072>;
+		spi-rx-bus-width = <4>;
+		spi-tx-bus-width = <4>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			/* reserved for future boot direct from NAND flash
+			 * (this would use the same layout as the 8MiB NOR flash)
+			 */
+			partition@0 {
+				label = "nand-boot-reserved";
+				reg = <0 0x800000>;
+			};
+
+			/* recovery / install environment */
+			partition@800000 {
+				label = "recovery";
+				reg = <0x800000 0x2000000>;
+			};
+
+			/* ubia (first OpenWrt) - a/b names to prevent confusion with ubi0/1/etc. */
+			partition@2800000 {
+				label = "ubia";
+				reg = <0x2800000 0x6C00000>;
+			};
+
+			/* ubib (second OpenWrt) */
+			partition@9400000 {
+				label = "ubib";
+				reg = <0x9400000 0x6C00000>;
+			};
+		};
+	};
+#endif
+	spi-flash@0 {
+		status = "okay";
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <83300000>; /* Based on DC1 spec */
+		//spi-max-frequency = <51200000>; /* Based on DC1 spec */
+		reg = <0>; /* CS0 */
+		spi-rx-bus-width = <4>;
+		spi-tx-bus-width = <4>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			/* reserved for future boot direct from NAND flash
+			 * (this would use the same layout as the 8MiB NOR flash)
+			 */
+			uboot@0 {
+				label = "uboot";
+				reg = <0 0x80000>;
+			};
+
+			kernel@80000 {
+				label = "kernel";
+				reg = <0x80000 0x400000>;
+			};
+
+			rootfs@480000 {
+				label = "rootfs";
+				reg = <0x480000 0x300000>;
+			};
+
+			user@780000 {
+				label = "user";
+				reg = <0x780000 0x780000>;
+			};
+
+			user2@780000 {
+				label = "user2";
+				reg = <0xf00000 0x100000>;
+			};
+		};
+	};
+};
+
+&ssi0 {
+	status = "okay";
+	flash@0 {
+		compatible = "jedec,spi-nor";
+	};
+};
+
+&pinctrl {
+	status = "okay";
+};
+
+
+&sdhci0 {
+	/*conflict with qspi*/
+	status = "disabled";
+	//status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&emmc0_pinctrl>;
+};
+
+&sdhci1 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&emmc1_pinctrl>;
+};
+
+&uart0 {
+	status = "okay";
+};
+&gpio0 {
+	status = "okay";
+};
+&gpio1 {
+	status = "okay";
+};
+&otpc {
+	status = "okay";
+};
+
+&ts_ske {
+	status = "disabled";
+};

@@ -1,0 +1,75 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="style.css" type="text/css">
+<title></title>
+<script src="public.js"></script>
+<script src="get_misc.cgi"></script>
+<script src="login.cgi"></script>
+</head>
+<script>
+function set_step()
+{
+	var url;
+	
+	url='set_misc.cgi?next_url=rebootme.htm';
+	url+='&loginuse='+loginuser+'&loginpas='+loginpass;
+	url+='&ptz_soft_limit_max_level='+pslml.value;
+	url+='&ptz_soft_limit_max_vert='+pslmv.value;
+	url+='&ptz_soft_limit_stop_percent_level='+pslspl.value;
+	url+='&ptz_soft_limit_stop_percent_vert='+pslspv.value;
+	
+	//alert(url);
+	location=encodeURI(url);
+}
+
+function body_onload()
+{
+	pslml.value=ptz_soft_limit_max_level;
+	pslmv.value=ptz_soft_limit_max_vert;
+	pslspl.value=ptz_soft_limit_stop_percent_level;
+	pslspv.value=ptz_soft_limit_stop_percent_vert;
+}
+
+</script>
+<body onLoad="body_onload()">
+<table width="640" class="v2 f14 md1">
+  <tr height="25">
+    <td colspan="3" class="h1 v2 md2 f16"><strong>
+      <script>document.write(_step_config);</script>
+      </strong></td>
+  </tr>
+  <tr height="25">
+    <td class="md4" width="30%">&nbsp;&nbsp;
+      <script>document.write(_pslml);</script></td>
+    <td class="md2"><input id="pslml" maxlength="64" ></td>
+  </tr>
+  <tr height="25">
+    <td class="md4" width="30%">&nbsp;&nbsp;
+      <script>document.write(_pslmv);</script></td>
+    <td class="md2"><input id="pslmv" maxlength="64" ></td>
+  </tr>
+  <tr height="25">
+    <td class="md4" width="30%">&nbsp;&nbsp;
+      <script>document.write(_pslspl);</script></td>
+    <td class="md2"><input id="pslspl" maxlength="64" ></td>
+  </tr>
+  <tr height="25">
+    <td class="md4" width="30%">&nbsp;&nbsp;
+      <script>document.write(_pslspv);</script></td>
+    <td class="md2"><input id="pslspv" maxlength="64" ></td>
+  </tr>
+  <tr height="25">
+    <td class="h2 md3" colspan="3"  align="center"><button id="set" onClick="set_step()">
+      <script>document.write(_set);</script>
+      </button>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <button onClick="location.reload()">
+      <script>document.write(_refresh);</script>
+      </button></td>
+  </tr>
+</table>
+<br>
+设置后，请手动重启摄像机. Please reboot the camera after setting. 
+</body>
+</html>

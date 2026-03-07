@@ -1,0 +1,29 @@
+if ARCH_TS || COMPILE_TEST
+
+config PINCTRL_TS
+	bool
+	depends on ARCH_TS
+	select PINMUX
+	select GENERIC_PINCONF
+
+config PINCTRL_TS_TX536
+	bool "TsingMicro TX536 pin control"
+	depends on ARCH_TS_TX536
+	select PINCTRL_TS
+
+config PINCTRL_TS_TX5215
+	bool "TsingMicro TX5215 pin control"
+	depends on ARCH_TS_TX5215
+	select PINCTRL_TS
+
+config PINCTRL_TS_TX5112
+	bool "TsingMicro TX5112 pin control"
+	depends on ARCH_TS_TX5112
+	select PINCTRL_TS
+
+config PINCTRL_TS_TX5336
+	bool "TsingMicro TX5336 pin control"
+	depends on ARCH_TS_TX5336
+	select PINCTRL_TS
+
+endif

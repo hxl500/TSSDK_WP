@@ -1,0 +1,8 @@
+#!/bin/sh
+
+insmod /lib/modules/spi-nor.ko
+insmod /lib/modules/cadence-quadspi.ko
+# insmod /lib/modules/zlib_deflate.ko
+insmod /lib/modules/lzo_compress.ko
+insmod /lib/modules/jffs2.ko
+insmod /lib/modules/squashfs.ko

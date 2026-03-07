@@ -1,0 +1,509 @@
+#include "ts-tx5336.dtsi"
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+gpio_keys: gpio_keys@0 {
+	compatible = "gpio-keys";
+
+	#address-cells = <1>;
+	#size-cells = <0>;
+	autorepeat;
+
+    // key0@0 {
+    //     label = "USER-KEY0";
+    //     linux,code = <0>;
+    //     gpios = <&porta 0 GPIO_ACTIVE_LOW>;
+    //     gpio-key,wakeup;
+    // };
+
+    // key1@1 {
+    //     label = "USER-KEY1";
+    //     linux,code = <1>;
+    //     gpios = <&porta 1 GPIO_ACTIVE_LOW>;
+    //     gpio-key,wakeup;
+    // };
+    // key2@2 {
+    //     label = "USER-KEY2";
+    //     linux,code = <2>;
+    //     gpios = <&porta 2 GPIO_ACTIVE_LOW>;
+    //     gpio-key,wakeup;
+    // };
+    //   key3@3 {
+    //                                 label = "USER-KEY3";
+    //                                  linux,code = <3>;
+    //                               gpios = <&porta 3 GPIO_ACTIVE_LOW>;
+    //                                  gpio-key,wakeup;
+    //                               };
+    //   key4@4 {
+    //                                 label = "USER-KEY4";
+    //                                  linux,code = <4>;
+    //                               gpios = <&porta 4 GPIO_ACTIVE_LOW>;
+    //                                  gpio-key,wakeup;
+    //                               };
+    //   key5@5 {
+    //                                 label = "USER-KEY5";
+    //                                  linux,code = <5>;
+    //                               gpios = <&porta 5 GPIO_ACTIVE_LOW>;
+    //                                  gpio-key,wakeup;
+    //                               };
+    //   key6@6 {
+    //                                 label = "USER-KEY6";
+    //                                  linux,code = <6>;
+    //                               gpios = <&porta 6 GPIO_ACTIVE_LOW>;
+    //                                  gpio-key,wakeup;
+    //                               };
+    //   key7@7 {
+    //                                 label = "USER-KEY7";
+    //                                  linux,code = <7>;
+    //                               gpios = <&porta 7 GPIO_ACTIVE_LOW>;
+    //                                  gpio-key,wakeup;
+    //                               };
+//       key8@8 {
+//                                     label = "USER-KEY8";
+//                                      linux,code = <8>;
+//                                   gpios = <&porta 8 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//       key9@9 {
+//                                     label = "USER-KEY9";
+//                                      linux,code = <9>;
+//                                   gpios = <&porta 9 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//       key10@10 {
+//                                     label = "USER-KEY10";
+//                                      linux,code = <10>;
+//                                   gpios = <&porta 10 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//  key11@11 {
+//                                     label = "USER-KEY11";
+//                                      linux,code = <11>;
+//                                   gpios = <&porta 11 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//  key12@12 {
+//                                     label = "USER-KEY12";
+//                                      linux,code = <12>;
+//                                   gpios = <&porta 12 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//  key13@13 {
+//                                     label = "USER-KEY13";
+//                                      linux,code = <13>;
+//                                   gpios = <&porta 13 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//  key14@14 {
+//                                     label = "USER-KEY14";
+//                                      linux,code = <14>;
+//                                   gpios = <&porta 14 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//  key15@15 {
+//                                     label = "USER-KEY15";
+//                                      linux,code = <15>;
+//                                   gpios = <&porta 15 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+
+// uart
+#if 0
+ key16@16 {
+                                    label = "USER-KEY16";
+                                     linux,code = <16>;
+                                  gpios = <&porta 16 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+
+ key17@17 {
+                                    label = "USER-KEY17";
+                                     linux,code = <17>;
+                                  gpios = <&porta 17 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+#endif 
+
+//  key18@18 {
+//                                     label = "USER-KEY18";
+//                                      linux,code = <18>;
+//                                   gpios = <&porta 18 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//  key19@19 {
+//                                     label = "USER-KEY19";
+//                                      linux,code = <19>;
+//                                   gpios = <&porta 19 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//  key20@20 {
+//                                     label = "USER-KEY20";
+//                                      linux,code = <20>;
+//                                   gpios = <&porta 20 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//  key21@21 {
+//                                     label = "USER-KEY21";
+//                                      linux,code = <21>;
+//                                   gpios = <&porta 21 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//  key22@22 {
+//                                     label = "USER-KEY22";
+//                                      linux,code = <22>;
+//                                   gpios = <&porta 22 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//  key23@23 {
+//                                     label = "USER-KEY23";
+//                                      linux,code = <23>;
+//                                   gpios = <&porta 23 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+ key24@24 {
+                                    label = "USER-KEY24";
+                                     linux,code = <24>;
+                                  gpios = <&porta 24 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key25@25 {
+                                    label = "USER-KEY25";
+                                     linux,code = <25>;
+                                  gpios = <&porta 25 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key26@26 {
+                                    label = "USER-KEY26";
+                                     linux,code = <26>;
+                                  gpios = <&porta 26 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key27@27 {
+                                    label = "USER-KEY27";
+                                     linux,code = <27>;
+                                  gpios = <&porta 27 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key28@28 {
+                                    label = "USER-KEY28";
+                                     linux,code = <28>;
+                                  gpios = <&porta 28 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key29@29 {
+                                    label = "USER-KEY29";
+                                     linux,code = <29>;
+                                  gpios = <&porta 29 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key30@30 {
+                                    label = "USER-KEY30";
+                                     linux,code = <30>;
+                                  gpios = <&porta 30 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key31@31 {
+                                    label = "USER-KEY31";
+                                     linux,code = <31>;
+                                  gpios = <&porta 31 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+#if 0
+ key32@32 {
+                                    label = "USER-KEY32";
+                                     linux,code = <32>;
+                                  gpios = <&portb 0 GPIO_ACTIVE_LOW>;
+                                  debounce-interval = <15>;
+                                     gpio-key,wakeup;
+                                  };
+  key33@33 {
+                                    label = "USER-KEY33";
+                                     linux,code = <33>;
+                                  gpios = <&portb 1 GPIO_ACTIVE_LOW>;
+                                  debounce-interval = <15>;
+                                     gpio-key,wakeup;
+                                  };
+  key34@34 {
+                                    label = "USER-KEY34";
+                                     linux,code = <34>;
+                                  gpios = <&portb 2 GPIO_ACTIVE_LOW>;
+                                  debounce-interval = <15>;
+                                     gpio-key,wakeup;
+                                  };
+  key35@35 {
+                                    label = "USER-KEY35";
+                                     linux,code = <35>;
+                                  gpios = <&portb 3 GPIO_ACTIVE_LOW>;
+                                  debounce-interval = <15>;
+                                     gpio-key,wakeup;
+                                  };
+  key36@36 {
+                                    label = "USER-KEY36";
+                                     linux,code = <36>;
+                                  gpios = <&portb 4 GPIO_ACTIVE_LOW>;
+                                  debounce-interval = <15>;
+                                     gpio-key,wakeup;
+                                  };
+  key37@37 {
+                                    label = "USER-KEY37";
+                                     linux,code = <37>;
+                                  gpios = <&portb 5 GPIO_ACTIVE_LOW>;
+                                  debounce-interval = <15>;
+                                     gpio-key,wakeup;
+                                  };
+  key38@38 {
+                                    label = "USER-KEY38";
+                                     linux,code = <38>;
+                                  gpios = <&portb 6 GPIO_ACTIVE_LOW>;
+                                  debounce-interval = <15>;
+                                     gpio-key,wakeup;
+                                  };
+  key39@39 {
+                                    label = "USER-KEY39";
+                                     linux,code = <39>;
+                                  gpios = <&portb 7 GPIO_ACTIVE_LOW>;
+                                  debounce-interval = <15>;
+                                     gpio-key,wakeup;
+                                  };
+#endif 
+// #if 0
+//   key40@40 {
+//                                     label = "USER-KEY40";
+//                                      linux,code = <40>;
+//                                   gpios = <&portb 8 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//   key41@41 {
+//                                     label = "USER-KEY41";
+//                                      linux,code = <41>;
+//                                   gpios = <&portb 9 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//   key42@42 {
+//                                     label = "USER-KEY42";
+//                                      linux,code = <42>;
+//                                   gpios = <&portb 10 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//  key43@43 {
+//                                     label = "USER-KEY43";
+//                                      linux,code = <43>;
+//                                   gpios = <&portb 11 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//  key44@44 {
+//                                     label = "USER-KEY44";
+//                                      linux,code = <44>;
+//                                   gpios = <&portb 12 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//  key45@45 {
+//                                     label = "USER-KEY45";
+//                                      linux,code = <45>;
+//                                   gpios = <&portb 13 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+// #endif 
+//  key46@46 {
+//                                     label = "USER-KEY46";
+//                                      linux,code = <46>;
+//                                   gpios = <&portb 14 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+//  key47@47 {
+//                                     label = "USER-KEY47";
+//                                      linux,code = <47>;
+//                                   gpios = <&portb 15 GPIO_ACTIVE_LOW>;
+//                                      gpio-key,wakeup;
+//                                   };
+#if 0
+ key48@48 {
+                                    label = "USER-KEY48";
+                                     linux,code = <48>;
+                                  gpios = <&portb 16 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key49@49 {
+                                    label = "USER-KEY49";
+                                     linux,code = <49>;
+                                  gpios = <&portb 17 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key50@50 {
+                                    label = "USER-KEY50";
+                                     linux,code = <50>;
+                                  gpios = <&portb 18 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key51@51 {
+                                    label = "USER-KEY51";
+                                     linux,code = <51>;
+                                  gpios = <&portb 19 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key52@52 {
+                                    label = "USER-KEY52";
+                                     linux,code = <52>;
+                                  gpios = <&portb 20 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key53@53 {
+                                    label = "USER-KEY53";
+                                     linux,code = <53>;
+                                  gpios = <&portb 21 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key54@54 {
+                                    label = "USER-KEY54";
+                                     linux,code = <54>;
+                                  gpios = <&portb 22 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key55@55 {
+                                    label = "USER-KEY55";
+                                     linux,code = <55>;
+                                  gpios = <&portb 23 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+#endif 
+#if 0
+ key56@56 {
+                                    label = "USER-KEY56";
+                                     linux,code = <56>;
+                                  gpios = <&portb 24 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key57@57 {
+                                    label = "USER-KEY57";
+                                     linux,code = <57>;
+                                  gpios = <&portb 25 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key58@58 {
+                                    label = "USER-KEY58";
+                                     linux,code = <58>;
+                                  gpios = <&portb 26 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key59@59 {
+                                    label = "USER-KEY59";
+                                     linux,code = <59>;
+                                  gpios = <&portb 27 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key60@60 {
+                                    label = "USER-KEY60";
+                                     linux,code = <60>;
+                                  gpios = <&portb 28 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key61@61 {
+                                    label = "USER-KEY61";
+                                     linux,code = <61>;
+                                  gpios = <&portb 29 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key62@62 {
+                                    label = "USER-KEY62";
+                                     linux,code = <62>;
+                                  gpios = <&portb 30 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+#endif
+#if 0
+ key63@63 {
+                                    label = "USER-KEY63";
+                                     linux,code = <63>;
+                                  gpios = <&portb 31 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key64@64 {
+                                    label = "USER-KEY64";
+                                     linux,code = <64>;
+                                  gpios = <&portc 0 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+  key65@65 {
+                                    label = "USER-KEY65";
+                                     linux,code = <65>;
+                                  gpios = <&portc 1 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+  key66@66 {
+                                    label = "USER-KEY66";
+                                     linux,code = <66>;
+                                  gpios = <&portc 2 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+  key67@67 {
+                                    label = "USER-KEY67";
+                                     linux,code = <67>;
+                                  gpios = <&portc 3 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+  key68@68 {
+                                    label = "USER-KEY68";
+                                     linux,code = <68>;
+                                  gpios = <&portc 4 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+  key69@69 {
+                                    label = "USER-KEY69";
+                                     linux,code = <69>;
+                                  gpios = <&portc 5 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+  key70@70 {
+                                    label = "USER-KEY70";
+                                     linux,code = <70>;
+                                  gpios = <&portc 6 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+                        
+#endif
+#if 0
+  key71@71 {
+                                    label = "USER-KEY71";
+                                     linux,code = <71>;
+                                  gpios = <&portc 7 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+  key72@72 {
+                                    label = "USER-KEY72";
+                                     linux,code = <72>;
+                                  gpios = <&portc 8 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+  key73@73 {
+                                    label = "USER-KEY73";
+                                     linux,code = <73>;
+                                  gpios = <&portc 9 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+  key74@74 {
+                                    label = "USER-KEY74";
+                                     linux,code = <74>;
+                                  gpios = <&portc 10 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key75@75 {
+                                    label = "USER-KEY75";
+                                     linux,code = <75>;
+                                  gpios = <&portc 11 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key76@76 {
+                                    label = "USER-KEY76";
+                                     linux,code = <76>;
+                                  gpios = <&portc 12 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ key77@77 {
+                                    label = "USER-KEY77";
+                                     linux,code = <77>;
+                                  gpios = <&portc 13 GPIO_ACTIVE_LOW>;
+                                     gpio-key,wakeup;
+                                  };
+ #endif
+};
+
+};

@@ -1,0 +1,285 @@
+/*
+ * dts file for tsingmicro tx5215
+ *
+ * Copyright 2022 Tsingmicro, Inc.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ */
+
+#include <dt-bindings/pinctrl/pinctrl-ts-tx5112.h>
+/ {
+		pinctrl: pinctrl@f0000000 {
+			compatible = "ts,ts-pinctrl-tx5112";
+			status = "disabled";
+			reg = <0xf0000000 0x1000000>;
+			ts,npins = <PINMAX>;
+			
+			i2s {
+				i2s_pinctrl_0: i2s_grp_0 {
+					ts,pins = <PA0 PA2 PA5 PA6 PA7>;
+					mux,val = <2>;
+					function = "i2s";
+					groups = "i2s_grp_0";
+				};
+				
+				i2s_pinctrl_1: i2s_grp_1 {
+					ts,pins = <PF0 PF1 PF2 PF3 PF6>;
+					mux,val = <4>;
+					function = "i2s";
+					groups = "i2s_grp_1";
+				};
+			};
+			
+			spi0 {
+				spi0_pinctrl: spi0_grp {
+					ts,pins = <PE0 PE2 PE3>;
+					mux,val = <1>;
+					function = "spi0";
+					groups = "spi0_grp";
+				};
+			};
+
+			gpioa30 {
+				gpioa30_pinctrl: gpioa30_grp {
+					ts,pins = <PE1>;
+					mux,val = <8>;
+					function = "gpioa30";
+					groups = "gpioa30_grp";
+				};
+			};
+
+			emmc0 {
+				emmc0_pinctrl: emmc0_grp {
+					ts,pins = <PE0 PE1 PE2 PE3 PE4 PE5>;
+					mux,val = <4>;
+					function = "emmc0";
+					groups = "emmc0_grp";
+				};
+			};
+			qspi {
+				qspi_pinctrl: qspi_grp {
+					ts,pins = <PE0 PE1 PE2 PE3 PE4 PE5>;
+					mux,val = <0>;
+					function = "qspi";
+					groups = "qspi_grp";
+				};
+			};
+			emmc1 {
+				emmc1_pinctrl: emmc1_grp {
+					ts,pins = <PF0 PF1 PF2 PF3 PF4 PF5>;
+					mux,val = <0>;
+					function = "emmc1";
+					groups = "emmc1_grp";
+				};
+			};
+			mshc1 {
+				mshc1_pinctrl: mshc1_grp {
+					ts,pins = <PB6>;
+					mux,val = <8>;
+					function = "mshc1";
+					groups = "mshc1_grp";
+				};
+			};
+			sd_pwr {
+				sd_pwr_pinctrl: sd_pwr_grp {
+					ts,pins = <PB7>;
+					mux,val = <8>;
+					function = "sd_pwr";
+					groups = "sd_pwr_grp";
+				};
+			};
+			usb0 {
+				drvvbus_pinctrl: usb_grp {
+					ts,pins = <PB1>;
+					mux,val = <8>;
+					function = "usb0";
+					groups = "usb_grp";
+				};
+			};
+			usi1 {
+				usi1_pinctrl: usi1_grp {
+					ts,pins = <PD0 PF1 PF2 PD4>;
+					mux,val = <0>;
+					function = "usi1";
+					groups = "usi1_grp";
+				};
+			};
+
+			i2c0 {
+				i2c0_pinctrl_0: i2c0_grp_0 {
+					ts,pins = <PD2 PD3>;
+					mux,val = <0>;
+					function = "i2c0";
+					groups = "i2c0_grp_0";
+				};
+				i2c0_pinctrl_1: i2c0_grp_1 {
+					ts,pins = <PF0 PF1>;
+					mux,val = <1>;
+					function = "i2c0";
+					groups = "i2c0_grp_1";
+				};
+			};
+
+			i2c1 {
+				i2c1_pinctrl: i2c1_grp {
+					ts,pins = <PB0 PB1>;
+					mux,val = <1>;
+					function = "i2c1";
+					groups = "i2c1_grp";
+				};
+			};
+
+			i2c2 {
+				i2c2_pinctrl: i2c2_grp {
+					ts,pins = <PD0 PD1>;
+					mux,val = <3>;
+					function = "i2c2";
+					groups = "i2c2_grp";
+				};
+			};
+
+			gpioa18 {
+				gpioa18_pinctrl: gpioa18_grp {
+					ts,pins = <PC2>;
+					mux,val = <8>;
+					function = "gpioa18";
+					groups = "gpioa18_grp";
+				};
+			};
+
+			gpioa19 {
+				gpioa19_pinctrl: gpioa19_grp {
+					ts,pins = <PC3>;
+					mux,val = <8>;
+					function = "gpioa19";
+					groups = "gpioa19_grp";
+				};
+			};
+
+			gpioa26 {
+				gpioa26_pinctrl: gpioa26_grp {
+					ts,pins = <PD2>;
+					mux,val = <8>;
+					function = "gpioa26";
+					groups = "gpioa26_grp";
+					bias-pull-down;
+				};
+			};
+
+			gpioa27 {
+				gpioa27_pinctrl: gpioa27_grp {
+					ts,pins = <PD3>;
+					mux,val = <8>;
+					function = "gpioa27";
+					groups = "gpioa27_grp";
+					bias-pull-up;
+				};
+			};
+
+			gpioa20 {
+				gpioa20_pinctrl: gpioa20_grp {
+					ts,pins = <PC4>;
+					mux,val = <8>;
+					function = "gpioa20";
+					groups = "gpioa20_grp";
+				};
+			};
+
+			gpiob4 {
+				gpiob4_pinctrl: gpiob4_grp {
+					ts,pins = <PF1>;
+					mux,val = <8>;
+					function = "gpiob4";
+					groups = "gpiob4_grp";
+				};
+			};
+
+			chip_out0 {
+				chip_out0_pinctrl: chip_out0_grp {
+					ts,pins = <PD4>;
+					mux,val = <0>;
+					function = "chip_out0";
+					groups = "chip_out0_grp";
+				};
+			};
+
+			usi0 {
+				usi0_pinctrl: usi0_grp {
+					ts,pins = <PA0 PA5 PB0>;
+					mux,val = <3>;
+					function = "usi0";
+					groups = "usi0_grp";
+				};
+			};
+
+			gpioa9 {
+				gpioa9_pinctrl: gpioa9_grp {
+					ts,pins = <PB1>;
+					mux,val = <8>;
+					function = "gpioa9";
+					groups = "gpioa9_grp";
+				};
+			};
+
+			pwm0{
+				pwm0_pinctrl:pwm0_grp{
+					ts,pins = <PB2>;
+					mux,val = <1>;
+					function = "pwm0";
+					groups = "pwm0_grp";
+				};
+			};
+
+			pdmic {
+				pdmic_pinctrl_0: pdmic_grp_0 {
+					ts,pins = <PB0 PB1>;
+					mux,val = <2>;
+					function = "pdmic";
+					groups = "pdmic_grp_0";
+				};
+			};
+			motor {
+				motor_pinctrl0: motor_grp_0 {
+					ts,pins = <PA0 PA2 PA3 PA4>;
+					mux,val = <8>;
+					function = "motor";
+					groups = "motor_grp_0";
+				};
+				motor_pinctrl1: motor_grp_1 {
+					ts,pins = <PA5 PA6 PA7 PB0>;
+					mux,val = <8>;
+					function = "motor";
+					groups = "motor_grp_1";
+				};
+			};
+			ir_cut_gpio {
+				ir_cut_gpio_pinctrl: ir_cut_gpio_grp {
+					ts,pins = <PC0 PC1>;
+					mux,val = <8>;
+					function = "ir_cut_gpio";
+					groups = "ir_cut_gpio_grp";
+				};
+			};
+			gpioa1 {
+				gpioa1_pinctrl: gpioa1_grp {
+					ts,pins = <PA1>;
+					mux,val = <8>;
+					function = "gpioa1";
+					groups = "gpioa1_grp";
+				};
+			};
+			gpioa13 {
+				gpioa13_pinctrl: gpioa13_grp {
+					ts,pins = <PB5>;
+					mux,val = <8>;
+					function = "gpioa13";
+					groups = "gpioa13_grp";
+				};
+			};
+
+		};
+};
+

@@ -1,0 +1,92 @@
+   	/bin/busybox                     f 4755 0  0 - - - - -
+
+# See package/makedevs/README for details
+#
+# This device table is used to assign proper ownership and permissions
+# on various files. It doesn't create any device file as it is used
+# in both static device configurations (where /dev/ is static) and in
+# dynamic configurations (where devtmpfs mdev or udev are used).
+#
+#
+#define TS_MEDIA_MAJOR		205
+#define TS_IIO_MAJOR		207
+#define TS_GPADC_MAJOR		208
+#define TS_IR_MAJOR			209
+#define TS_WATCHDOG_MAJOR	210
+#define TS_GPIOCHIP_MAJOR	211
+#define TS_AIISP_MAJOR		212
+#define TS_RNE_MAJOR		213
+#define TS_VPE_MAJOR		214
+#define TS_GDC_MAJOR		215
+#define TS_CVE_MAJOR		216
+#define TS_AMR_MAJOR		217
+#define TS_JPU_MAJOR		218
+#define TS_H265_MAJOR		219
+#define TS_H264_MAJOR		220 //HX280ENC
+#define TS_LCD_MAJOR		221
+#define TS_MMZMEM_MAJOR		222
+#define TS_MPP_PROC_MAJOR	223
+#define TS_MPP_MAJOR		224
+#define TS_SYS_MAJOR		225 //226 confilct with drm
+
+# <name>			<type>	<mode>	<uid>	<gid>	<major>	<minor>	<start>	<inc>	<count>
+/dev				d	755	0	0	-	-	-	-	-
+/dev/ISP-Mem  			c 	660	0	0	10 	112 	0	0	-
+/dev/cache_op  			c 	660	0	0	10 	113 	0	0	-
+/dev/console 			c 	660	0	0   5  	1	0	0	-
+/dev/cpu_dma_latency 		c 	660	0	0   10  61	0	0	-
+/dev/full 			c 	660	0	0	1   7	0	0	-
+/dev/watchdog  			c 	660	0	0	210  0  0	0	-
+/dev/gpiochip0  		c 	660	0	0	211 0	0	0	-
+/dev/gpiochip1  		c 	660	0	0	211 1	0	0	-
+/dev/hx280enc 			c 	660	0	0	220 0	0	0	-
+/dev/ion 			c 	660	0	0	10  118	0	0	-
+/dev/kmsg 			c 	660	0	0	1 	11	0	0	-
+/dev/mem 			c 	660	0	0	1   1	0	0	-
+/dev/memory_bandwidth 		c 	660	0	0	10  114	0	0	-
+/dev/mmzmem 			c 	660	0	0	222  0	0	0	-
+/dev/mmzmem_ram 		c 	660	0	0	222  1	0	0	-
+/dev/mpp 			c 	660	0	0	223  0	0	0	-
+/dev/mtd0 			c 	660	0	0	90   0	0	0	-
+/dev/mtd0ro 			c 	660	0	0	90   1	0	0	-
+/dev/mtd1 			c 	660	0	0	90   2	0	0	-
+/dev/mtd1ro 			c 	660	0	0	90   3	0	0	-
+/dev/mtd2 			c 	660	0	0	90   4	0	0	-
+/dev/mtd2ro 			c 	660	0	0	90   5	0	0	-
+/dev/mtd3 			c 	660	0	0	90   6	0	0	-
+/dev/mtd3ro 			c 	660	0	0	90   7	0	0	-
+/dev/mtdblock0 			b 	660	0	0	31   0	0	0	-
+/dev/mtdblock1 			b 	660	0	0	31   1	0	0	-
+/dev/mtdblock2 			b 	660	0	0	31   2	0	0	-
+/dev/mtdblock3 			b 	660	0	0	31   3	0	0	-
+/dev/cpu_dma_latency 	c 	660	0	0	10  117	0	0	-
+/dev/network_latency 	c 	660	0	0	10  116	0	0	-
+/dev/network_throughput c 	660	0	0	10  115	0	0	-
+/dev/null 			c 	660	0	0	1 	 3  0	0	-
+/dev/ptmx 			c 	660	0	0	5 	 2  0	0	-
+/dev/random 			c 	660	0	0	1 	 8  0	0	-
+/dev/sys  			c 	660	0	0	225  0  0	0	-
+/dev/media  			c 	660	0	0	205  0  0	0	-
+/dev/tty 			c 	660	0	0	5 	 0  0	0	-
+/dev/ttyS0 			c 	660	0	0	4 	64  0	0	-
+/dev/ttyS1 			c 	660	0	0	4 	65  0	0	-
+/dev/urandom 			c 	660	0	0	1 	 9  0	0	-
+/dev/v4l-subdev0 		c 	660	0	0	81   2  0	0	-
+/dev/v4l-subdev1 		c 	660	0	0	81   3  0	0	-
+/dev/v4l-subdev2 		c 	660	0	0	81   4  0	0	-
+/dev/video0 			c 	660	0	0	81   0  0	0	-
+/dev/video1 			c 	660	0	0	81   1  0	0	-
+/dev/vpe_in_offline 		c 	660	0	0	214  1  0	0	-
+/dev/vpe_in_online 		c 	660	0	0	214  0  0	0	-
+/dev/vpe_out0 			c 	660	0	0	214  2  0	0	-
+/dev/vpe_out1 			c 	660	0	0	214  3  0	0	-
+/dev/vpe_out2 			c 	660	0	0	214  4  0	0	-
+/dev/ts_codec_ctl  			c 	660	0	0	10  110  0	0	-
+/dev/vpu_mem  			c 	660	0	0	10  111  0	0	-
+/dev/zero 			c 	660	0	0	1 	 5  0	0	-
+/dev/ram0 			b 	660	0	0	1 	 0  0	0	-
+/dev/snd			d	755	0	0	-	-	-	-	-
+/dev/snd/controlC0 		c 	660	0	0	116  0  0	0	-
+/dev/snd/pcmC0D0c 		c 	660	0	0	116 24  0	0	-
+/dev/snd/pcmC0D0p 		c 	660	0	0	116 16  0	0	-
+/dev/snd/timer 			c 	660	0	0	116 33  0	0	-

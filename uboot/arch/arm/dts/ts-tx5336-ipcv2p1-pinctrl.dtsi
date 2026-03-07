@@ -1,0 +1,144 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * dts file for tsingmicro dt53
+ *
+ * Copyright 2022 Beijing Tsingmicro Intelligent Technology Co.,Ltd.
+ *
+ */
+#include <dt-bindings/pinctrl/pinctrl-ts-tx5336.h>
+
+&pinctrl {
+
+    qspi {
+        qspi_pinctrl: qspi_pinctrl_grp {
+            ts,pins = <PF0 PF1 PF2 PF3 PF4 PF5>;
+            mux,val = <0>;
+            function = "qspi";
+            groups = "qspi_pinctrl_grp";        
+            voltage-1v8;
+        };
+    };
+
+	gpioc5 {
+      gpioc5_pinctrl: gpioc5_grp {
+            ts,pins = <PJ6>;
+            mux,val = <5>;
+            function = "gpioc5";
+            groups = "gpioc5_grp";
+			voltage-1v8;
+        };
+    };
+
+    gpioa15 {
+        gpioa15_pinctrl: gpioa15_grp {
+            ts,pins = <PB7>;
+            mux,val = <5>;
+            function = "gpioa15";
+            groups = "gpioa15_grp";
+            voltage-1v8;
+        };
+    };
+
+	gpioa24 {
+		gpioa24_pinctrl: gpioa24_grp {
+			ts,pins = <PD0>;
+			mux,val = <5>;
+			function = "gpioa24";
+			groups = "gpioa24_grp";
+            voltage-1v8;
+		};
+	};
+
+	gpiob1 {
+        gpiob1_pinctrl: gpiob1_grp {
+            ts,pins = <PE1>;
+            mux,val = <5>;
+            function = "gpiob1";
+            groups = "gpiob1_grp";
+            voltage-1v8;
+        };
+    };
+
+	gpiob16 {
+        gpiob16_pinctrl: gpiob16_grp {
+            ts,pins = <PG0>;
+            mux,val = <5>;
+            function = "gpiob16";
+            groups = "gpiob16_grp"; 
+            voltage-1v8;
+        };
+    };
+
+    gpiob27 {
+      gpiob27_pinctrl: gpiob27_grp {
+            ts,pins = <PH3>;
+            mux,val = <5>;
+            function = "gpiob27";
+            groups = "gpiob27_grp";
+			voltage-1v8;
+        };
+    };
+
+	gpiob30 {
+        gpiob30_pinctrl: gpiob30_grp {
+            ts,pins = <PH6>;
+            mux,val = <5>;
+            function = "gpiob30";
+            groups = "gpiob30_grp"; 
+            voltage-1v8;
+        };
+    };
+
+	gpioc6 {
+        gpioc6_pinctrl: gpioc6_grp {
+            ts,pins = <PK0>;
+            mux,val = <5>;
+            function = "gpioc6";
+            groups = "gpioc6_grp";
+            voltage-1v8;
+        };
+    };
+
+    mac0 {
+		//MAC_EPHY_CLK MAC_TXCLK MAC_TXEN MAC_TXD0 MAC_TXD1 MAC_RXDV MAC_RXD0 MAC_RXD1
+		//MAC_MDC MAC_MDIO  MAC_RXCLK
+		mac0_pinctrl0: mac0_grp_0 {
+			ts,pins = <PA0 PA1 PA2 PA3 PA4 PA5 PA6 PA7
+					   PB0 PB1 PB4>;
+			mux,val = <0>;
+			function = "mac0";
+			groups = "mac0_grp_0";
+			voltage-1v8;
+		};
+		//GPIOB15
+		mac0_rst_pinctrl: mac0_grp_rst {
+			ts,pins = <PB2>;
+			mux,val = <5>;
+			function = "mac0";
+			groups = "mac0_grp_rst";
+			voltage-1v8;
+		};
+		//CHIPOUTCLK1
+		mac0_clk_pinctrl: mac0_grp_clk {
+			ts,pins = <PC2>;
+			mux,val = <2>;
+			function = "mac0";
+			groups = "mac0_grp_clk";
+			voltage-1v8;
+		};
+	};
+
+#if 0
+	sdhci0 {
+		sd0_pinctrl0: sd_grp {
+			ts,pins = <PH0 PH1 PH2 PH3 PH4 PH5>;
+			mux,val = <0>;
+			function = "sd";
+			groups = "sd_grp";
+			voltage-1v8;
+		};
+	};
+#endif
+
+
+};

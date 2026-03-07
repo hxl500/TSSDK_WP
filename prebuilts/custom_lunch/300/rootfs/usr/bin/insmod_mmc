@@ -1,0 +1,10 @@
+#!/bin/sh
+
+insmod /lib/modules/mmc_core.ko
+insmod /lib/modules/mmc_block.ko
+insmod /lib/modules/dw_mmc.ko
+insmod /lib/modules/dw_mmc-pltfm.ko
+mdev -s
+insmod /lib/modules/nls_cp936.ko
+insmod /lib/modules/fat.ko
+insmod /lib/modules/vfat.ko

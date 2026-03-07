@@ -1,0 +1,20 @@
+config SND_TSINGMICRO_SOC
+	tristate "SoC Audio for the Tsingmicro System-on-Chip"
+	depends on HAS_IOMEM
+	help
+	  Say Y or M if you want to add support for codecs attached to
+	  the Tsingmicro SSC interface. You will also need
+	  to select the audio interfaces to support below.
+
+if SND_TSINGMICRO_SOC
+
+config SND_TSINGMICRO_SOC_PDMIC
+	tristate "Tsingmicro ASoC driver for boards using PDMIC"
+	depends on OF
+	select SND_SOC_GENERIC_DMAENGINE_PCM
+	select REGMAP_MMIO
+	help
+	  Say Y if you want to add support for Tsingmicro ASoC driver for boards using
+	  PDMIC.
+
+endif

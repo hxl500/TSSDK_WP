@@ -1,0 +1,191 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * dts file for tsingmicro tx5112
+ *
+ * (C) Copyright 2014 - 2023, Tsingmicro, Inc.
+ *
+ * Yongchao.Shi <shiyongchao@tsingmicro.com>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ */
+
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+
+/ {
+	compatible = "ts,tx5112";
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		cpu0: cpu@0 {
+			compatible = "arm,cortex-a7";
+			device_type = "cpu";
+			reg = <0x0>;
+			operating-points = <
+				/* KHz    uV */
+				 816000 1000000
+			>;
+			clock-latency = <40000>;
+		};
+
+		gic: interrupt-controller@f2458000 {
+			compatible = "arm,gic-400", "arm,cortex-a7-gic";
+			#interrupt-cells = <3>;
+			reg = <0xf2459000 0x1000>,
+			      <0xf245a000 0x2000>,
+			      <0xf245c000 0x2000>,
+			      <0xf245e000 0x2000>;
+			interrupt-controller;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_HIGH)>;
+		};
+
+        timer {
+                compatible = "arm,armv7-timer";
+                interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>,
+                             <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>,
+                             <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>,
+                             <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>;
+                interrupt-parent = <&gic>;
+                status = "okay";
+        };
+	};
+
+	/* not use */
+	amba_apu: amba-apu@0 {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges = <0 0 0xffffffff>;
+	};
+
+	amba: amba {
+		compatible = "simple-bus";
+		u-boot,dm-pre-reloc;
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		gmac0: ethernet0@f24a0000{
+			compatible = "snps,ts-eqos";
+			//local-mac-address = [ 00 18 fe 66 66 66 ];
+			reg = <0xf24a0000 0x10000>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			snps,en-tx-lpi-clockgating;
+			snps,en-lpi;
+			snps,write-requests = <2>;
+			snps,read-requests = <16>;
+			snps,burst-map = <0x7>;
+			snps,txpbl = <8>;
+			snps,rxpbl = <2>;
+
+			dma-coherent;
+			status = "disable";
+		};
+
+
+
+		qspi: spi@f1000000 {
+			compatible =  "cdns,qspi-nor";
+			status = "disabled";
+			reg = <0xf1000000 0x4000>,
+            <0xe0000000 0x10000000>;
+ 			num-cs = <4>;
+ 			cdns,fifo-depth = <256>;
+ 			cdns,fifo-width = <4>;
+			cdns,trigger-address = <0xe0000000>;
+			/*cdns,is-decoded-cs = <0>;*/
+			pinctrl-names = "default";
+			pinctrl-0 = <&qspi_pinctrl>;
+		};
+
+		sdhci0: mmc@f2102000 {
+			compatible = "snps,dw-mshc";
+			status = "disabled";
+			reg = <0xf2102000 0x1000>;
+			bus-width = <4>;
+			fifo-depth = <256>;
+			/*clocks = <&mmcclk_biu>, <&mmcclk_ciu>;
+			clock-names = "biu", "ciu";*/
+			max-frequency = <25000000>;
+			//pinctrl-names = "default";
+			//pinctrl-0 = <&emmc0_pinctrl>;
+		};
+		sdhci1: mmc@f2103000 {
+			compatible = "snps,dw-mshc";
+			status = "disabled";
+			reg = <0xf2103000 0x1000>;
+			bus-width = <4>;
+			fifo-depth = <256>;
+			/*clocks = <&mmcclk_biu>, <&mmcclk_ciu>;
+			clock-names = "biu", "ciu";*/
+			max-frequency = <25000000>;
+		};
+
+		ssi0: spi@f0da0000 {
+			compatible = "snps,dw-apb-ssi";
+			status = "disabled";
+			reg = <0xf0da0000 0x1000>;
+			num-cs = <4>;
+		};
+		uart0: serial@f2449000 {
+			u-boot,dm-pre-reloc;
+			compatible = "snps,dw-apb-uart";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <0 22 4>;
+			reg = <0xf2449000 0x1000>;
+			clock-names = "uart_clk", "pclk";
+			reg-shift = <2>;
+			reg-io-width = <4>;
+		};
+		gpio0: gpio@f2448000 {
+			compatible = "snps,dw-apb-gpio";
+			reg = <0xf2448000 0x1000>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "disabled";
+			porta: gpio-controller@0 {
+				compatible = "snps,dw-apb-gpio-port";
+				gpio-controller;
+				#gpio-cells = <2>;
+				snps,nr-gpios = <32>;
+				reg = <0>;
+			};
+		};
+        gpio1: gpio@f244c000 {
+                compatible = "snps,dw-apb-gpio";
+                reg = <0xf244c000 0x1000>;
+                #address-cells = <1>;
+                #size-cells = <0>;
+                status = "disabled";
+                portb: gpio-controller@0 {
+                        compatible = "snps,dw-apb-gpio-port";
+                        gpio-controller;
+                        #gpio-cells = <2>;
+                        snps,nr-gpios = <10>;
+                        reg = <0>;
+                };
+        };
+		
+		otpc: otpc@f100b000 {
+			compatible = "tsingmicro,ts-otpc";
+			status = "disabled";
+			reg = <0xf100b000 0x1000>;
+		};
+		
+		ts_ske: ts_ske@f2420000 {
+			compatible = "tsingmicro,ts-ske";
+			status = "disabled";
+			reg = <0xf2420000 0x1000>;
+		};
+	};
+};

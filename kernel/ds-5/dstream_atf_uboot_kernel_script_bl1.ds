@@ -1,0 +1,26 @@
+# dstream load bl1, bl2/31/uboot are loaded from io_storage
+# dstream download FIT(kernel,dtb,rootfs), then bootm using uboot
+
+set debug-agent ALLOW_EL1_MEMACC_FROM_EL3 1
+
+stop
+hbreak *EL3:0xf0d40000
+memory set EL3<verify=0>:0xF0D95014   32 0x0
+reset
+stop
+delete breakpoint $
+
+loadfile  "prebuilts/atf/bl1.elf" EL3:0x0
+restore "prebuilts/atf/bl1.bin" binary 0xF0D40000
+run
+pause 15000 	# delay 15s, wating uboot run cmd
+
+# stop A53 core
+stop
+
+#download linux kernel image
+restore out\ts-tx536.itb binary 0x10000000
+
+add-symbol-file  kernel\vmlinux EL1N:0
+
+continue

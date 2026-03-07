@@ -1,0 +1,32 @@
+kernel/fs/nfs_common/grace.ko:
+kernel/fs/nls/nls_cp437.ko:
+kernel/fs/nls/nls_cp936.ko:
+kernel/fs/nls/nls_iso8859-1.ko:
+kernel/fs/fat/fat.ko:
+kernel/fs/fat/vfat.ko: kernel/fs/fat/fat.ko
+kernel/fs/nfs/nfs.ko: kernel/fs/lockd/lockd.ko kernel/fs/nfs_common/grace.ko kernel/net/sunrpc/sunrpc.ko
+kernel/fs/nfs/nfsv2.ko: kernel/fs/nfs/nfs.ko kernel/fs/lockd/lockd.ko kernel/fs/nfs_common/grace.ko kernel/net/sunrpc/sunrpc.ko
+kernel/fs/nfs/nfsv3.ko: kernel/fs/nfs/nfs.ko kernel/fs/lockd/lockd.ko kernel/fs/nfs_common/grace.ko kernel/net/sunrpc/sunrpc.ko
+kernel/fs/lockd/lockd.ko: kernel/fs/nfs_common/grace.ko kernel/net/sunrpc/sunrpc.ko
+kernel/crypto/seqiv.ko:
+kernel/crypto/echainiv.ko:
+kernel/crypto/cmac.ko:
+kernel/crypto/gf128mul.ko:
+kernel/crypto/ecb.ko:
+kernel/crypto/ctr.ko:
+kernel/crypto/gcm.ko:
+kernel/crypto/ccm.ko:
+kernel/crypto/arc4.ko:
+kernel/crypto/michael_mic.ko:
+kernel/crypto/ghash-generic.ko: kernel/crypto/gf128mul.ko
+kernel/drivers/i2c/i2c-mux.ko:
+kernel/drivers/mmc/host/dw_mmc.ko: kernel/drivers/mmc/core/mmc_core.ko
+kernel/drivers/mmc/host/dw_mmc-pltfm.ko: kernel/drivers/mmc/host/dw_mmc.ko kernel/drivers/mmc/core/mmc_core.ko
+kernel/drivers/mmc/core/mmc_core.ko:
+kernel/drivers/mmc/core/mmc_block.ko: kernel/drivers/mmc/core/mmc_core.ko
+kernel/drivers/input/input-core.ko:
+kernel/drivers/input/evdev.ko: kernel/drivers/input/input-core.ko
+kernel/net/wireless/cfg80211.ko:
+kernel/net/sunrpc/sunrpc.ko:
+kernel/net/mac80211/mac80211.ko: kernel/net/wireless/cfg80211.ko
+kernel/lib/crc-itu-t.ko:

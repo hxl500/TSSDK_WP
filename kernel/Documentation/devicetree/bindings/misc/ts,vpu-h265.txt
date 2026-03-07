@@ -1,0 +1,20 @@
+TsingMicro VPU H265 codec for tx5215, tx5112, dt53
+-----------------------------------------------------
+Required properties:
+- compatible : "ts,h265"
+- DEPRECATED: compatible : "ts,h265"
+- reg : Location and size of register space
+
+Optional properties:
+- memory-region: If present, the itf buffer is allocated by driver.
+
+Example:
+	vpu_h265: vpu_h265@F24ED000 {
+                       compatible = "ts,h265";
+                       memory-region = <&h265_reserved>;
+                       reg = <0xF24ED000 0x1000>;
+                       interrupt-parent = <&gic>;
+                       interrupts = <0 50 IRQ_TYPE_LEVEL_HIGH>;
+                       status = "disabled";
+               };
+

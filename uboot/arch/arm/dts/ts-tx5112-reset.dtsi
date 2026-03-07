@@ -1,0 +1,75 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * Reset specification for Tsingmicor Soc
+ *
+ * (C) Copyright 2022 - 2022, Tsingmicro, Inc.
+ *
+ */
+
+#include <dt-bindings/reset/ts-tx5112-resets.h>
+/ {
+	ts_reset: reset-controller {
+		compatible = "ts,tx5112-reset";
+		reg = <0xF1004000 0x1000>;
+		#reset-cells = <1>;
+	};
+};
+#if 0
+&uart0 {
+	resets = <&ts_reset TS_UART0_SRST>;
+};
+
+&dma0 {
+	resets = <&ts_reset TS_RST_DMAC0>;
+};
+#endif
+
+&gmac0 {
+	resets = <&ts_reset TS_GMAC_RST>;
+};
+
+#if 0
+&nand0 {
+	resets = <&ts_reset TS_RST_NFC_AHB>, <&ts_reset TS_RST_NFC_FUNC_BLOCK>,
+			 <&ts_reset TS_RST_NFC_GLOBAL>;
+	reset-name = "nfc_ahb", "nfc_func_block", "nfc_global";
+};
+
+&spi0 {
+	resets = <&ts_reset TS_RST_SPI0_GLOBAL>;
+	reset-names = "spi";
+};
+#endif
+&qspi {
+	resets = <&ts_reset TS_OSPI_REF_RST>,
+			 <&ts_reset TS_OSPI_HRST>,
+			 <&ts_reset TS_OSPI_PRST>;
+	reset-name = "qspi_ref", "ospi_ahb", "spi_apb";
+};
+
+#if 0
+&ssi1 {
+	resets = <&ts_reset TS_RST_SPI1_GLOBAL>;
+	reset-names = "spi";
+};
+
+&ssi2 {
+	resets = <&ts_reset TS_RST_SPI2_GLOBAL>;
+	reset-names = "spi";
+};
+
+&ssi3 {
+	resets = <&ts_reset TS_RST_SPI3_GLOBAL>;
+	reset-names = "spi";
+};
+
+&ssi4 {
+	resets = <&ts_reset TS_RST_SPI4_GLOBAL>;
+	reset-names = "spi";
+};
+#endif
+
+&otpc {
+	resets = <&ts_reset TS_APB_OTPC_PRST>;
+	reset-names = "ts_otpc";
+};

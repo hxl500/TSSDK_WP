@@ -1,0 +1,24 @@
+#allow access El1 memory from EL3, for setting breakpoint
+set debug-agent ALLOW_EL1_MEMACC_FROM_EL3 1
+
+#reset target for EL3->EL1
+#reset
+#wait reset deassert? commands windows show "Target has been reset" after this instruction
+#wait
+
+# disable MMU
+set $SCTLR_EL1.M =0
+# download linux kernel image
+restore TX536_fpga_kernel\arch\arm64\boot\Image binary 0x8080000
+# download dtb
+restore TX536_fpga_kernel\ts-tx536-fpga.dtb binary 0x10000000
+# download ramdisk
+#restore TX536_fpga_kernel\rootfs.ext4.gz binary 0x20000000
+#
+set $pc=0x8080000
+set $x0=0x10000000
+set $x1=0x0
+set $x2=0x0
+set $x3=0x0
+
+

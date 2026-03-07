@@ -1,0 +1,3926 @@
+/*
+ * dts file for tsingmicro tx5336
+ *
+ * Copyright 2022 Tsingmicro, Inc.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ */
+
+#include <dt-bindings/pinctrl/pinctrl-ts-tx5336.h>
+
+/ {
+    pinctrl: pinctrl@f0389000 {
+        compatible = "ts,ts-pinctrl-tx5336";
+        status = "okay";
+        reg = <0x0 0xf0389000 0x0 0x1000>;
+        ts,npins = <PINMAX>;
+
+gpioa0 {
+  gpioa0_pinctrl: gpioa0_grp {
+    ts,pins = <PA0>;
+  mux,val = <5>;
+ function = "gpioa0";
+  groups = "gpioa0_grp";
+  };
+gpioa0_bias_up_pinctrl: gpioa0_bias_up_grp {
+    ts,pins = <PA0>;
+  mux,val = <5>;
+ function = "gpioa0";
+  groups = "gpioa0_bias_up_grp";
+  bias-pull-up;
+ };
+gpioa0_bias_down_pinctrl: gpioa0_bias_down_grp {
+    ts,pins = <PA0>;
+  mux,val = <5>;
+ function = "gpioa0";
+  groups = "gpioa0_bias_down_grp";
+  bias-pull-down;
+ };
+gpioa0_voltage_set_pinctrl: gpioa0_voltage_set_grp {
+    ts,pins = <PA0>;
+  mux,val = <5>;
+ function = "gpioa0";
+  groups = "gpioa0_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioa0_drv2_set_pinctrl: gpioa0_drv2_set_grp {
+    ts,pins = <PA0>;
+  mux,val = <5>;
+ function = "gpioa0";
+  groups = "gpioa0_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioa0_drv4_set_pinctrl: gpioa0_drv4_set_grp {
+    ts,pins = <PA0>;
+  mux,val = <5>;
+ function = "gpioa0";
+  groups = "gpioa0_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioa0_drv8_set_pinctrl: gpioa0_drv8_set_grp {
+    ts,pins = <PA0>;
+  mux,val = <5>;
+ function = "gpioa0";
+  groups = "gpioa0_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioa1 {
+  gpioa1_pinctrl: gpioa1_grp {
+    ts,pins = <PA1>;
+  mux,val = <5>;
+ function = "gpioa1";
+  groups = "gpioa1_grp";
+  };
+gpioa1_bias_up_pinctrl: gpioa1_bias_up_grp {
+    ts,pins = <PA1>;
+  mux,val = <5>;
+ function = "gpioa1";
+  groups = "gpioa1_bias_up_grp";
+  bias-pull-up;
+ };
+gpioa1_bias_down_pinctrl: gpioa1_bias_down_grp {
+    ts,pins = <PA1>;
+  mux,val = <5>;
+ function = "gpioa1";
+  groups = "gpioa1_bias_down_grp";
+  bias-pull-down;
+ };
+gpioa1_voltage_set_pinctrl: gpioa1_voltage_set_grp {
+    ts,pins = <PA1>;
+  mux,val = <5>;
+ function = "gpioa1";
+  groups = "gpioa1_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioa1_drv2_set_pinctrl: gpioa1_drv2_set_grp {
+    ts,pins = <PA1>;
+  mux,val = <5>;
+ function = "gpioa1";
+  groups = "gpioa1_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioa1_drv4_set_pinctrl: gpioa1_drv4_set_grp {
+    ts,pins = <PA1>;
+  mux,val = <5>;
+ function = "gpioa1";
+  groups = "gpioa1_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioa1_drv8_set_pinctrl: gpioa1_drv8_set_grp {
+    ts,pins = <PA1>;
+  mux,val = <5>;
+ function = "gpioa1";
+  groups = "gpioa1_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioa2 {
+  gpioa2_pinctrl: gpioa2_grp {
+    ts,pins = <PA2>;
+  mux,val = <5>;
+ function = "gpioa2";
+  groups = "gpioa2_grp";
+  };
+gpioa2_bias_up_pinctrl: gpioa2_bias_up_grp {
+    ts,pins = <PA2>;
+  mux,val = <5>;
+ function = "gpioa2";
+  groups = "gpioa2_bias_up_grp";
+  bias-pull-up;
+ };
+gpioa2_bias_down_pinctrl: gpioa2_bias_down_grp {
+    ts,pins = <PA2>;
+  mux,val = <5>;
+ function = "gpioa2";
+  groups = "gpioa2_bias_down_grp";
+  bias-pull-down;
+ };
+gpioa2_voltage_set_pinctrl: gpioa2_voltage_set_grp {
+    ts,pins = <PA2>;
+  mux,val = <5>;
+ function = "gpioa2";
+  groups = "gpioa2_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioa2_drv2_set_pinctrl: gpioa2_drv2_set_grp {
+    ts,pins = <PA2>;
+  mux,val = <5>;
+ function = "gpioa2";
+  groups = "gpioa2_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioa2_drv4_set_pinctrl: gpioa2_drv4_set_grp {
+    ts,pins = <PA2>;
+  mux,val = <5>;
+ function = "gpioa2";
+  groups = "gpioa2_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioa2_drv8_set_pinctrl: gpioa2_drv8_set_grp {
+    ts,pins = <PA2>;
+  mux,val = <5>;
+ function = "gpioa2";
+  groups = "gpioa2_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioa3 {
+  gpioa3_pinctrl: gpioa3_grp {
+    ts,pins = <PA3>;
+  mux,val = <5>;
+ function = "gpioa3";
+  groups = "gpioa3_grp";
+  };
+gpioa3_bias_up_pinctrl: gpioa3_bias_up_grp {
+    ts,pins = <PA3>;
+  mux,val = <5>;
+ function = "gpioa3";
+  groups = "gpioa3_bias_up_grp";
+  bias-pull-up;
+ };
+gpioa3_bias_down_pinctrl: gpioa3_bias_down_grp {
+    ts,pins = <PA3>;
+  mux,val = <5>;
+ function = "gpioa3";
+  groups = "gpioa3_bias_down_grp";
+  bias-pull-down;
+ };
+gpioa3_voltage_set_pinctrl: gpioa3_voltage_set_grp {
+    ts,pins = <PA3>;
+  mux,val = <5>;
+ function = "gpioa3";
+  groups = "gpioa3_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioa3_drv2_set_pinctrl: gpioa3_drv2_set_grp {
+    ts,pins = <PA3>;
+  mux,val = <5>;
+ function = "gpioa3";
+  groups = "gpioa3_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioa3_drv4_set_pinctrl: gpioa3_drv4_set_grp {
+    ts,pins = <PA3>;
+  mux,val = <5>;
+ function = "gpioa3";
+  groups = "gpioa3_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioa3_drv8_set_pinctrl: gpioa3_drv8_set_grp {
+    ts,pins = <PA3>;
+  mux,val = <5>;
+ function = "gpioa3";
+  groups = "gpioa3_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioa4 {
+  gpioa4_pinctrl: gpioa4_grp {
+    ts,pins = <PA4>;
+  mux,val = <5>;
+ function = "gpioa4";
+  groups = "gpioa4_grp";
+  };
+gpioa4_bias_up_pinctrl: gpioa4_bias_up_grp {
+    ts,pins = <PA4>;
+  mux,val = <5>;
+ function = "gpioa4";
+  groups = "gpioa4_bias_up_grp";
+  bias-pull-up;
+ };
+gpioa4_bias_down_pinctrl: gpioa4_bias_down_grp {
+    ts,pins = <PA4>;
+  mux,val = <5>;
+ function = "gpioa4";
+  groups = "gpioa4_bias_down_grp";
+  bias-pull-down;
+ };
+gpioa4_voltage_set_pinctrl: gpioa4_voltage_set_grp {
+    ts,pins = <PA4>;
+  mux,val = <5>;
+ function = "gpioa4";
+  groups = "gpioa4_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioa4_drv2_set_pinctrl: gpioa4_drv2_set_grp {
+    ts,pins = <PA4>;
+  mux,val = <5>;
+ function = "gpioa4";
+  groups = "gpioa4_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioa4_drv4_set_pinctrl: gpioa4_drv4_set_grp {
+    ts,pins = <PA4>;
+  mux,val = <5>;
+ function = "gpioa4";
+  groups = "gpioa4_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioa4_drv8_set_pinctrl: gpioa4_drv8_set_grp {
+    ts,pins = <PA4>;
+  mux,val = <5>;
+ function = "gpioa4";
+  groups = "gpioa4_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioa5 {
+  gpioa5_pinctrl: gpioa5_grp {
+    ts,pins = <PA5>;
+  mux,val = <5>;
+ function = "gpioa5";
+  groups = "gpioa5_grp";
+  };
+gpioa5_bias_up_pinctrl: gpioa5_bias_up_grp {
+    ts,pins = <PA5>;
+  mux,val = <5>;
+ function = "gpioa5";
+  groups = "gpioa5_bias_up_grp";
+  bias-pull-up;
+ };
+gpioa5_bias_down_pinctrl: gpioa5_bias_down_grp {
+    ts,pins = <PA5>;
+  mux,val = <5>;
+ function = "gpioa5";
+  groups = "gpioa5_bias_down_grp";
+  bias-pull-down;
+ };
+gpioa5_voltage_set_pinctrl: gpioa5_voltage_set_grp {
+    ts,pins = <PA5>;
+  mux,val = <5>;
+ function = "gpioa5";
+  groups = "gpioa5_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioa5_drv2_set_pinctrl: gpioa5_drv2_set_grp {
+    ts,pins = <PA5>;
+  mux,val = <5>;
+ function = "gpioa5";
+  groups = "gpioa5_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioa5_drv4_set_pinctrl: gpioa5_drv4_set_grp {
+    ts,pins = <PA5>;
+  mux,val = <5>;
+ function = "gpioa5";
+  groups = "gpioa5_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioa5_drv8_set_pinctrl: gpioa5_drv8_set_grp {
+    ts,pins = <PA5>;
+  mux,val = <5>;
+ function = "gpioa5";
+  groups = "gpioa5_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioa6 {
+  gpioa6_pinctrl: gpioa6_grp {
+    ts,pins = <PA6>;
+  mux,val = <5>;
+ function = "gpioa6";
+  groups = "gpioa6_grp";
+  };
+gpioa6_bias_up_pinctrl: gpioa6_bias_up_grp {
+    ts,pins = <PA6>;
+  mux,val = <5>;
+ function = "gpioa6";
+  groups = "gpioa6_bias_up_grp";
+  bias-pull-up;
+ };
+gpioa6_bias_down_pinctrl: gpioa6_bias_down_grp {
+    ts,pins = <PA6>;
+  mux,val = <5>;
+ function = "gpioa6";
+  groups = "gpioa6_bias_down_grp";
+  bias-pull-down;
+ };
+gpioa6_voltage_set_pinctrl: gpioa6_voltage_set_grp {
+    ts,pins = <PA6>;
+  mux,val = <5>;
+ function = "gpioa6";
+  groups = "gpioa6_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioa6_drv2_set_pinctrl: gpioa6_drv2_set_grp {
+    ts,pins = <PA6>;
+  mux,val = <5>;
+ function = "gpioa6";
+  groups = "gpioa6_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioa6_drv4_set_pinctrl: gpioa6_drv4_set_grp {
+    ts,pins = <PA6>;
+  mux,val = <5>;
+ function = "gpioa6";
+  groups = "gpioa6_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioa6_drv8_set_pinctrl: gpioa6_drv8_set_grp {
+    ts,pins = <PA6>;
+  mux,val = <5>;
+ function = "gpioa6";
+  groups = "gpioa6_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioa7 {
+  gpioa7_pinctrl: gpioa7_grp {
+    ts,pins = <PA7>;
+  mux,val = <5>;
+ function = "gpioa7";
+  groups = "gpioa7_grp";
+  };
+gpioa7_bias_up_pinctrl: gpioa7_bias_up_grp {
+    ts,pins = <PA7>;
+  mux,val = <5>;
+ function = "gpioa7";
+  groups = "gpioa7_bias_up_grp";
+  bias-pull-up;
+ };
+gpioa7_bias_down_pinctrl: gpioa7_bias_down_grp {
+    ts,pins = <PA7>;
+  mux,val = <5>;
+ function = "gpioa7";
+  groups = "gpioa7_bias_down_grp";
+  bias-pull-down;
+ };
+gpioa7_voltage_set_pinctrl: gpioa7_voltage_set_grp {
+    ts,pins = <PA7>;
+  mux,val = <5>;
+ function = "gpioa7";
+  groups = "gpioa7_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioa7_drv2_set_pinctrl: gpioa7_drv2_set_grp {
+    ts,pins = <PA7>;
+  mux,val = <5>;
+ function = "gpioa7";
+  groups = "gpioa7_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioa7_drv4_set_pinctrl: gpioa7_drv4_set_grp {
+    ts,pins = <PA7>;
+  mux,val = <5>;
+ function = "gpioa7";
+  groups = "gpioa7_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioa7_drv8_set_pinctrl: gpioa7_drv8_set_grp {
+    ts,pins = <PA7>;
+  mux,val = <5>;
+ function = "gpioa7";
+  groups = "gpioa7_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioa8 {
+  gpioa8_pinctrl: gpioa8_grp {
+    ts,pins = <PB0>;
+  mux,val = <5>;
+ function = "gpioa8";
+  groups = "gpioa8_grp";
+  };
+gpioa8_bias_up_pinctrl: gpioa8_bias_up_grp {
+    ts,pins = <PB0>;
+  mux,val = <5>;
+ function = "gpioa8";
+  groups = "gpioa8_bias_up_grp";
+  bias-pull-up;
+ };
+gpioa8_bias_down_pinctrl: gpioa8_bias_down_grp {
+    ts,pins = <PB0>;
+  mux,val = <5>;
+ function = "gpioa8";
+  groups = "gpioa8_bias_down_grp";
+  bias-pull-down;
+ };
+gpioa8_voltage_set_pinctrl: gpioa8_voltage_set_grp {
+    ts,pins = <PB0>;
+  mux,val = <5>;
+ function = "gpioa8";
+  groups = "gpioa8_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioa8_drv2_set_pinctrl: gpioa8_drv2_set_grp {
+    ts,pins = <PB0>;
+  mux,val = <5>;
+ function = "gpioa8";
+  groups = "gpioa8_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioa8_drv4_set_pinctrl: gpioa8_drv4_set_grp {
+    ts,pins = <PB0>;
+  mux,val = <5>;
+ function = "gpioa8";
+  groups = "gpioa8_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioa8_drv8_set_pinctrl: gpioa8_drv8_set_grp {
+    ts,pins = <PB0>;
+  mux,val = <5>;
+ function = "gpioa8";
+  groups = "gpioa8_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioa9 {
+  gpioa9_pinctrl: gpioa9_grp {
+    ts,pins = <PB1>;
+  mux,val = <5>;
+ function = "gpioa9";
+  groups = "gpioa9_grp";
+  };
+gpioa9_bias_up_pinctrl: gpioa9_bias_up_grp {
+    ts,pins = <PB1>;
+  mux,val = <5>;
+ function = "gpioa9";
+  groups = "gpioa9_bias_up_grp";
+  bias-pull-up;
+ };
+gpioa9_bias_down_pinctrl: gpioa9_bias_down_grp {
+    ts,pins = <PB1>;
+  mux,val = <5>;
+ function = "gpioa9";
+  groups = "gpioa9_bias_down_grp";
+  bias-pull-down;
+ };
+gpioa9_voltage_set_pinctrl: gpioa9_voltage_set_grp {
+    ts,pins = <PB1>;
+  mux,val = <5>;
+ function = "gpioa9";
+  groups = "gpioa9_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioa9_drv2_set_pinctrl: gpioa9_drv2_set_grp {
+    ts,pins = <PB1>;
+  mux,val = <5>;
+ function = "gpioa9";
+  groups = "gpioa9_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioa9_drv4_set_pinctrl: gpioa9_drv4_set_grp {
+    ts,pins = <PB1>;
+  mux,val = <5>;
+ function = "gpioa9";
+  groups = "gpioa9_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioa9_drv8_set_pinctrl: gpioa9_drv8_set_grp {
+    ts,pins = <PB1>;
+  mux,val = <5>;
+ function = "gpioa9";
+  groups = "gpioa9_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioa10 {
+ gpioa10_pinctrl: gpioa10_grp {
+  ts,pins = <PB2>;
+  mux,val = <5>;
+ function = "gpioa10";
+ groups = "gpioa10_grp";
+ };
+gpioa10_bias_up_pinctrl: gpioa10_bias_up_grp {
+  ts,pins = <PB2>;
+  mux,val = <5>;
+ function = "gpioa10";
+ groups = "gpioa10_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa10_bias_down_pinctrl: gpioa10_bias_down_grp {
+  ts,pins = <PB2>;
+  mux,val = <5>;
+ function = "gpioa10";
+ groups = "gpioa10_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa10_voltage_set_pinctrl: gpioa10_voltage_set_grp {
+  ts,pins = <PB2>;
+  mux,val = <5>;
+ function = "gpioa10";
+ groups = "gpioa10_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa10_drv2_set_pinctrl: gpioa10_drv2_set_grp {
+  ts,pins = <PB2>;
+  mux,val = <5>;
+ function = "gpioa10";
+ groups = "gpioa10_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa10_drv4_set_pinctrl: gpioa10_drv4_set_grp {
+  ts,pins = <PB2>;
+  mux,val = <5>;
+ function = "gpioa10";
+ groups = "gpioa10_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa10_drv8_set_pinctrl: gpioa10_drv8_set_grp {
+  ts,pins = <PB2>;
+  mux,val = <5>;
+ function = "gpioa10";
+ groups = "gpioa10_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa11 {
+ gpioa11_pinctrl: gpioa11_grp {
+  ts,pins = <PB3>;
+  mux,val = <5>;
+ function = "gpioa11";
+ groups = "gpioa11_grp";
+ };
+gpioa11_bias_up_pinctrl: gpioa11_bias_up_grp {
+  ts,pins = <PB3>;
+  mux,val = <5>;
+ function = "gpioa11";
+ groups = "gpioa11_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa11_bias_down_pinctrl: gpioa11_bias_down_grp {
+  ts,pins = <PB3>;
+  mux,val = <5>;
+ function = "gpioa11";
+ groups = "gpioa11_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa11_voltage_set_pinctrl: gpioa11_voltage_set_grp {
+  ts,pins = <PB3>;
+  mux,val = <5>;
+ function = "gpioa11";
+ groups = "gpioa11_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa11_drv2_set_pinctrl: gpioa11_drv2_set_grp {
+  ts,pins = <PB3>;
+  mux,val = <5>;
+ function = "gpioa11";
+ groups = "gpioa11_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa11_drv4_set_pinctrl: gpioa11_drv4_set_grp {
+  ts,pins = <PB3>;
+  mux,val = <5>;
+ function = "gpioa11";
+ groups = "gpioa11_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa11_drv8_set_pinctrl: gpioa11_drv8_set_grp {
+  ts,pins = <PB3>;
+  mux,val = <5>;
+ function = "gpioa11";
+ groups = "gpioa11_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa12 {
+ gpioa12_pinctrl: gpioa12_grp {
+  ts,pins = <PB4>;
+  mux,val = <5>;
+ function = "gpioa12";
+ groups = "gpioa12_grp";
+ };
+gpioa12_bias_up_pinctrl: gpioa12_bias_up_grp {
+  ts,pins = <PB4>;
+  mux,val = <5>;
+ function = "gpioa12";
+ groups = "gpioa12_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa12_bias_down_pinctrl: gpioa12_bias_down_grp {
+  ts,pins = <PB4>;
+  mux,val = <5>;
+ function = "gpioa12";
+ groups = "gpioa12_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa12_voltage_set_pinctrl: gpioa12_voltage_set_grp {
+  ts,pins = <PB4>;
+  mux,val = <5>;
+ function = "gpioa12";
+ groups = "gpioa12_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa12_drv2_set_pinctrl: gpioa12_drv2_set_grp {
+  ts,pins = <PB4>;
+  mux,val = <5>;
+ function = "gpioa12";
+ groups = "gpioa12_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa12_drv4_set_pinctrl: gpioa12_drv4_set_grp {
+  ts,pins = <PB4>;
+  mux,val = <5>;
+ function = "gpioa12";
+ groups = "gpioa12_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa12_drv8_set_pinctrl: gpioa12_drv8_set_grp {
+  ts,pins = <PB4>;
+  mux,val = <5>;
+ function = "gpioa12";
+ groups = "gpioa12_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa13 {
+ gpioa13_pinctrl: gpioa13_grp {
+  ts,pins = <PB5>;
+  mux,val = <5>;
+ function = "gpioa13";
+ groups = "gpioa13_grp";
+ };
+gpioa13_bias_up_pinctrl: gpioa13_bias_up_grp {
+  ts,pins = <PB5>;
+  mux,val = <5>;
+ function = "gpioa13";
+ groups = "gpioa13_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa13_bias_down_pinctrl: gpioa13_bias_down_grp {
+  ts,pins = <PB5>;
+  mux,val = <5>;
+ function = "gpioa13";
+ groups = "gpioa13_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa13_voltage_set_pinctrl: gpioa13_voltage_set_grp {
+  ts,pins = <PB5>;
+  mux,val = <5>;
+ function = "gpioa13";
+ groups = "gpioa13_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa13_drv2_set_pinctrl: gpioa13_drv2_set_grp {
+  ts,pins = <PB5>;
+  mux,val = <5>;
+ function = "gpioa13";
+ groups = "gpioa13_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa13_drv4_set_pinctrl: gpioa13_drv4_set_grp {
+  ts,pins = <PB5>;
+  mux,val = <5>;
+ function = "gpioa13";
+ groups = "gpioa13_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa13_drv8_set_pinctrl: gpioa13_drv8_set_grp {
+  ts,pins = <PB5>;
+  mux,val = <5>;
+ function = "gpioa13";
+ groups = "gpioa13_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa14 {
+ gpioa14_pinctrl: gpioa14_grp {
+  ts,pins = <PB6>;
+  mux,val = <5>;
+ function = "gpioa14";
+ groups = "gpioa14_grp";
+ };
+gpioa14_bias_up_pinctrl: gpioa14_bias_up_grp {
+  ts,pins = <PB6>;
+  mux,val = <5>;
+ function = "gpioa14";
+ groups = "gpioa14_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa14_bias_down_pinctrl: gpioa14_bias_down_grp {
+  ts,pins = <PB6>;
+  mux,val = <5>;
+ function = "gpioa14";
+ groups = "gpioa14_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa14_voltage_set_pinctrl: gpioa14_voltage_set_grp {
+  ts,pins = <PB6>;
+  mux,val = <5>;
+ function = "gpioa14";
+ groups = "gpioa14_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa14_drv2_set_pinctrl: gpioa14_drv2_set_grp {
+  ts,pins = <PB6>;
+  mux,val = <5>;
+ function = "gpioa14";
+ groups = "gpioa14_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa14_drv4_set_pinctrl: gpioa14_drv4_set_grp {
+  ts,pins = <PB6>;
+  mux,val = <5>;
+ function = "gpioa14";
+ groups = "gpioa14_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa14_drv8_set_pinctrl: gpioa14_drv8_set_grp {
+  ts,pins = <PB6>;
+  mux,val = <5>;
+ function = "gpioa14";
+ groups = "gpioa14_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa15 {
+ gpioa15_pinctrl: gpioa15_grp {
+  ts,pins = <PB7>;
+  mux,val = <5>;
+ function = "gpioa15";
+ groups = "gpioa15_grp";
+ };
+gpioa15_bias_up_pinctrl: gpioa15_bias_up_grp {
+  ts,pins = <PB7>;
+  mux,val = <5>;
+ function = "gpioa15";
+ groups = "gpioa15_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa15_bias_down_pinctrl: gpioa15_bias_down_grp {
+  ts,pins = <PB7>;
+  mux,val = <5>;
+ function = "gpioa15";
+ groups = "gpioa15_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa15_voltage_set_pinctrl: gpioa15_voltage_set_grp {
+  ts,pins = <PB7>;
+  mux,val = <5>;
+ function = "gpioa15";
+ groups = "gpioa15_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa15_drv2_set_pinctrl: gpioa15_drv2_set_grp {
+  ts,pins = <PB7>;
+  mux,val = <5>;
+ function = "gpioa15";
+ groups = "gpioa15_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa15_drv4_set_pinctrl: gpioa15_drv4_set_grp {
+  ts,pins = <PB7>;
+  mux,val = <5>;
+ function = "gpioa15";
+ groups = "gpioa15_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa15_drv8_set_pinctrl: gpioa15_drv8_set_grp {
+  ts,pins = <PB7>;
+  mux,val = <5>;
+ function = "gpioa15";
+ groups = "gpioa15_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa16 {
+ gpioa16_pinctrl: gpioa16_grp {
+  ts,pins = <PC0>;
+  mux,val = <5>;
+ function = "gpioa16";
+ groups = "gpioa16_grp";
+ };
+gpioa16_bias_up_pinctrl: gpioa16_bias_up_grp {
+  ts,pins = <PC0>;
+  mux,val = <5>;
+ function = "gpioa16";
+ groups = "gpioa16_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa16_bias_down_pinctrl: gpioa16_bias_down_grp {
+  ts,pins = <PC0>;
+  mux,val = <5>;
+ function = "gpioa16";
+ groups = "gpioa16_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa16_voltage_set_pinctrl: gpioa16_voltage_set_grp {
+  ts,pins = <PC0>;
+  mux,val = <5>;
+ function = "gpioa16";
+ groups = "gpioa16_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa16_drv2_set_pinctrl: gpioa16_drv2_set_grp {
+  ts,pins = <PC0>;
+  mux,val = <5>;
+ function = "gpioa16";
+ groups = "gpioa16_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa16_drv4_set_pinctrl: gpioa16_drv4_set_grp {
+  ts,pins = <PC0>;
+  mux,val = <5>;
+ function = "gpioa16";
+ groups = "gpioa16_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa16_drv8_set_pinctrl: gpioa16_drv8_set_grp {
+  ts,pins = <PC0>;
+  mux,val = <5>;
+ function = "gpioa16";
+ groups = "gpioa16_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa17 {
+ gpioa17_pinctrl: gpioa17_grp {
+  ts,pins = <PC1>;
+  mux,val = <5>;
+ function = "gpioa17";
+ groups = "gpioa17_grp";
+ };
+gpioa17_bias_up_pinctrl: gpioa17_bias_up_grp {
+  ts,pins = <PC1>;
+  mux,val = <5>;
+ function = "gpioa17";
+ groups = "gpioa17_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa17_bias_down_pinctrl: gpioa17_bias_down_grp {
+  ts,pins = <PC1>;
+  mux,val = <5>;
+ function = "gpioa17";
+ groups = "gpioa17_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa17_voltage_set_pinctrl: gpioa17_voltage_set_grp {
+  ts,pins = <PC1>;
+  mux,val = <5>;
+ function = "gpioa17";
+ groups = "gpioa17_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa17_drv2_set_pinctrl: gpioa17_drv2_set_grp {
+  ts,pins = <PC1>;
+  mux,val = <5>;
+ function = "gpioa17";
+ groups = "gpioa17_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa17_drv4_set_pinctrl: gpioa17_drv4_set_grp {
+  ts,pins = <PC1>;
+  mux,val = <5>;
+ function = "gpioa17";
+ groups = "gpioa17_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa17_drv8_set_pinctrl: gpioa17_drv8_set_grp {
+  ts,pins = <PC1>;
+  mux,val = <5>;
+ function = "gpioa17";
+ groups = "gpioa17_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa18 {
+ gpioa18_pinctrl: gpioa18_grp {
+  ts,pins = <PC2>;
+  mux,val = <5>;
+ function = "gpioa18";
+ groups = "gpioa18_grp";
+ };
+gpioa18_bias_up_pinctrl: gpioa18_bias_up_grp {
+  ts,pins = <PC2>;
+  mux,val = <5>;
+ function = "gpioa18";
+ groups = "gpioa18_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa18_bias_down_pinctrl: gpioa18_bias_down_grp {
+  ts,pins = <PC2>;
+  mux,val = <5>;
+ function = "gpioa18";
+ groups = "gpioa18_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa18_voltage_set_pinctrl: gpioa18_voltage_set_grp {
+  ts,pins = <PC2>;
+  mux,val = <5>;
+ function = "gpioa18";
+ groups = "gpioa18_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa18_drv2_set_pinctrl: gpioa18_drv2_set_grp {
+  ts,pins = <PC2>;
+  mux,val = <5>;
+ function = "gpioa18";
+ groups = "gpioa18_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa18_drv4_set_pinctrl: gpioa18_drv4_set_grp {
+  ts,pins = <PC2>;
+  mux,val = <5>;
+ function = "gpioa18";
+ groups = "gpioa18_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa18_drv8_set_pinctrl: gpioa18_drv8_set_grp {
+  ts,pins = <PC2>;
+  mux,val = <5>;
+ function = "gpioa18";
+ groups = "gpioa18_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa19 {
+ gpioa19_pinctrl: gpioa19_grp {
+  ts,pins = <PC3>;
+  mux,val = <5>;
+ function = "gpioa19";
+ groups = "gpioa19_grp";
+ };
+gpioa19_bias_up_pinctrl: gpioa19_bias_up_grp {
+  ts,pins = <PC3>;
+  mux,val = <5>;
+ function = "gpioa19";
+ groups = "gpioa19_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa19_bias_down_pinctrl: gpioa19_bias_down_grp {
+  ts,pins = <PC3>;
+  mux,val = <5>;
+ function = "gpioa19";
+ groups = "gpioa19_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa19_voltage_set_pinctrl: gpioa19_voltage_set_grp {
+  ts,pins = <PC3>;
+  mux,val = <5>;
+ function = "gpioa19";
+ groups = "gpioa19_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa19_drv2_set_pinctrl: gpioa19_drv2_set_grp {
+  ts,pins = <PC3>;
+  mux,val = <5>;
+ function = "gpioa19";
+ groups = "gpioa19_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa19_drv4_set_pinctrl: gpioa19_drv4_set_grp {
+  ts,pins = <PC3>;
+  mux,val = <5>;
+ function = "gpioa19";
+ groups = "gpioa19_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa19_drv8_set_pinctrl: gpioa19_drv8_set_grp {
+  ts,pins = <PC3>;
+  mux,val = <5>;
+ function = "gpioa19";
+ groups = "gpioa19_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa20 {
+ gpioa20_pinctrl: gpioa20_grp {
+  ts,pins = <PC4>;
+  mux,val = <5>;
+ function = "gpioa20";
+ groups = "gpioa20_grp";
+ };
+gpioa20_bias_up_pinctrl: gpioa20_bias_up_grp {
+  ts,pins = <PC4>;
+  mux,val = <5>;
+ function = "gpioa20";
+ groups = "gpioa20_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa20_bias_down_pinctrl: gpioa20_bias_down_grp {
+  ts,pins = <PC4>;
+  mux,val = <5>;
+ function = "gpioa20";
+ groups = "gpioa20_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa20_voltage_set_pinctrl: gpioa20_voltage_set_grp {
+  ts,pins = <PC4>;
+  mux,val = <5>;
+ function = "gpioa20";
+ groups = "gpioa20_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa20_drv2_set_pinctrl: gpioa20_drv2_set_grp {
+  ts,pins = <PC4>;
+  mux,val = <5>;
+ function = "gpioa20";
+ groups = "gpioa20_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa20_drv4_set_pinctrl: gpioa20_drv4_set_grp {
+  ts,pins = <PC4>;
+  mux,val = <5>;
+ function = "gpioa20";
+ groups = "gpioa20_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa20_drv8_set_pinctrl: gpioa20_drv8_set_grp {
+  ts,pins = <PC4>;
+  mux,val = <5>;
+ function = "gpioa20";
+ groups = "gpioa20_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa21 {
+ gpioa21_pinctrl: gpioa21_grp {
+  ts,pins = <PC5>;
+  mux,val = <5>;
+ function = "gpioa21";
+ groups = "gpioa21_grp";
+ };
+gpioa21_bias_up_pinctrl: gpioa21_bias_up_grp {
+  ts,pins = <PC5>;
+  mux,val = <5>;
+ function = "gpioa21";
+ groups = "gpioa21_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa21_bias_down_pinctrl: gpioa21_bias_down_grp {
+  ts,pins = <PC5>;
+  mux,val = <5>;
+ function = "gpioa21";
+ groups = "gpioa21_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa21_voltage_set_pinctrl: gpioa21_voltage_set_grp {
+  ts,pins = <PC5>;
+  mux,val = <5>;
+ function = "gpioa21";
+ groups = "gpioa21_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa21_drv2_set_pinctrl: gpioa21_drv2_set_grp {
+  ts,pins = <PC5>;
+  mux,val = <5>;
+ function = "gpioa21";
+ groups = "gpioa21_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa21_drv4_set_pinctrl: gpioa21_drv4_set_grp {
+  ts,pins = <PC5>;
+  mux,val = <5>;
+ function = "gpioa21";
+ groups = "gpioa21_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa21_drv8_set_pinctrl: gpioa21_drv8_set_grp {
+  ts,pins = <PC5>;
+  mux,val = <5>;
+ function = "gpioa21";
+ groups = "gpioa21_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa22 {
+ gpioa22_pinctrl: gpioa22_grp {
+  ts,pins = <PC6>;
+  mux,val = <5>;
+ function = "gpioa22";
+ groups = "gpioa22_grp";
+ };
+gpioa22_bias_up_pinctrl: gpioa22_bias_up_grp {
+  ts,pins = <PC6>;
+  mux,val = <5>;
+ function = "gpioa22";
+ groups = "gpioa22_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa22_bias_down_pinctrl: gpioa22_bias_down_grp {
+  ts,pins = <PC6>;
+  mux,val = <5>;
+ function = "gpioa22";
+ groups = "gpioa22_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa22_voltage_set_pinctrl: gpioa22_voltage_set_grp {
+  ts,pins = <PC6>;
+  mux,val = <5>;
+ function = "gpioa22";
+ groups = "gpioa22_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa22_drv2_set_pinctrl: gpioa22_drv2_set_grp {
+  ts,pins = <PC6>;
+  mux,val = <5>;
+ function = "gpioa22";
+ groups = "gpioa22_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa22_drv4_set_pinctrl: gpioa22_drv4_set_grp {
+  ts,pins = <PC6>;
+  mux,val = <5>;
+ function = "gpioa22";
+ groups = "gpioa22_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa22_drv8_set_pinctrl: gpioa22_drv8_set_grp {
+  ts,pins = <PC6>;
+  mux,val = <5>;
+ function = "gpioa22";
+ groups = "gpioa22_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa23 {
+ gpioa23_pinctrl: gpioa23_grp {
+  ts,pins = <PC7>;
+  mux,val = <5>;
+ function = "gpioa23";
+ groups = "gpioa23_grp";
+ };
+gpioa23_bias_up_pinctrl: gpioa23_bias_up_grp {
+  ts,pins = <PC7>;
+  mux,val = <5>;
+ function = "gpioa23";
+ groups = "gpioa23_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa23_bias_down_pinctrl: gpioa23_bias_down_grp {
+  ts,pins = <PC7>;
+  mux,val = <5>;
+ function = "gpioa23";
+ groups = "gpioa23_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa23_voltage_set_pinctrl: gpioa23_voltage_set_grp {
+  ts,pins = <PC7>;
+  mux,val = <5>;
+ function = "gpioa23";
+ groups = "gpioa23_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa23_drv2_set_pinctrl: gpioa23_drv2_set_grp {
+  ts,pins = <PC7>;
+  mux,val = <5>;
+ function = "gpioa23";
+ groups = "gpioa23_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa23_drv4_set_pinctrl: gpioa23_drv4_set_grp {
+  ts,pins = <PC7>;
+  mux,val = <5>;
+ function = "gpioa23";
+ groups = "gpioa23_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa23_drv8_set_pinctrl: gpioa23_drv8_set_grp {
+  ts,pins = <PC7>;
+  mux,val = <5>;
+ function = "gpioa23";
+ groups = "gpioa23_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa24 {
+ gpioa24_pinctrl: gpioa24_grp {
+  ts,pins = <PD0>;
+  mux,val = <5>;
+ function = "gpioa24";
+ groups = "gpioa24_grp";
+ };
+gpioa24_bias_up_pinctrl: gpioa24_bias_up_grp {
+  ts,pins = <PD0>;
+  mux,val = <5>;
+ function = "gpioa24";
+ groups = "gpioa24_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa24_bias_down_pinctrl: gpioa24_bias_down_grp {
+  ts,pins = <PD0>;
+  mux,val = <5>;
+ function = "gpioa24";
+ groups = "gpioa24_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa24_voltage_set_pinctrl: gpioa24_voltage_set_grp {
+  ts,pins = <PD0>;
+  mux,val = <5>;
+ function = "gpioa24";
+ groups = "gpioa24_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa24_drv2_set_pinctrl: gpioa24_drv2_set_grp {
+  ts,pins = <PD0>;
+  mux,val = <5>;
+ function = "gpioa24";
+ groups = "gpioa24_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa24_drv4_set_pinctrl: gpioa24_drv4_set_grp {
+  ts,pins = <PD0>;
+  mux,val = <5>;
+ function = "gpioa24";
+ groups = "gpioa24_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa24_drv8_set_pinctrl: gpioa24_drv8_set_grp {
+  ts,pins = <PD0>;
+  mux,val = <5>;
+ function = "gpioa24";
+ groups = "gpioa24_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa25 {
+ gpioa25_pinctrl: gpioa25_grp {
+  ts,pins = <PD1>;
+  mux,val = <5>;
+ function = "gpioa25";
+ groups = "gpioa25_grp";
+ };
+gpioa25_bias_up_pinctrl: gpioa25_bias_up_grp {
+  ts,pins = <PD1>;
+  mux,val = <5>;
+ function = "gpioa25";
+ groups = "gpioa25_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa25_bias_down_pinctrl: gpioa25_bias_down_grp {
+  ts,pins = <PD1>;
+  mux,val = <5>;
+ function = "gpioa25";
+ groups = "gpioa25_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa25_voltage_set_pinctrl: gpioa25_voltage_set_grp {
+  ts,pins = <PD1>;
+  mux,val = <5>;
+ function = "gpioa25";
+ groups = "gpioa25_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa25_drv2_set_pinctrl: gpioa25_drv2_set_grp {
+  ts,pins = <PD1>;
+  mux,val = <5>;
+ function = "gpioa25";
+ groups = "gpioa25_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa25_drv4_set_pinctrl: gpioa25_drv4_set_grp {
+  ts,pins = <PD1>;
+  mux,val = <5>;
+ function = "gpioa25";
+ groups = "gpioa25_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa25_drv8_set_pinctrl: gpioa25_drv8_set_grp {
+  ts,pins = <PD1>;
+  mux,val = <5>;
+ function = "gpioa25";
+ groups = "gpioa25_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa26 {
+ gpioa26_pinctrl: gpioa26_grp {
+  ts,pins = <PD2>;
+  mux,val = <5>;
+ function = "gpioa26";
+ groups = "gpioa26_grp";
+ };
+gpioa26_bias_up_pinctrl: gpioa26_bias_up_grp {
+  ts,pins = <PD2>;
+  mux,val = <5>;
+ function = "gpioa26";
+ groups = "gpioa26_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa26_bias_down_pinctrl: gpioa26_bias_down_grp {
+  ts,pins = <PD2>;
+  mux,val = <5>;
+ function = "gpioa26";
+ groups = "gpioa26_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa26_voltage_set_pinctrl: gpioa26_voltage_set_grp {
+  ts,pins = <PD2>;
+  mux,val = <5>;
+ function = "gpioa26";
+ groups = "gpioa26_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa26_drv2_set_pinctrl: gpioa26_drv2_set_grp {
+  ts,pins = <PD2>;
+  mux,val = <5>;
+ function = "gpioa26";
+ groups = "gpioa26_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa26_drv4_set_pinctrl: gpioa26_drv4_set_grp {
+  ts,pins = <PD2>;
+  mux,val = <5>;
+ function = "gpioa26";
+ groups = "gpioa26_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa26_drv8_set_pinctrl: gpioa26_drv8_set_grp {
+  ts,pins = <PD2>;
+  mux,val = <5>;
+ function = "gpioa26";
+ groups = "gpioa26_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa27 {
+ gpioa27_pinctrl: gpioa27_grp {
+  ts,pins = <PD3>;
+  mux,val = <5>;
+ function = "gpioa27";
+ groups = "gpioa27_grp";
+ };
+gpioa27_bias_up_pinctrl: gpioa27_bias_up_grp {
+  ts,pins = <PD3>;
+  mux,val = <5>;
+ function = "gpioa27";
+ groups = "gpioa27_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa27_bias_down_pinctrl: gpioa27_bias_down_grp {
+  ts,pins = <PD3>;
+  mux,val = <5>;
+ function = "gpioa27";
+ groups = "gpioa27_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa27_voltage_set_pinctrl: gpioa27_voltage_set_grp {
+  ts,pins = <PD3>;
+  mux,val = <5>;
+ function = "gpioa27";
+ groups = "gpioa27_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa27_drv2_set_pinctrl: gpioa27_drv2_set_grp {
+  ts,pins = <PD3>;
+  mux,val = <5>;
+ function = "gpioa27";
+ groups = "gpioa27_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa27_drv4_set_pinctrl: gpioa27_drv4_set_grp {
+  ts,pins = <PD3>;
+  mux,val = <5>;
+ function = "gpioa27";
+ groups = "gpioa27_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa27_drv8_set_pinctrl: gpioa27_drv8_set_grp {
+  ts,pins = <PD3>;
+  mux,val = <5>;
+ function = "gpioa27";
+ groups = "gpioa27_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa28 {
+ gpioa28_pinctrl: gpioa28_grp {
+  ts,pins = <PD4>;
+  mux,val = <5>;
+ function = "gpioa28";
+ groups = "gpioa28_grp";
+ };
+gpioa28_bias_up_pinctrl: gpioa28_bias_up_grp {
+  ts,pins = <PD4>;
+  mux,val = <5>;
+ function = "gpioa28";
+ groups = "gpioa28_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa28_bias_down_pinctrl: gpioa28_bias_down_grp {
+  ts,pins = <PD4>;
+  mux,val = <5>;
+ function = "gpioa28";
+ groups = "gpioa28_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa28_voltage_set_pinctrl: gpioa28_voltage_set_grp {
+  ts,pins = <PD4>;
+  mux,val = <5>;
+ function = "gpioa28";
+ groups = "gpioa28_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa28_drv2_set_pinctrl: gpioa28_drv2_set_grp {
+  ts,pins = <PD4>;
+  mux,val = <5>;
+ function = "gpioa28";
+ groups = "gpioa28_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa28_drv4_set_pinctrl: gpioa28_drv4_set_grp {
+  ts,pins = <PD4>;
+  mux,val = <5>;
+ function = "gpioa28";
+ groups = "gpioa28_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa28_drv8_set_pinctrl: gpioa28_drv8_set_grp {
+  ts,pins = <PD4>;
+  mux,val = <5>;
+ function = "gpioa28";
+ groups = "gpioa28_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa29 {
+ gpioa29_pinctrl: gpioa29_grp {
+  ts,pins = <PD5>;
+  mux,val = <5>;
+ function = "gpioa29";
+ groups = "gpioa29_grp";
+ };
+gpioa29_bias_up_pinctrl: gpioa29_bias_up_grp {
+  ts,pins = <PD5>;
+  mux,val = <5>;
+ function = "gpioa29";
+ groups = "gpioa29_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa29_bias_down_pinctrl: gpioa29_bias_down_grp {
+  ts,pins = <PD5>;
+  mux,val = <5>;
+ function = "gpioa29";
+ groups = "gpioa29_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa29_voltage_set_pinctrl: gpioa29_voltage_set_grp {
+  ts,pins = <PD5>;
+  mux,val = <5>;
+ function = "gpioa29";
+ groups = "gpioa29_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa29_drv2_set_pinctrl: gpioa29_drv2_set_grp {
+  ts,pins = <PD5>;
+  mux,val = <5>;
+ function = "gpioa29";
+ groups = "gpioa29_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa29_drv4_set_pinctrl: gpioa29_drv4_set_grp {
+  ts,pins = <PD5>;
+  mux,val = <5>;
+ function = "gpioa29";
+ groups = "gpioa29_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa29_drv8_set_pinctrl: gpioa29_drv8_set_grp {
+  ts,pins = <PD5>;
+  mux,val = <5>;
+ function = "gpioa29";
+ groups = "gpioa29_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa30 {
+ gpioa30_pinctrl: gpioa30_grp {
+  ts,pins = <PD6>;
+  mux,val = <5>;
+ function = "gpioa30";
+ groups = "gpioa30_grp";
+ };
+gpioa30_bias_up_pinctrl: gpioa30_bias_up_grp {
+  ts,pins = <PD6>;
+  mux,val = <5>;
+ function = "gpioa30";
+ groups = "gpioa30_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa30_bias_down_pinctrl: gpioa30_bias_down_grp {
+  ts,pins = <PD6>;
+  mux,val = <5>;
+ function = "gpioa30";
+ groups = "gpioa30_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa30_voltage_set_pinctrl: gpioa30_voltage_set_grp {
+  ts,pins = <PD6>;
+  mux,val = <5>;
+ function = "gpioa30";
+ groups = "gpioa30_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa30_drv2_set_pinctrl: gpioa30_drv2_set_grp {
+  ts,pins = <PD6>;
+  mux,val = <5>;
+ function = "gpioa30";
+ groups = "gpioa30_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa30_drv4_set_pinctrl: gpioa30_drv4_set_grp {
+  ts,pins = <PD6>;
+  mux,val = <5>;
+ function = "gpioa30";
+ groups = "gpioa30_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa30_drv8_set_pinctrl: gpioa30_drv8_set_grp {
+  ts,pins = <PD6>;
+  mux,val = <5>;
+ function = "gpioa30";
+ groups = "gpioa30_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioa31 {
+ gpioa31_pinctrl: gpioa31_grp {
+  ts,pins = <PD7>;
+  mux,val = <5>;
+ function = "gpioa31";
+ groups = "gpioa31_grp";
+ };
+gpioa31_bias_up_pinctrl: gpioa31_bias_up_grp {
+  ts,pins = <PD7>;
+  mux,val = <5>;
+ function = "gpioa31";
+ groups = "gpioa31_bias_up_grp";
+ bias-pull-up;
+ };
+gpioa31_bias_down_pinctrl: gpioa31_bias_down_grp {
+  ts,pins = <PD7>;
+  mux,val = <5>;
+ function = "gpioa31";
+ groups = "gpioa31_bias_down_grp";
+ bias-pull-down;
+ };
+gpioa31_voltage_set_pinctrl: gpioa31_voltage_set_grp {
+  ts,pins = <PD7>;
+  mux,val = <5>;
+ function = "gpioa31";
+ groups = "gpioa31_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioa31_drv2_set_pinctrl: gpioa31_drv2_set_grp {
+  ts,pins = <PD7>;
+  mux,val = <5>;
+ function = "gpioa31";
+ groups = "gpioa31_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioa31_drv4_set_pinctrl: gpioa31_drv4_set_grp {
+  ts,pins = <PD7>;
+  mux,val = <5>;
+ function = "gpioa31";
+ groups = "gpioa31_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioa31_drv8_set_pinctrl: gpioa31_drv8_set_grp {
+  ts,pins = <PD7>;
+  mux,val = <5>;
+ function = "gpioa31";
+ groups = "gpioa31_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob0 {
+  gpiob0_pinctrl: gpiob0_grp {
+    ts,pins = <PE0>;
+  mux,val = <5>;
+ function = "gpiob0";
+  groups = "gpiob0_grp";
+  };
+gpiob0_bias_up_pinctrl: gpiob0_bias_up_grp {
+    ts,pins = <PE0>;
+  mux,val = <5>;
+ function = "gpiob0";
+  groups = "gpiob0_bias_up_grp";
+  bias-pull-up;
+ };
+gpiob0_bias_down_pinctrl: gpiob0_bias_down_grp {
+    ts,pins = <PE0>;
+  mux,val = <5>;
+ function = "gpiob0";
+  groups = "gpiob0_bias_down_grp";
+  bias-pull-down;
+ };
+gpiob0_voltage_set_pinctrl: gpiob0_voltage_set_grp {
+    ts,pins = <PE0>;
+  mux,val = <5>;
+ function = "gpiob0";
+  groups = "gpiob0_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpiob0_drv2_set_pinctrl: gpiob0_drv2_set_grp {
+    ts,pins = <PE0>;
+  mux,val = <5>;
+ function = "gpiob0";
+  groups = "gpiob0_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpiob0_drv4_set_pinctrl: gpiob0_drv4_set_grp {
+    ts,pins = <PE0>;
+  mux,val = <5>;
+ function = "gpiob0";
+  groups = "gpiob0_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpiob0_drv8_set_pinctrl: gpiob0_drv8_set_grp {
+    ts,pins = <PE0>;
+  mux,val = <5>;
+ function = "gpiob0";
+  groups = "gpiob0_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpiob1 {
+  gpiob1_pinctrl: gpiob1_grp {
+    ts,pins = <PE1>;
+  mux,val = <5>;
+ function = "gpiob1";
+  groups = "gpiob1_grp";
+  };
+gpiob1_bias_up_pinctrl: gpiob1_bias_up_grp {
+    ts,pins = <PE1>;
+  mux,val = <5>;
+ function = "gpiob1";
+  groups = "gpiob1_bias_up_grp";
+  bias-pull-up;
+ };
+gpiob1_bias_down_pinctrl: gpiob1_bias_down_grp {
+    ts,pins = <PE1>;
+  mux,val = <5>;
+ function = "gpiob1";
+  groups = "gpiob1_bias_down_grp";
+  bias-pull-down;
+ };
+gpiob1_voltage_set_pinctrl: gpiob1_voltage_set_grp {
+    ts,pins = <PE1>;
+  mux,val = <5>;
+ function = "gpiob1";
+  groups = "gpiob1_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpiob1_drv2_set_pinctrl: gpiob1_drv2_set_grp {
+    ts,pins = <PE1>;
+  mux,val = <5>;
+ function = "gpiob1";
+  groups = "gpiob1_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpiob1_drv4_set_pinctrl: gpiob1_drv4_set_grp {
+    ts,pins = <PE1>;
+  mux,val = <5>;
+ function = "gpiob1";
+  groups = "gpiob1_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpiob1_drv8_set_pinctrl: gpiob1_drv8_set_grp {
+    ts,pins = <PE1>;
+  mux,val = <5>;
+ function = "gpiob1";
+  groups = "gpiob1_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpiob2 {
+  gpiob2_pinctrl: gpiob2_grp {
+    ts,pins = <PE2>;
+  mux,val = <5>;
+ function = "gpiob2";
+  groups = "gpiob2_grp";
+  };
+gpiob2_bias_up_pinctrl: gpiob2_bias_up_grp {
+    ts,pins = <PE2>;
+  mux,val = <5>;
+ function = "gpiob2";
+  groups = "gpiob2_bias_up_grp";
+  bias-pull-up;
+ };
+gpiob2_bias_down_pinctrl: gpiob2_bias_down_grp {
+    ts,pins = <PE2>;
+  mux,val = <5>;
+ function = "gpiob2";
+  groups = "gpiob2_bias_down_grp";
+  bias-pull-down;
+ };
+gpiob2_voltage_set_pinctrl: gpiob2_voltage_set_grp {
+    ts,pins = <PE2>;
+  mux,val = <5>;
+ function = "gpiob2";
+  groups = "gpiob2_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpiob2_drv2_set_pinctrl: gpiob2_drv2_set_grp {
+    ts,pins = <PE2>;
+  mux,val = <5>;
+ function = "gpiob2";
+  groups = "gpiob2_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpiob2_drv4_set_pinctrl: gpiob2_drv4_set_grp {
+    ts,pins = <PE2>;
+  mux,val = <5>;
+ function = "gpiob2";
+  groups = "gpiob2_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpiob2_drv8_set_pinctrl: gpiob2_drv8_set_grp {
+    ts,pins = <PE2>;
+  mux,val = <5>;
+ function = "gpiob2";
+  groups = "gpiob2_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpiob3 {
+  gpiob3_pinctrl: gpiob3_grp {
+    ts,pins = <PE3>;
+  mux,val = <5>;
+ function = "gpiob3";
+  groups = "gpiob3_grp";
+  };
+gpiob3_bias_up_pinctrl: gpiob3_bias_up_grp {
+    ts,pins = <PE3>;
+  mux,val = <5>;
+ function = "gpiob3";
+  groups = "gpiob3_bias_up_grp";
+  bias-pull-up;
+ };
+gpiob3_bias_down_pinctrl: gpiob3_bias_down_grp {
+    ts,pins = <PE3>;
+  mux,val = <5>;
+ function = "gpiob3";
+  groups = "gpiob3_bias_down_grp";
+  bias-pull-down;
+ };
+gpiob3_voltage_set_pinctrl: gpiob3_voltage_set_grp {
+    ts,pins = <PE3>;
+  mux,val = <5>;
+ function = "gpiob3";
+  groups = "gpiob3_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpiob3_drv2_set_pinctrl: gpiob3_drv2_set_grp {
+    ts,pins = <PE3>;
+  mux,val = <5>;
+ function = "gpiob3";
+  groups = "gpiob3_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpiob3_drv4_set_pinctrl: gpiob3_drv4_set_grp {
+    ts,pins = <PE3>;
+  mux,val = <5>;
+ function = "gpiob3";
+  groups = "gpiob3_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpiob3_drv8_set_pinctrl: gpiob3_drv8_set_grp {
+    ts,pins = <PE3>;
+  mux,val = <5>;
+ function = "gpiob3";
+  groups = "gpiob3_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpiob4 {
+  gpiob4_pinctrl: gpiob4_grp {
+    ts,pins = <PE4>;
+  mux,val = <5>;
+ function = "gpiob4";
+  groups = "gpiob4_grp";
+  };
+gpiob4_bias_up_pinctrl: gpiob4_bias_up_grp {
+    ts,pins = <PE4>;
+  mux,val = <5>;
+ function = "gpiob4";
+  groups = "gpiob4_bias_up_grp";
+  bias-pull-up;
+ };
+gpiob4_bias_down_pinctrl: gpiob4_bias_down_grp {
+    ts,pins = <PE4>;
+  mux,val = <5>;
+ function = "gpiob4";
+  groups = "gpiob4_bias_down_grp";
+  bias-pull-down;
+ };
+gpiob4_voltage_set_pinctrl: gpiob4_voltage_set_grp {
+    ts,pins = <PE4>;
+  mux,val = <5>;
+ function = "gpiob4";
+  groups = "gpiob4_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpiob4_drv2_set_pinctrl: gpiob4_drv2_set_grp {
+    ts,pins = <PE4>;
+  mux,val = <5>;
+ function = "gpiob4";
+  groups = "gpiob4_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpiob4_drv4_set_pinctrl: gpiob4_drv4_set_grp {
+    ts,pins = <PE4>;
+  mux,val = <5>;
+ function = "gpiob4";
+  groups = "gpiob4_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpiob4_drv8_set_pinctrl: gpiob4_drv8_set_grp {
+    ts,pins = <PE4>;
+  mux,val = <5>;
+ function = "gpiob4";
+  groups = "gpiob4_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpiob5 {
+  gpiob5_pinctrl: gpiob5_grp {
+    ts,pins = <PE5>;
+  mux,val = <5>;
+ function = "gpiob5";
+  groups = "gpiob5_grp";
+  };
+gpiob5_bias_up_pinctrl: gpiob5_bias_up_grp {
+    ts,pins = <PE5>;
+  mux,val = <5>;
+ function = "gpiob5";
+  groups = "gpiob5_bias_up_grp";
+  bias-pull-up;
+ };
+gpiob5_bias_down_pinctrl: gpiob5_bias_down_grp {
+    ts,pins = <PE5>;
+  mux,val = <5>;
+ function = "gpiob5";
+  groups = "gpiob5_bias_down_grp";
+  bias-pull-down;
+ };
+gpiob5_voltage_set_pinctrl: gpiob5_voltage_set_grp {
+    ts,pins = <PE5>;
+  mux,val = <5>;
+ function = "gpiob5";
+  groups = "gpiob5_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpiob5_drv2_set_pinctrl: gpiob5_drv2_set_grp {
+    ts,pins = <PE5>;
+  mux,val = <5>;
+ function = "gpiob5";
+  groups = "gpiob5_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpiob5_drv4_set_pinctrl: gpiob5_drv4_set_grp {
+    ts,pins = <PE5>;
+  mux,val = <5>;
+ function = "gpiob5";
+  groups = "gpiob5_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpiob5_drv8_set_pinctrl: gpiob5_drv8_set_grp {
+    ts,pins = <PE5>;
+  mux,val = <5>;
+ function = "gpiob5";
+  groups = "gpiob5_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpiob6 {
+  gpiob6_pinctrl: gpiob6_grp {
+    ts,pins = <PE6>;
+  mux,val = <5>;
+ function = "gpiob6";
+  groups = "gpiob6_grp";
+  };
+gpiob6_bias_up_pinctrl: gpiob6_bias_up_grp {
+    ts,pins = <PE6>;
+  mux,val = <5>;
+ function = "gpiob6";
+  groups = "gpiob6_bias_up_grp";
+  bias-pull-up;
+ };
+gpiob6_bias_down_pinctrl: gpiob6_bias_down_grp {
+    ts,pins = <PE6>;
+  mux,val = <5>;
+ function = "gpiob6";
+  groups = "gpiob6_bias_down_grp";
+  bias-pull-down;
+ };
+gpiob6_voltage_set_pinctrl: gpiob6_voltage_set_grp {
+    ts,pins = <PE6>;
+  mux,val = <5>;
+ function = "gpiob6";
+  groups = "gpiob6_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpiob6_drv2_set_pinctrl: gpiob6_drv2_set_grp {
+    ts,pins = <PE6>;
+  mux,val = <5>;
+ function = "gpiob6";
+  groups = "gpiob6_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpiob6_drv4_set_pinctrl: gpiob6_drv4_set_grp {
+    ts,pins = <PE6>;
+  mux,val = <5>;
+ function = "gpiob6";
+  groups = "gpiob6_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpiob6_drv8_set_pinctrl: gpiob6_drv8_set_grp {
+    ts,pins = <PE6>;
+  mux,val = <5>;
+ function = "gpiob6";
+  groups = "gpiob6_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpiob7 {
+  gpiob7_pinctrl: gpiob7_grp {
+    ts,pins = <PE7>;
+  mux,val = <5>;
+ function = "gpiob7";
+  groups = "gpiob7_grp";
+  };
+gpiob7_bias_up_pinctrl: gpiob7_bias_up_grp {
+    ts,pins = <PE7>;
+  mux,val = <5>;
+ function = "gpiob7";
+  groups = "gpiob7_bias_up_grp";
+  bias-pull-up;
+ };
+gpiob7_bias_down_pinctrl: gpiob7_bias_down_grp {
+    ts,pins = <PE7>;
+  mux,val = <5>;
+ function = "gpiob7";
+  groups = "gpiob7_bias_down_grp";
+  bias-pull-down;
+ };
+gpiob7_voltage_set_pinctrl: gpiob7_voltage_set_grp {
+    ts,pins = <PE7>;
+  mux,val = <5>;
+ function = "gpiob7";
+  groups = "gpiob7_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpiob7_drv2_set_pinctrl: gpiob7_drv2_set_grp {
+    ts,pins = <PE7>;
+  mux,val = <5>;
+ function = "gpiob7";
+  groups = "gpiob7_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpiob7_drv4_set_pinctrl: gpiob7_drv4_set_grp {
+    ts,pins = <PE7>;
+  mux,val = <5>;
+ function = "gpiob7";
+  groups = "gpiob7_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpiob7_drv8_set_pinctrl: gpiob7_drv8_set_grp {
+    ts,pins = <PE7>;
+  mux,val = <5>;
+ function = "gpiob7";
+  groups = "gpiob7_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpiob8 {
+  gpiob8_pinctrl: gpiob8_grp {
+    ts,pins = <PF0>;
+  mux,val = <5>;
+ function = "gpiob8";
+  groups = "gpiob8_grp";
+  };
+gpiob8_bias_up_pinctrl: gpiob8_bias_up_grp {
+    ts,pins = <PF0>;
+  mux,val = <5>;
+ function = "gpiob8";
+  groups = "gpiob8_bias_up_grp";
+  bias-pull-up;
+ };
+gpiob8_bias_down_pinctrl: gpiob8_bias_down_grp {
+    ts,pins = <PF0>;
+  mux,val = <5>;
+ function = "gpiob8";
+  groups = "gpiob8_bias_down_grp";
+  bias-pull-down;
+ };
+gpiob8_voltage_set_pinctrl: gpiob8_voltage_set_grp {
+    ts,pins = <PF0>;
+  mux,val = <5>;
+ function = "gpiob8";
+  groups = "gpiob8_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpiob8_drv2_set_pinctrl: gpiob8_drv2_set_grp {
+    ts,pins = <PF0>;
+  mux,val = <5>;
+ function = "gpiob8";
+  groups = "gpiob8_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpiob8_drv4_set_pinctrl: gpiob8_drv4_set_grp {
+    ts,pins = <PF0>;
+  mux,val = <5>;
+ function = "gpiob8";
+  groups = "gpiob8_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpiob8_drv8_set_pinctrl: gpiob8_drv8_set_grp {
+    ts,pins = <PF0>;
+  mux,val = <5>;
+ function = "gpiob8";
+  groups = "gpiob8_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpiob9 {
+  gpiob9_pinctrl: gpiob9_grp {
+    ts,pins = <PF1>;
+  mux,val = <5>;
+ function = "gpiob9";
+  groups = "gpiob9_grp";
+  };
+gpiob9_bias_up_pinctrl: gpiob9_bias_up_grp {
+    ts,pins = <PF1>;
+  mux,val = <5>;
+ function = "gpiob9";
+  groups = "gpiob9_bias_up_grp";
+  bias-pull-up;
+ };
+gpiob9_bias_down_pinctrl: gpiob9_bias_down_grp {
+    ts,pins = <PF1>;
+  mux,val = <5>;
+ function = "gpiob9";
+  groups = "gpiob9_bias_down_grp";
+  bias-pull-down;
+ };
+gpiob9_voltage_set_pinctrl: gpiob9_voltage_set_grp {
+    ts,pins = <PF1>;
+  mux,val = <5>;
+ function = "gpiob9";
+  groups = "gpiob9_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpiob9_drv2_set_pinctrl: gpiob9_drv2_set_grp {
+    ts,pins = <PF1>;
+  mux,val = <5>;
+ function = "gpiob9";
+  groups = "gpiob9_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpiob9_drv4_set_pinctrl: gpiob9_drv4_set_grp {
+    ts,pins = <PF1>;
+  mux,val = <5>;
+ function = "gpiob9";
+  groups = "gpiob9_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpiob9_drv8_set_pinctrl: gpiob9_drv8_set_grp {
+    ts,pins = <PF1>;
+  mux,val = <5>;
+ function = "gpiob9";
+  groups = "gpiob9_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpiob10 {
+ gpiob10_pinctrl: gpiob10_grp {
+  ts,pins = <PF2>;
+  mux,val = <5>;
+ function = "gpiob10";
+ groups = "gpiob10_grp";
+ };
+gpiob10_bias_up_pinctrl: gpiob10_bias_up_grp {
+  ts,pins = <PF2>;
+  mux,val = <5>;
+ function = "gpiob10";
+ groups = "gpiob10_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob10_bias_down_pinctrl: gpiob10_bias_down_grp {
+  ts,pins = <PF2>;
+  mux,val = <5>;
+ function = "gpiob10";
+ groups = "gpiob10_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob10_voltage_set_pinctrl: gpiob10_voltage_set_grp {
+  ts,pins = <PF2>;
+  mux,val = <5>;
+ function = "gpiob10";
+ groups = "gpiob10_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob10_drv2_set_pinctrl: gpiob10_drv2_set_grp {
+  ts,pins = <PF2>;
+  mux,val = <5>;
+ function = "gpiob10";
+ groups = "gpiob10_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob10_drv4_set_pinctrl: gpiob10_drv4_set_grp {
+  ts,pins = <PF2>;
+  mux,val = <5>;
+ function = "gpiob10";
+ groups = "gpiob10_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob10_drv8_set_pinctrl: gpiob10_drv8_set_grp {
+  ts,pins = <PF2>;
+  mux,val = <5>;
+ function = "gpiob10";
+ groups = "gpiob10_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob11 {
+ gpiob11_pinctrl: gpiob11_grp {
+  ts,pins = <PF3>;
+  mux,val = <5>;
+ function = "gpiob11";
+ groups = "gpiob11_grp";
+ };
+gpiob11_bias_up_pinctrl: gpiob11_bias_up_grp {
+  ts,pins = <PF3>;
+  mux,val = <5>;
+ function = "gpiob11";
+ groups = "gpiob11_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob11_bias_down_pinctrl: gpiob11_bias_down_grp {
+  ts,pins = <PF3>;
+  mux,val = <5>;
+ function = "gpiob11";
+ groups = "gpiob11_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob11_voltage_set_pinctrl: gpiob11_voltage_set_grp {
+  ts,pins = <PF3>;
+  mux,val = <5>;
+ function = "gpiob11";
+ groups = "gpiob11_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob11_drv2_set_pinctrl: gpiob11_drv2_set_grp {
+  ts,pins = <PF3>;
+  mux,val = <5>;
+ function = "gpiob11";
+ groups = "gpiob11_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob11_drv4_set_pinctrl: gpiob11_drv4_set_grp {
+  ts,pins = <PF3>;
+  mux,val = <5>;
+ function = "gpiob11";
+ groups = "gpiob11_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob11_drv8_set_pinctrl: gpiob11_drv8_set_grp {
+  ts,pins = <PF3>;
+  mux,val = <5>;
+ function = "gpiob11";
+ groups = "gpiob11_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob12 {
+ gpiob12_pinctrl: gpiob12_grp {
+  ts,pins = <PF4>;
+  mux,val = <5>;
+ function = "gpiob12";
+ groups = "gpiob12_grp";
+ };
+gpiob12_bias_up_pinctrl: gpiob12_bias_up_grp {
+  ts,pins = <PF4>;
+  mux,val = <5>;
+ function = "gpiob12";
+ groups = "gpiob12_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob12_bias_down_pinctrl: gpiob12_bias_down_grp {
+  ts,pins = <PF4>;
+  mux,val = <5>;
+ function = "gpiob12";
+ groups = "gpiob12_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob12_voltage_set_pinctrl: gpiob12_voltage_set_grp {
+  ts,pins = <PF4>;
+  mux,val = <5>;
+ function = "gpiob12";
+ groups = "gpiob12_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob12_drv2_set_pinctrl: gpiob12_drv2_set_grp {
+  ts,pins = <PF4>;
+  mux,val = <5>;
+ function = "gpiob12";
+ groups = "gpiob12_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob12_drv4_set_pinctrl: gpiob12_drv4_set_grp {
+  ts,pins = <PF4>;
+  mux,val = <5>;
+ function = "gpiob12";
+ groups = "gpiob12_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob12_drv8_set_pinctrl: gpiob12_drv8_set_grp {
+  ts,pins = <PF4>;
+  mux,val = <5>;
+ function = "gpiob12";
+ groups = "gpiob12_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob13 {
+ gpiob13_pinctrl: gpiob13_grp {
+  ts,pins = <PF5>;
+  mux,val = <5>;
+ function = "gpiob13";
+ groups = "gpiob13_grp";
+ };
+gpiob13_bias_up_pinctrl: gpiob13_bias_up_grp {
+  ts,pins = <PF5>;
+  mux,val = <5>;
+ function = "gpiob13";
+ groups = "gpiob13_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob13_bias_down_pinctrl: gpiob13_bias_down_grp {
+  ts,pins = <PF5>;
+  mux,val = <5>;
+ function = "gpiob13";
+ groups = "gpiob13_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob13_voltage_set_pinctrl: gpiob13_voltage_set_grp {
+  ts,pins = <PF5>;
+  mux,val = <5>;
+ function = "gpiob13";
+ groups = "gpiob13_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob13_drv2_set_pinctrl: gpiob13_drv2_set_grp {
+  ts,pins = <PF5>;
+  mux,val = <5>;
+ function = "gpiob13";
+ groups = "gpiob13_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob13_drv4_set_pinctrl: gpiob13_drv4_set_grp {
+  ts,pins = <PF5>;
+  mux,val = <5>;
+ function = "gpiob13";
+ groups = "gpiob13_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob13_drv8_set_pinctrl: gpiob13_drv8_set_grp {
+  ts,pins = <PF5>;
+  mux,val = <5>;
+ function = "gpiob13";
+ groups = "gpiob13_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob14 {
+ gpiob14_pinctrl: gpiob14_grp {
+  ts,pins = <PF6>;
+  mux,val = <5>;
+ function = "gpiob14";
+ groups = "gpiob14_grp";
+ };
+gpiob14_bias_up_pinctrl: gpiob14_bias_up_grp {
+  ts,pins = <PF6>;
+  mux,val = <5>;
+ function = "gpiob14";
+ groups = "gpiob14_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob14_bias_down_pinctrl: gpiob14_bias_down_grp {
+  ts,pins = <PF6>;
+  mux,val = <5>;
+ function = "gpiob14";
+ groups = "gpiob14_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob14_voltage_set_pinctrl: gpiob14_voltage_set_grp {
+  ts,pins = <PF6>;
+  mux,val = <5>;
+ function = "gpiob14";
+ groups = "gpiob14_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob14_drv2_set_pinctrl: gpiob14_drv2_set_grp {
+  ts,pins = <PF6>;
+  mux,val = <5>;
+ function = "gpiob14";
+ groups = "gpiob14_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob14_drv4_set_pinctrl: gpiob14_drv4_set_grp {
+  ts,pins = <PF6>;
+  mux,val = <5>;
+ function = "gpiob14";
+ groups = "gpiob14_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob14_drv8_set_pinctrl: gpiob14_drv8_set_grp {
+  ts,pins = <PF6>;
+  mux,val = <5>;
+ function = "gpiob14";
+ groups = "gpiob14_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob15 {
+ gpiob15_pinctrl: gpiob15_grp {
+  ts,pins = <PF7>;
+  mux,val = <5>;
+ function = "gpiob15";
+ groups = "gpiob15_grp";
+ };
+gpiob15_bias_up_pinctrl: gpiob15_bias_up_grp {
+  ts,pins = <PF7>;
+  mux,val = <5>;
+ function = "gpiob15";
+ groups = "gpiob15_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob15_bias_down_pinctrl: gpiob15_bias_down_grp {
+  ts,pins = <PF7>;
+  mux,val = <5>;
+ function = "gpiob15";
+ groups = "gpiob15_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob15_voltage_set_pinctrl: gpiob15_voltage_set_grp {
+  ts,pins = <PF7>;
+  mux,val = <5>;
+ function = "gpiob15";
+ groups = "gpiob15_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob15_drv2_set_pinctrl: gpiob15_drv2_set_grp {
+  ts,pins = <PF7>;
+  mux,val = <5>;
+ function = "gpiob15";
+ groups = "gpiob15_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob15_drv4_set_pinctrl: gpiob15_drv4_set_grp {
+  ts,pins = <PF7>;
+  mux,val = <5>;
+ function = "gpiob15";
+ groups = "gpiob15_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob15_drv8_set_pinctrl: gpiob15_drv8_set_grp {
+  ts,pins = <PF7>;
+  mux,val = <5>;
+ function = "gpiob15";
+ groups = "gpiob15_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob16 {
+ gpiob16_pinctrl: gpiob16_grp {
+  ts,pins = <PG0>;
+  mux,val = <5>;
+ function = "gpiob16";
+ groups = "gpiob16_grp";
+ };
+gpiob16_bias_up_pinctrl: gpiob16_bias_up_grp {
+  ts,pins = <PG0>;
+  mux,val = <5>;
+ function = "gpiob16";
+ groups = "gpiob16_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob16_bias_down_pinctrl: gpiob16_bias_down_grp {
+  ts,pins = <PG0>;
+  mux,val = <5>;
+ function = "gpiob16";
+ groups = "gpiob16_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob16_voltage_set_pinctrl: gpiob16_voltage_set_grp {
+  ts,pins = <PG0>;
+  mux,val = <5>;
+ function = "gpiob16";
+ groups = "gpiob16_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob16_drv2_set_pinctrl: gpiob16_drv2_set_grp {
+  ts,pins = <PG0>;
+  mux,val = <5>;
+ function = "gpiob16";
+ groups = "gpiob16_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob16_drv4_set_pinctrl: gpiob16_drv4_set_grp {
+  ts,pins = <PG0>;
+  mux,val = <5>;
+ function = "gpiob16";
+ groups = "gpiob16_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob16_drv8_set_pinctrl: gpiob16_drv8_set_grp {
+  ts,pins = <PG0>;
+  mux,val = <5>;
+ function = "gpiob16";
+ groups = "gpiob16_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob17 {
+ gpiob17_pinctrl: gpiob17_grp {
+  ts,pins = <PG1>;
+  mux,val = <5>;
+ function = "gpiob17";
+ groups = "gpiob17_grp";
+ };
+gpiob17_bias_up_pinctrl: gpiob17_bias_up_grp {
+  ts,pins = <PG1>;
+  mux,val = <5>;
+ function = "gpiob17";
+ groups = "gpiob17_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob17_bias_down_pinctrl: gpiob17_bias_down_grp {
+  ts,pins = <PG1>;
+  mux,val = <5>;
+ function = "gpiob17";
+ groups = "gpiob17_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob17_voltage_set_pinctrl: gpiob17_voltage_set_grp {
+  ts,pins = <PG1>;
+  mux,val = <5>;
+ function = "gpiob17";
+ groups = "gpiob17_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob17_drv2_set_pinctrl: gpiob17_drv2_set_grp {
+  ts,pins = <PG1>;
+  mux,val = <5>;
+ function = "gpiob17";
+ groups = "gpiob17_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob17_drv4_set_pinctrl: gpiob17_drv4_set_grp {
+  ts,pins = <PG1>;
+  mux,val = <5>;
+ function = "gpiob17";
+ groups = "gpiob17_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob17_drv8_set_pinctrl: gpiob17_drv8_set_grp {
+  ts,pins = <PG1>;
+  mux,val = <5>;
+ function = "gpiob17";
+ groups = "gpiob17_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob18 {
+ gpiob18_pinctrl: gpiob18_grp {
+  ts,pins = <PG2>;
+  mux,val = <5>;
+ function = "gpiob18";
+ groups = "gpiob18_grp";
+ };
+gpiob18_bias_up_pinctrl: gpiob18_bias_up_grp {
+  ts,pins = <PG2>;
+  mux,val = <5>;
+ function = "gpiob18";
+ groups = "gpiob18_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob18_bias_down_pinctrl: gpiob18_bias_down_grp {
+  ts,pins = <PG2>;
+  mux,val = <5>;
+ function = "gpiob18";
+ groups = "gpiob18_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob18_voltage_set_pinctrl: gpiob18_voltage_set_grp {
+  ts,pins = <PG2>;
+  mux,val = <5>;
+ function = "gpiob18";
+ groups = "gpiob18_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob18_drv2_set_pinctrl: gpiob18_drv2_set_grp {
+  ts,pins = <PG2>;
+  mux,val = <5>;
+ function = "gpiob18";
+ groups = "gpiob18_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob18_drv4_set_pinctrl: gpiob18_drv4_set_grp {
+  ts,pins = <PG2>;
+  mux,val = <5>;
+ function = "gpiob18";
+ groups = "gpiob18_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob18_drv8_set_pinctrl: gpiob18_drv8_set_grp {
+  ts,pins = <PG2>;
+  mux,val = <5>;
+ function = "gpiob18";
+ groups = "gpiob18_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob19 {
+ gpiob19_pinctrl: gpiob19_grp {
+  ts,pins = <PG3>;
+  mux,val = <5>;
+ function = "gpiob19";
+ groups = "gpiob19_grp";
+ };
+gpiob19_bias_up_pinctrl: gpiob19_bias_up_grp {
+  ts,pins = <PG3>;
+  mux,val = <5>;
+ function = "gpiob19";
+ groups = "gpiob19_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob19_bias_down_pinctrl: gpiob19_bias_down_grp {
+  ts,pins = <PG3>;
+  mux,val = <5>;
+ function = "gpiob19";
+ groups = "gpiob19_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob19_voltage_set_pinctrl: gpiob19_voltage_set_grp {
+  ts,pins = <PG3>;
+  mux,val = <5>;
+ function = "gpiob19";
+ groups = "gpiob19_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob19_drv2_set_pinctrl: gpiob19_drv2_set_grp {
+  ts,pins = <PG3>;
+  mux,val = <5>;
+ function = "gpiob19";
+ groups = "gpiob19_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob19_drv4_set_pinctrl: gpiob19_drv4_set_grp {
+  ts,pins = <PG3>;
+  mux,val = <5>;
+ function = "gpiob19";
+ groups = "gpiob19_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob19_drv8_set_pinctrl: gpiob19_drv8_set_grp {
+  ts,pins = <PG3>;
+  mux,val = <5>;
+ function = "gpiob19";
+ groups = "gpiob19_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob20 {
+ gpiob20_pinctrl: gpiob20_grp {
+  ts,pins = <PG4>;
+  mux,val = <5>;
+ function = "gpiob20";
+ groups = "gpiob20_grp";
+ };
+gpiob20_bias_up_pinctrl: gpiob20_bias_up_grp {
+  ts,pins = <PG4>;
+  mux,val = <5>;
+ function = "gpiob20";
+ groups = "gpiob20_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob20_bias_down_pinctrl: gpiob20_bias_down_grp {
+  ts,pins = <PG4>;
+  mux,val = <5>;
+ function = "gpiob20";
+ groups = "gpiob20_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob20_voltage_set_pinctrl: gpiob20_voltage_set_grp {
+  ts,pins = <PG4>;
+  mux,val = <5>;
+ function = "gpiob20";
+ groups = "gpiob20_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob20_drv2_set_pinctrl: gpiob20_drv2_set_grp {
+  ts,pins = <PG4>;
+  mux,val = <5>;
+ function = "gpiob20";
+ groups = "gpiob20_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob20_drv4_set_pinctrl: gpiob20_drv4_set_grp {
+  ts,pins = <PG4>;
+  mux,val = <5>;
+ function = "gpiob20";
+ groups = "gpiob20_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob20_drv8_set_pinctrl: gpiob20_drv8_set_grp {
+  ts,pins = <PG4>;
+  mux,val = <5>;
+ function = "gpiob20";
+ groups = "gpiob20_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob21 {
+ gpiob21_pinctrl: gpiob21_grp {
+  ts,pins = <PG5>;
+  mux,val = <5>;
+ function = "gpiob21";
+ groups = "gpiob21_grp";
+ };
+gpiob21_bias_up_pinctrl: gpiob21_bias_up_grp {
+  ts,pins = <PG5>;
+  mux,val = <5>;
+ function = "gpiob21";
+ groups = "gpiob21_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob21_bias_down_pinctrl: gpiob21_bias_down_grp {
+  ts,pins = <PG5>;
+  mux,val = <5>;
+ function = "gpiob21";
+ groups = "gpiob21_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob21_voltage_set_pinctrl: gpiob21_voltage_set_grp {
+  ts,pins = <PG5>;
+  mux,val = <5>;
+ function = "gpiob21";
+ groups = "gpiob21_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob21_drv2_set_pinctrl: gpiob21_drv2_set_grp {
+  ts,pins = <PG5>;
+  mux,val = <5>;
+ function = "gpiob21";
+ groups = "gpiob21_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob21_drv4_set_pinctrl: gpiob21_drv4_set_grp {
+  ts,pins = <PG5>;
+  mux,val = <5>;
+ function = "gpiob21";
+ groups = "gpiob21_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob21_drv8_set_pinctrl: gpiob21_drv8_set_grp {
+  ts,pins = <PG5>;
+  mux,val = <5>;
+ function = "gpiob21";
+ groups = "gpiob21_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob22 {
+ gpiob22_pinctrl: gpiob22_grp {
+  ts,pins = <PG6>;
+  mux,val = <5>;
+ function = "gpiob22";
+ groups = "gpiob22_grp";
+ };
+gpiob22_bias_up_pinctrl: gpiob22_bias_up_grp {
+  ts,pins = <PG6>;
+  mux,val = <5>;
+ function = "gpiob22";
+ groups = "gpiob22_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob22_bias_down_pinctrl: gpiob22_bias_down_grp {
+  ts,pins = <PG6>;
+  mux,val = <5>;
+ function = "gpiob22";
+ groups = "gpiob22_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob22_voltage_set_pinctrl: gpiob22_voltage_set_grp {
+  ts,pins = <PG6>;
+  mux,val = <5>;
+ function = "gpiob22";
+ groups = "gpiob22_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob22_drv2_set_pinctrl: gpiob22_drv2_set_grp {
+  ts,pins = <PG6>;
+  mux,val = <5>;
+ function = "gpiob22";
+ groups = "gpiob22_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob22_drv4_set_pinctrl: gpiob22_drv4_set_grp {
+  ts,pins = <PG6>;
+  mux,val = <5>;
+ function = "gpiob22";
+ groups = "gpiob22_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob22_drv8_set_pinctrl: gpiob22_drv8_set_grp {
+  ts,pins = <PG6>;
+  mux,val = <5>;
+ function = "gpiob22";
+ groups = "gpiob22_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob23 {
+ gpiob23_pinctrl: gpiob23_grp {
+  ts,pins = <PG7>;
+  mux,val = <5>;
+ function = "gpiob23";
+ groups = "gpiob23_grp";
+ };
+gpiob23_bias_up_pinctrl: gpiob23_bias_up_grp {
+  ts,pins = <PG7>;
+  mux,val = <5>;
+ function = "gpiob23";
+ groups = "gpiob23_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob23_bias_down_pinctrl: gpiob23_bias_down_grp {
+  ts,pins = <PG7>;
+  mux,val = <5>;
+ function = "gpiob23";
+ groups = "gpiob23_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob23_voltage_set_pinctrl: gpiob23_voltage_set_grp {
+  ts,pins = <PG7>;
+  mux,val = <5>;
+ function = "gpiob23";
+ groups = "gpiob23_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob23_drv2_set_pinctrl: gpiob23_drv2_set_grp {
+  ts,pins = <PG7>;
+  mux,val = <5>;
+ function = "gpiob23";
+ groups = "gpiob23_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob23_drv4_set_pinctrl: gpiob23_drv4_set_grp {
+  ts,pins = <PG7>;
+  mux,val = <5>;
+ function = "gpiob23";
+ groups = "gpiob23_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob23_drv8_set_pinctrl: gpiob23_drv8_set_grp {
+  ts,pins = <PG7>;
+  mux,val = <5>;
+ function = "gpiob23";
+ groups = "gpiob23_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob24 {
+ gpiob24_pinctrl: gpiob24_grp {
+  ts,pins = <PH0>;
+  mux,val = <5>;
+ function = "gpiob24";
+ groups = "gpiob24_grp";
+ };
+gpiob24_bias_up_pinctrl: gpiob24_bias_up_grp {
+  ts,pins = <PH0>;
+  mux,val = <5>;
+ function = "gpiob24";
+ groups = "gpiob24_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob24_bias_down_pinctrl: gpiob24_bias_down_grp {
+  ts,pins = <PH0>;
+  mux,val = <5>;
+ function = "gpiob24";
+ groups = "gpiob24_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob24_voltage_set_pinctrl: gpiob24_voltage_set_grp {
+  ts,pins = <PH0>;
+  mux,val = <5>;
+ function = "gpiob24";
+ groups = "gpiob24_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob24_drv2_set_pinctrl: gpiob24_drv2_set_grp {
+  ts,pins = <PH0>;
+  mux,val = <5>;
+ function = "gpiob24";
+ groups = "gpiob24_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob24_drv4_set_pinctrl: gpiob24_drv4_set_grp {
+  ts,pins = <PH0>;
+  mux,val = <5>;
+ function = "gpiob24";
+ groups = "gpiob24_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob24_drv8_set_pinctrl: gpiob24_drv8_set_grp {
+  ts,pins = <PH0>;
+  mux,val = <5>;
+ function = "gpiob24";
+ groups = "gpiob24_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob25 {
+ gpiob25_pinctrl: gpiob25_grp {
+  ts,pins = <PH1>;
+  mux,val = <5>;
+ function = "gpiob25";
+ groups = "gpiob25_grp";
+ };
+gpiob25_bias_up_pinctrl: gpiob25_bias_up_grp {
+  ts,pins = <PH1>;
+  mux,val = <5>;
+ function = "gpiob25";
+ groups = "gpiob25_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob25_bias_down_pinctrl: gpiob25_bias_down_grp {
+  ts,pins = <PH1>;
+  mux,val = <5>;
+ function = "gpiob25";
+ groups = "gpiob25_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob25_voltage_set_pinctrl: gpiob25_voltage_set_grp {
+  ts,pins = <PH1>;
+  mux,val = <5>;
+ function = "gpiob25";
+ groups = "gpiob25_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob25_drv2_set_pinctrl: gpiob25_drv2_set_grp {
+  ts,pins = <PH1>;
+  mux,val = <5>;
+ function = "gpiob25";
+ groups = "gpiob25_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob25_drv4_set_pinctrl: gpiob25_drv4_set_grp {
+  ts,pins = <PH1>;
+  mux,val = <5>;
+ function = "gpiob25";
+ groups = "gpiob25_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob25_drv8_set_pinctrl: gpiob25_drv8_set_grp {
+  ts,pins = <PH1>;
+  mux,val = <5>;
+ function = "gpiob25";
+ groups = "gpiob25_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob26 {
+ gpiob26_pinctrl: gpiob26_grp {
+  ts,pins = <PH2>;
+  mux,val = <5>;
+ function = "gpiob26";
+ groups = "gpiob26_grp";
+ };
+gpiob26_bias_up_pinctrl: gpiob26_bias_up_grp {
+  ts,pins = <PH2>;
+  mux,val = <5>;
+ function = "gpiob26";
+ groups = "gpiob26_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob26_bias_down_pinctrl: gpiob26_bias_down_grp {
+  ts,pins = <PH2>;
+  mux,val = <5>;
+ function = "gpiob26";
+ groups = "gpiob26_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob26_voltage_set_pinctrl: gpiob26_voltage_set_grp {
+  ts,pins = <PH2>;
+  mux,val = <5>;
+ function = "gpiob26";
+ groups = "gpiob26_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob26_drv2_set_pinctrl: gpiob26_drv2_set_grp {
+  ts,pins = <PH2>;
+  mux,val = <5>;
+ function = "gpiob26";
+ groups = "gpiob26_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob26_drv4_set_pinctrl: gpiob26_drv4_set_grp {
+  ts,pins = <PH2>;
+  mux,val = <5>;
+ function = "gpiob26";
+ groups = "gpiob26_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob26_drv8_set_pinctrl: gpiob26_drv8_set_grp {
+  ts,pins = <PH2>;
+  mux,val = <5>;
+ function = "gpiob26";
+ groups = "gpiob26_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob27 {
+ gpiob27_pinctrl: gpiob27_grp {
+  ts,pins = <PH3>;
+  mux,val = <5>;
+ function = "gpiob27";
+ groups = "gpiob27_grp";
+ };
+gpiob27_bias_up_pinctrl: gpiob27_bias_up_grp {
+  ts,pins = <PH3>;
+  mux,val = <5>;
+ function = "gpiob27";
+ groups = "gpiob27_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob27_bias_down_pinctrl: gpiob27_bias_down_grp {
+  ts,pins = <PH3>;
+  mux,val = <5>;
+ function = "gpiob27";
+ groups = "gpiob27_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob27_voltage_set_pinctrl: gpiob27_voltage_set_grp {
+  ts,pins = <PH3>;
+  mux,val = <5>;
+ function = "gpiob27";
+ groups = "gpiob27_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob27_drv2_set_pinctrl: gpiob27_drv2_set_grp {
+  ts,pins = <PH3>;
+  mux,val = <5>;
+ function = "gpiob27";
+ groups = "gpiob27_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob27_drv4_set_pinctrl: gpiob27_drv4_set_grp {
+  ts,pins = <PH3>;
+  mux,val = <5>;
+ function = "gpiob27";
+ groups = "gpiob27_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob27_drv8_set_pinctrl: gpiob27_drv8_set_grp {
+  ts,pins = <PH3>;
+  mux,val = <5>;
+ function = "gpiob27";
+ groups = "gpiob27_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob28 {
+ gpiob28_pinctrl: gpiob28_grp {
+  ts,pins = <PH4>;
+  mux,val = <5>;
+ function = "gpiob28";
+ groups = "gpiob28_grp";
+ };
+gpiob28_bias_up_pinctrl: gpiob28_bias_up_grp {
+  ts,pins = <PH4>;
+  mux,val = <5>;
+ function = "gpiob28";
+ groups = "gpiob28_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob28_bias_down_pinctrl: gpiob28_bias_down_grp {
+  ts,pins = <PH4>;
+  mux,val = <5>;
+ function = "gpiob28";
+ groups = "gpiob28_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob28_voltage_set_pinctrl: gpiob28_voltage_set_grp {
+  ts,pins = <PH4>;
+  mux,val = <5>;
+ function = "gpiob28";
+ groups = "gpiob28_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob28_drv2_set_pinctrl: gpiob28_drv2_set_grp {
+  ts,pins = <PH4>;
+  mux,val = <5>;
+ function = "gpiob28";
+ groups = "gpiob28_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob28_drv4_set_pinctrl: gpiob28_drv4_set_grp {
+  ts,pins = <PH4>;
+  mux,val = <5>;
+ function = "gpiob28";
+ groups = "gpiob28_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob28_drv8_set_pinctrl: gpiob28_drv8_set_grp {
+  ts,pins = <PH4>;
+  mux,val = <5>;
+ function = "gpiob28";
+ groups = "gpiob28_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob29 {
+ gpiob29_pinctrl: gpiob29_grp {
+  ts,pins = <PH5>;
+  mux,val = <5>;
+ function = "gpiob29";
+ groups = "gpiob29_grp";
+ };
+gpiob29_bias_up_pinctrl: gpiob29_bias_up_grp {
+  ts,pins = <PH5>;
+  mux,val = <5>;
+ function = "gpiob29";
+ groups = "gpiob29_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob29_bias_down_pinctrl: gpiob29_bias_down_grp {
+  ts,pins = <PH5>;
+  mux,val = <5>;
+ function = "gpiob29";
+ groups = "gpiob29_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob29_voltage_set_pinctrl: gpiob29_voltage_set_grp {
+  ts,pins = <PH5>;
+  mux,val = <5>;
+ function = "gpiob29";
+ groups = "gpiob29_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob29_drv2_set_pinctrl: gpiob29_drv2_set_grp {
+  ts,pins = <PH5>;
+  mux,val = <5>;
+ function = "gpiob29";
+ groups = "gpiob29_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob29_drv4_set_pinctrl: gpiob29_drv4_set_grp {
+  ts,pins = <PH5>;
+  mux,val = <5>;
+ function = "gpiob29";
+ groups = "gpiob29_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob29_drv8_set_pinctrl: gpiob29_drv8_set_grp {
+  ts,pins = <PH5>;
+  mux,val = <5>;
+ function = "gpiob29";
+ groups = "gpiob29_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob30 {
+ gpiob30_pinctrl: gpiob30_grp {
+  ts,pins = <PH6>;
+  mux,val = <5>;
+ function = "gpiob30";
+ groups = "gpiob30_grp";
+ };
+gpiob30_bias_up_pinctrl: gpiob30_bias_up_grp {
+  ts,pins = <PH6>;
+  mux,val = <5>;
+ function = "gpiob30";
+ groups = "gpiob30_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob30_bias_down_pinctrl: gpiob30_bias_down_grp {
+  ts,pins = <PH6>;
+  mux,val = <5>;
+ function = "gpiob30";
+ groups = "gpiob30_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob30_voltage_set_pinctrl: gpiob30_voltage_set_grp {
+  ts,pins = <PH6>;
+  mux,val = <5>;
+ function = "gpiob30";
+ groups = "gpiob30_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob30_drv2_set_pinctrl: gpiob30_drv2_set_grp {
+  ts,pins = <PH6>;
+  mux,val = <5>;
+ function = "gpiob30";
+ groups = "gpiob30_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob30_drv4_set_pinctrl: gpiob30_drv4_set_grp {
+  ts,pins = <PH6>;
+  mux,val = <5>;
+ function = "gpiob30";
+ groups = "gpiob30_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob30_drv8_set_pinctrl: gpiob30_drv8_set_grp {
+  ts,pins = <PH6>;
+  mux,val = <5>;
+ function = "gpiob30";
+ groups = "gpiob30_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpiob31 {
+ gpiob31_pinctrl: gpiob31_grp {
+  ts,pins = <PJ0>;
+  mux,val = <5>;
+ function = "gpiob31";
+ groups = "gpiob31_grp";
+ };
+gpiob31_bias_up_pinctrl: gpiob31_bias_up_grp {
+  ts,pins = <PJ0>;
+  mux,val = <5>;
+ function = "gpiob31";
+ groups = "gpiob31_bias_up_grp";
+ bias-pull-up;
+ };
+gpiob31_bias_down_pinctrl: gpiob31_bias_down_grp {
+  ts,pins = <PJ0>;
+  mux,val = <5>;
+ function = "gpiob31";
+ groups = "gpiob31_bias_down_grp";
+ bias-pull-down;
+ };
+gpiob31_voltage_set_pinctrl: gpiob31_voltage_set_grp {
+  ts,pins = <PJ0>;
+  mux,val = <5>;
+ function = "gpiob31";
+ groups = "gpiob31_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpiob31_drv2_set_pinctrl: gpiob31_drv2_set_grp {
+  ts,pins = <PJ0>;
+  mux,val = <5>;
+ function = "gpiob31";
+ groups = "gpiob31_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpiob31_drv4_set_pinctrl: gpiob31_drv4_set_grp {
+  ts,pins = <PJ0>;
+  mux,val = <5>;
+ function = "gpiob31";
+ groups = "gpiob31_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpiob31_drv8_set_pinctrl: gpiob31_drv8_set_grp {
+  ts,pins = <PJ0>;
+  mux,val = <5>;
+ function = "gpiob31";
+ groups = "gpiob31_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioc0 {
+  gpioc0_pinctrl: gpioc0_grp {
+    ts,pins = <PJ1>;
+  mux,val = <5>;
+ function = "gpioc0";
+  groups = "gpioc0_grp";
+  };
+gpioc0_bias_up_pinctrl: gpioc0_bias_up_grp {
+    ts,pins = <PJ1>;
+  mux,val = <5>;
+ function = "gpioc0";
+  groups = "gpioc0_bias_up_grp";
+  bias-pull-up;
+ };
+gpioc0_bias_down_pinctrl: gpioc0_bias_down_grp {
+    ts,pins = <PJ1>;
+  mux,val = <5>;
+ function = "gpioc0";
+  groups = "gpioc0_bias_down_grp";
+  bias-pull-down;
+ };
+gpioc0_voltage_set_pinctrl: gpioc0_voltage_set_grp {
+    ts,pins = <PJ1>;
+  mux,val = <5>;
+ function = "gpioc0";
+  groups = "gpioc0_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioc0_drv2_set_pinctrl: gpioc0_drv2_set_grp {
+    ts,pins = <PJ1>;
+  mux,val = <5>;
+ function = "gpioc0";
+  groups = "gpioc0_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioc0_drv4_set_pinctrl: gpioc0_drv4_set_grp {
+    ts,pins = <PJ1>;
+  mux,val = <5>;
+ function = "gpioc0";
+  groups = "gpioc0_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioc0_drv8_set_pinctrl: gpioc0_drv8_set_grp {
+    ts,pins = <PJ1>;
+  mux,val = <5>;
+ function = "gpioc0";
+  groups = "gpioc0_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioc1 {
+  gpioc1_pinctrl: gpioc1_grp {
+    ts,pins = <PJ2>;
+  mux,val = <5>;
+ function = "gpioc1";
+  groups = "gpioc1_grp";
+  };
+gpioc1_bias_up_pinctrl: gpioc1_bias_up_grp {
+    ts,pins = <PJ2>;
+  mux,val = <5>;
+ function = "gpioc1";
+  groups = "gpioc1_bias_up_grp";
+  bias-pull-up;
+ };
+gpioc1_bias_down_pinctrl: gpioc1_bias_down_grp {
+    ts,pins = <PJ2>;
+  mux,val = <5>;
+ function = "gpioc1";
+  groups = "gpioc1_bias_down_grp";
+  bias-pull-down;
+ };
+gpioc1_voltage_set_pinctrl: gpioc1_voltage_set_grp {
+    ts,pins = <PJ2>;
+  mux,val = <5>;
+ function = "gpioc1";
+  groups = "gpioc1_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioc1_drv2_set_pinctrl: gpioc1_drv2_set_grp {
+    ts,pins = <PJ2>;
+  mux,val = <5>;
+ function = "gpioc1";
+  groups = "gpioc1_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioc1_drv4_set_pinctrl: gpioc1_drv4_set_grp {
+    ts,pins = <PJ2>;
+  mux,val = <5>;
+ function = "gpioc1";
+  groups = "gpioc1_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioc1_drv8_set_pinctrl: gpioc1_drv8_set_grp {
+    ts,pins = <PJ2>;
+  mux,val = <5>;
+ function = "gpioc1";
+  groups = "gpioc1_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioc2 {
+  gpioc2_pinctrl: gpioc2_grp {
+    ts,pins = <PJ3>;
+  mux,val = <5>;
+ function = "gpioc2";
+  groups = "gpioc2_grp";
+  };
+gpioc2_bias_up_pinctrl: gpioc2_bias_up_grp {
+    ts,pins = <PJ3>;
+  mux,val = <5>;
+ function = "gpioc2";
+  groups = "gpioc2_bias_up_grp";
+  bias-pull-up;
+ };
+gpioc2_bias_down_pinctrl: gpioc2_bias_down_grp {
+    ts,pins = <PJ3>;
+  mux,val = <5>;
+ function = "gpioc2";
+  groups = "gpioc2_bias_down_grp";
+  bias-pull-down;
+ };
+gpioc2_voltage_set_pinctrl: gpioc2_voltage_set_grp {
+    ts,pins = <PJ3>;
+  mux,val = <5>;
+ function = "gpioc2";
+  groups = "gpioc2_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioc2_drv2_set_pinctrl: gpioc2_drv2_set_grp {
+    ts,pins = <PJ3>;
+  mux,val = <5>;
+ function = "gpioc2";
+  groups = "gpioc2_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioc2_drv4_set_pinctrl: gpioc2_drv4_set_grp {
+    ts,pins = <PJ3>;
+  mux,val = <5>;
+ function = "gpioc2";
+  groups = "gpioc2_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioc2_drv8_set_pinctrl: gpioc2_drv8_set_grp {
+    ts,pins = <PJ3>;
+  mux,val = <5>;
+ function = "gpioc2";
+  groups = "gpioc2_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioc3 {
+  gpioc3_pinctrl: gpioc3_grp {
+    ts,pins = <PJ4>;
+  mux,val = <5>;
+ function = "gpioc3";
+  groups = "gpioc3_grp";
+  };
+gpioc3_bias_up_pinctrl: gpioc3_bias_up_grp {
+    ts,pins = <PJ4>;
+  mux,val = <5>;
+ function = "gpioc3";
+  groups = "gpioc3_bias_up_grp";
+  bias-pull-up;
+ };
+gpioc3_bias_down_pinctrl: gpioc3_bias_down_grp {
+    ts,pins = <PJ4>;
+  mux,val = <5>;
+ function = "gpioc3";
+  groups = "gpioc3_bias_down_grp";
+  bias-pull-down;
+ };
+gpioc3_voltage_set_pinctrl: gpioc3_voltage_set_grp {
+    ts,pins = <PJ4>;
+  mux,val = <5>;
+ function = "gpioc3";
+  groups = "gpioc3_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioc3_drv2_set_pinctrl: gpioc3_drv2_set_grp {
+    ts,pins = <PJ4>;
+  mux,val = <5>;
+ function = "gpioc3";
+  groups = "gpioc3_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioc3_drv4_set_pinctrl: gpioc3_drv4_set_grp {
+    ts,pins = <PJ4>;
+  mux,val = <5>;
+ function = "gpioc3";
+  groups = "gpioc3_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioc3_drv8_set_pinctrl: gpioc3_drv8_set_grp {
+    ts,pins = <PJ4>;
+  mux,val = <5>;
+ function = "gpioc3";
+  groups = "gpioc3_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioc4 {
+  gpioc4_pinctrl: gpioc4_grp {
+    ts,pins = <PJ5>;
+  mux,val = <5>;
+ function = "gpioc4";
+  groups = "gpioc4_grp";
+  };
+gpioc4_bias_up_pinctrl: gpioc4_bias_up_grp {
+    ts,pins = <PJ5>;
+  mux,val = <5>;
+ function = "gpioc4";
+  groups = "gpioc4_bias_up_grp";
+  bias-pull-up;
+ };
+gpioc4_bias_down_pinctrl: gpioc4_bias_down_grp {
+    ts,pins = <PJ5>;
+  mux,val = <5>;
+ function = "gpioc4";
+  groups = "gpioc4_bias_down_grp";
+  bias-pull-down;
+ };
+gpioc4_voltage_set_pinctrl: gpioc4_voltage_set_grp {
+    ts,pins = <PJ5>;
+  mux,val = <5>;
+ function = "gpioc4";
+  groups = "gpioc4_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioc4_drv2_set_pinctrl: gpioc4_drv2_set_grp {
+    ts,pins = <PJ5>;
+  mux,val = <5>;
+ function = "gpioc4";
+  groups = "gpioc4_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioc4_drv4_set_pinctrl: gpioc4_drv4_set_grp {
+    ts,pins = <PJ5>;
+  mux,val = <5>;
+ function = "gpioc4";
+  groups = "gpioc4_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioc4_drv8_set_pinctrl: gpioc4_drv8_set_grp {
+    ts,pins = <PJ5>;
+  mux,val = <5>;
+ function = "gpioc4";
+  groups = "gpioc4_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioc5 {
+  gpioc5_pinctrl: gpioc5_grp {
+    ts,pins = <PJ6>;
+  mux,val = <5>;
+ function = "gpioc5";
+  groups = "gpioc5_grp";
+  };
+gpioc5_bias_up_pinctrl: gpioc5_bias_up_grp {
+    ts,pins = <PJ6>;
+  mux,val = <5>;
+ function = "gpioc5";
+  groups = "gpioc5_bias_up_grp";
+  bias-pull-up;
+ };
+gpioc5_bias_down_pinctrl: gpioc5_bias_down_grp {
+    ts,pins = <PJ6>;
+  mux,val = <5>;
+ function = "gpioc5";
+  groups = "gpioc5_bias_down_grp";
+  bias-pull-down;
+ };
+gpioc5_voltage_set_pinctrl: gpioc5_voltage_set_grp {
+    ts,pins = <PJ6>;
+  mux,val = <5>;
+ function = "gpioc5";
+  groups = "gpioc5_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioc5_drv2_set_pinctrl: gpioc5_drv2_set_grp {
+    ts,pins = <PJ6>;
+  mux,val = <5>;
+ function = "gpioc5";
+  groups = "gpioc5_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioc5_drv4_set_pinctrl: gpioc5_drv4_set_grp {
+    ts,pins = <PJ6>;
+  mux,val = <5>;
+ function = "gpioc5";
+  groups = "gpioc5_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioc5_drv8_set_pinctrl: gpioc5_drv8_set_grp {
+    ts,pins = <PJ6>;
+  mux,val = <5>;
+ function = "gpioc5";
+  groups = "gpioc5_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioc6 {
+  gpioc6_pinctrl: gpioc6_grp {
+    ts,pins = <PK0>;
+  mux,val = <5>;
+ function = "gpioc6";
+  groups = "gpioc6_grp";
+  };
+gpioc6_bias_up_pinctrl: gpioc6_bias_up_grp {
+    ts,pins = <PK0>;
+  mux,val = <5>;
+ function = "gpioc6";
+  groups = "gpioc6_bias_up_grp";
+  bias-pull-up;
+ };
+gpioc6_bias_down_pinctrl: gpioc6_bias_down_grp {
+    ts,pins = <PK0>;
+  mux,val = <5>;
+ function = "gpioc6";
+  groups = "gpioc6_bias_down_grp";
+  bias-pull-down;
+ };
+gpioc6_voltage_set_pinctrl: gpioc6_voltage_set_grp {
+    ts,pins = <PK0>;
+  mux,val = <5>;
+ function = "gpioc6";
+  groups = "gpioc6_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioc6_drv2_set_pinctrl: gpioc6_drv2_set_grp {
+    ts,pins = <PK0>;
+  mux,val = <5>;
+ function = "gpioc6";
+  groups = "gpioc6_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioc6_drv4_set_pinctrl: gpioc6_drv4_set_grp {
+    ts,pins = <PK0>;
+  mux,val = <5>;
+ function = "gpioc6";
+  groups = "gpioc6_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioc6_drv8_set_pinctrl: gpioc6_drv8_set_grp {
+    ts,pins = <PK0>;
+  mux,val = <5>;
+ function = "gpioc6";
+  groups = "gpioc6_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioc7 {
+  gpioc7_pinctrl: gpioc7_grp {
+    ts,pins = <PK1>;
+  mux,val = <5>;
+ function = "gpioc7";
+  groups = "gpioc7_grp";
+  };
+gpioc7_bias_up_pinctrl: gpioc7_bias_up_grp {
+    ts,pins = <PK1>;
+  mux,val = <5>;
+ function = "gpioc7";
+  groups = "gpioc7_bias_up_grp";
+  bias-pull-up;
+ };
+gpioc7_bias_down_pinctrl: gpioc7_bias_down_grp {
+    ts,pins = <PK1>;
+  mux,val = <5>;
+ function = "gpioc7";
+  groups = "gpioc7_bias_down_grp";
+  bias-pull-down;
+ };
+gpioc7_voltage_set_pinctrl: gpioc7_voltage_set_grp {
+    ts,pins = <PK1>;
+  mux,val = <5>;
+ function = "gpioc7";
+  groups = "gpioc7_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioc7_drv2_set_pinctrl: gpioc7_drv2_set_grp {
+    ts,pins = <PK1>;
+  mux,val = <5>;
+ function = "gpioc7";
+  groups = "gpioc7_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioc7_drv4_set_pinctrl: gpioc7_drv4_set_grp {
+    ts,pins = <PK1>;
+  mux,val = <5>;
+ function = "gpioc7";
+  groups = "gpioc7_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioc7_drv8_set_pinctrl: gpioc7_drv8_set_grp {
+    ts,pins = <PK1>;
+  mux,val = <5>;
+ function = "gpioc7";
+  groups = "gpioc7_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioc8 {
+  gpioc8_pinctrl: gpioc8_grp {
+    ts,pins = <PK2>;
+  mux,val = <5>;
+ function = "gpioc8";
+  groups = "gpioc8_grp";
+  };
+gpioc8_bias_up_pinctrl: gpioc8_bias_up_grp {
+    ts,pins = <PK2>;
+  mux,val = <5>;
+ function = "gpioc8";
+  groups = "gpioc8_bias_up_grp";
+  bias-pull-up;
+ };
+gpioc8_bias_down_pinctrl: gpioc8_bias_down_grp {
+    ts,pins = <PK2>;
+  mux,val = <5>;
+ function = "gpioc8";
+  groups = "gpioc8_bias_down_grp";
+  bias-pull-down;
+ };
+gpioc8_voltage_set_pinctrl: gpioc8_voltage_set_grp {
+    ts,pins = <PK2>;
+  mux,val = <5>;
+ function = "gpioc8";
+  groups = "gpioc8_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioc8_drv2_set_pinctrl: gpioc8_drv2_set_grp {
+    ts,pins = <PK2>;
+  mux,val = <5>;
+ function = "gpioc8";
+  groups = "gpioc8_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioc8_drv4_set_pinctrl: gpioc8_drv4_set_grp {
+    ts,pins = <PK2>;
+  mux,val = <5>;
+ function = "gpioc8";
+  groups = "gpioc8_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioc8_drv8_set_pinctrl: gpioc8_drv8_set_grp {
+    ts,pins = <PK2>;
+  mux,val = <5>;
+ function = "gpioc8";
+  groups = "gpioc8_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioc9 {
+  gpioc9_pinctrl: gpioc9_grp {
+    ts,pins = <PK3>;
+  mux,val = <5>;
+ function = "gpioc9";
+  groups = "gpioc9_grp";
+  };
+gpioc9_bias_up_pinctrl: gpioc9_bias_up_grp {
+    ts,pins = <PK3>;
+  mux,val = <5>;
+ function = "gpioc9";
+  groups = "gpioc9_bias_up_grp";
+  bias-pull-up;
+ };
+gpioc9_bias_down_pinctrl: gpioc9_bias_down_grp {
+    ts,pins = <PK3>;
+  mux,val = <5>;
+ function = "gpioc9";
+  groups = "gpioc9_bias_down_grp";
+  bias-pull-down;
+ };
+gpioc9_voltage_set_pinctrl: gpioc9_voltage_set_grp {
+    ts,pins = <PK3>;
+  mux,val = <5>;
+ function = "gpioc9";
+  groups = "gpioc9_voltage_set_grp";
+  voltage-set-1v8;
+ };
+gpioc9_drv2_set_pinctrl: gpioc9_drv2_set_grp {
+    ts,pins = <PK3>;
+  mux,val = <5>;
+ function = "gpioc9";
+  groups = "gpioc9_drv2_set_pinctrl";
+  driver-strength = <2>;
+ };
+gpioc9_drv4_set_pinctrl: gpioc9_drv4_set_grp {
+    ts,pins = <PK3>;
+  mux,val = <5>;
+ function = "gpioc9";
+  groups = "gpioc9_drv4_set_pinctrl";
+  driver-strength = <4>;
+ };
+gpioc9_drv8_set_pinctrl: gpioc9_drv8_set_grp {
+    ts,pins = <PK3>;
+  mux,val = <5>;
+ function = "gpioc9";
+  groups = "gpioc9_drv8_set_pinctrl";
+  driver-strength = <8>;
+ };
+};
+gpioc10 {
+ gpioc10_pinctrl: gpioc10_grp {
+  ts,pins = <PK4>;
+  mux,val = <5>;
+ function = "gpioc10";
+ groups = "gpioc10_grp";
+ };
+gpioc10_bias_up_pinctrl: gpioc10_bias_up_grp {
+  ts,pins = <PK4>;
+  mux,val = <5>;
+ function = "gpioc10";
+ groups = "gpioc10_bias_up_grp";
+ bias-pull-up;
+ };
+gpioc10_bias_down_pinctrl: gpioc10_bias_down_grp {
+  ts,pins = <PK4>;
+  mux,val = <5>;
+ function = "gpioc10";
+ groups = "gpioc10_bias_down_grp";
+ bias-pull-down;
+ };
+gpioc10_voltage_set_pinctrl: gpioc10_voltage_set_grp {
+  ts,pins = <PK4>;
+  mux,val = <5>;
+ function = "gpioc10";
+ groups = "gpioc10_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioc10_drv2_set_pinctrl: gpioc10_drv2_set_grp {
+  ts,pins = <PK4>;
+  mux,val = <5>;
+ function = "gpioc10";
+ groups = "gpioc10_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioc10_drv4_set_pinctrl: gpioc10_drv4_set_grp {
+  ts,pins = <PK4>;
+  mux,val = <5>;
+ function = "gpioc10";
+ groups = "gpioc10_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioc10_drv8_set_pinctrl: gpioc10_drv8_set_grp {
+  ts,pins = <PK4>;
+  mux,val = <5>;
+ function = "gpioc10";
+ groups = "gpioc10_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioc11 {
+ gpioc11_pinctrl: gpioc11_grp {
+  ts,pins = <PK5>;
+  mux,val = <5>;
+ function = "gpioc11";
+ groups = "gpioc11_grp";
+ };
+gpioc11_bias_up_pinctrl: gpioc11_bias_up_grp {
+  ts,pins = <PK5>;
+  mux,val = <5>;
+ function = "gpioc11";
+ groups = "gpioc11_bias_up_grp";
+ bias-pull-up;
+ };
+gpioc11_bias_down_pinctrl: gpioc11_bias_down_grp {
+  ts,pins = <PK5>;
+  mux,val = <5>;
+ function = "gpioc11";
+ groups = "gpioc11_bias_down_grp";
+ bias-pull-down;
+ };
+gpioc11_voltage_set_pinctrl: gpioc11_voltage_set_grp {
+  ts,pins = <PK5>;
+  mux,val = <5>;
+ function = "gpioc11";
+ groups = "gpioc11_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioc11_drv2_set_pinctrl: gpioc11_drv2_set_grp {
+  ts,pins = <PK5>;
+  mux,val = <5>;
+ function = "gpioc11";
+ groups = "gpioc11_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioc11_drv4_set_pinctrl: gpioc11_drv4_set_grp {
+  ts,pins = <PK5>;
+  mux,val = <5>;
+ function = "gpioc11";
+ groups = "gpioc11_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioc11_drv8_set_pinctrl: gpioc11_drv8_set_grp {
+  ts,pins = <PK5>;
+  mux,val = <5>;
+ function = "gpioc11";
+ groups = "gpioc11_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioc12 {
+ gpioc12_pinctrl: gpioc12_grp {
+  ts,pins = <PK6>;
+  mux,val = <5>;
+ function = "gpioc12";
+ groups = "gpioc12_grp";
+ };
+gpioc12_bias_up_pinctrl: gpioc12_bias_up_grp {
+  ts,pins = <PK6>;
+  mux,val = <5>;
+ function = "gpioc12";
+ groups = "gpioc12_bias_up_grp";
+ bias-pull-up;
+ };
+gpioc12_bias_down_pinctrl: gpioc12_bias_down_grp {
+  ts,pins = <PK6>;
+  mux,val = <5>;
+ function = "gpioc12";
+ groups = "gpioc12_bias_down_grp";
+ bias-pull-down;
+ };
+gpioc12_voltage_set_pinctrl: gpioc12_voltage_set_grp {
+  ts,pins = <PK6>;
+  mux,val = <5>;
+ function = "gpioc12";
+ groups = "gpioc12_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioc12_drv2_set_pinctrl: gpioc12_drv2_set_grp {
+  ts,pins = <PK6>;
+  mux,val = <5>;
+ function = "gpioc12";
+ groups = "gpioc12_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioc12_drv4_set_pinctrl: gpioc12_drv4_set_grp {
+  ts,pins = <PK6>;
+  mux,val = <5>;
+ function = "gpioc12";
+ groups = "gpioc12_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioc12_drv8_set_pinctrl: gpioc12_drv8_set_grp {
+  ts,pins = <PK6>;
+  mux,val = <5>;
+ function = "gpioc12";
+ groups = "gpioc12_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+gpioc13 {
+ gpioc13_pinctrl: gpioc13_grp {
+  ts,pins = <PK7>;
+  mux,val = <5>;
+ function = "gpioc13";
+ groups = "gpioc13_grp";
+ };
+gpioc13_bias_up_pinctrl: gpioc13_bias_up_grp {
+  ts,pins = <PK7>;
+  mux,val = <5>;
+ function = "gpioc13";
+ groups = "gpioc13_bias_up_grp";
+ bias-pull-up;
+ };
+gpioc13_bias_down_pinctrl: gpioc13_bias_down_grp {
+  ts,pins = <PK7>;
+  mux,val = <5>;
+ function = "gpioc13";
+ groups = "gpioc13_bias_down_grp";
+ bias-pull-down;
+ };
+gpioc13_voltage_set_pinctrl: gpioc13_voltage_set_grp {
+  ts,pins = <PK7>;
+  mux,val = <5>;
+ function = "gpioc13";
+ groups = "gpioc13_voltage_set_grp";
+ voltage-set-1v8;
+ };
+gpioc13_drv2_set_pinctrl: gpioc13_drv2_set_grp {
+  ts,pins = <PK7>;
+  mux,val = <5>;
+ function = "gpioc13";
+ groups = "gpioc13_drv2_set_pinctrl";
+ driver-strength = <2>;
+ };
+gpioc13_drv4_set_pinctrl: gpioc13_drv4_set_grp {
+  ts,pins = <PK7>;
+  mux,val = <5>;
+ function = "gpioc13";
+ groups = "gpioc13_drv4_set_pinctrl";
+ driver-strength = <4>;
+ };
+gpioc13_drv8_set_pinctrl: gpioc13_drv8_set_grp {
+  ts,pins = <PK7>;
+  mux,val = <5>;
+ function = "gpioc13";
+ groups = "gpioc13_drv8_set_pinctrl";
+ driver-strength = <8>;
+ };
+};
+
+
+    };
+};
+
+

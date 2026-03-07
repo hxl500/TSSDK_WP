@@ -1,0 +1,16 @@
+#!/bin/sh
+
+insmod /lib/modules/libphy.ko
+insmod /lib/modules/motorcomm.ko
+insmod /lib/modules/mii.ko
+insmod /lib/modules/fixed_phy.ko
+insmod /lib/modules/of_mdio.ko
+insmod /lib/modules/stmmac.ko
+insmod /lib/modules/stmmac-platform.ko
+insmod /lib/modules/dwmac-generic.ko
+insmod /lib/modules/dwmac-dwc-qos-eth.ko
+
+devmem 0xF2440004 32 0x4
+devmem 0xF1004098 32 0xd01
+ifconfig eth0 down
+ifconfig eth0 up

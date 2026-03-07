@@ -1,0 +1,399 @@
+/*
+ * dts file for tsingmicro tx5336
+ *
+ * Copyright 2022 Tsingmicro, Inc.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ */
+#include <dt-bindings/pinctrl/pinctrl-ts-tx5336.h>
+/ {
+    pinctrl: pinctrl@f0389000 {
+        compatible = "ts,ts-pinctrl-tx5336";
+        status = "okay";
+        reg = <0x0 0xf0389000 0x0 0x1000>;
+        ts,npins = <PINMAX>;
+  
+
+    pwm0 {
+    pwm0_pinctrl_0:pwm0_grp_0 {
+    ts,pins = <PB7>;
+    mux,val = <0>;
+    function = "pwm0";
+    groups = "pwm0_grp_0";
+    };
+    pwm0_pinctrl_1:pwm0_grp_1 {
+    ts,pins = <PB7>;
+    mux,val = <3>;
+    function = "pwm0";
+    groups = "pwm0_grp_1";
+    };
+    pwm0_pinctrl_2:pwm0_grp_2 {
+    ts,pins = <PC2>;
+    mux,val = <3>;
+    function = "pwm0";
+    groups = "pwm0_grp_2";
+    };
+    pwm0_pinctrl_3:pwm0_grp_3 {
+    ts,pins = <PF6>;
+    mux,val = <3>;
+    function = "pwm0";
+    groups = "pwm0_grp_3";
+    };
+    };
+    pwm1 {
+    pwm1_pinctrl_0:pwm1_grp_0 {
+    ts,pins = <PB6>;
+    mux,val = <3>;
+    function = "pwm1";
+    groups = "pwm1_grp_0";
+    };
+    pwm1_pinctrl_1:pwm1_grp_1 {
+    ts,pins = <PC3>;
+    mux,val = <3>;
+    function = "pwm1";
+    groups = "pwm1_grp_1";
+    };
+    pwm1_pinctrl_2:pwm1_grp_2 {
+    ts,pins = <PF7>;
+    mux,val = <3>;
+    function = "pwm1";
+    groups = "pwm1_grp_2";
+    };
+    pwm1_pinctrl_3:pwm1_grp_3 {
+    ts,pins = <PG2>;
+    mux,val = <0>;
+    function = "pwm1";
+    groups = "pwm1_grp_3";
+    };
+    pwm1_pinctrl_4:pwm1_grp_4 {
+    ts,pins = <PG7>;
+    mux,val = <3>;
+    function = "pwm1";
+    groups = "pwm1_grp_4";
+    };
+    };
+    pwm2 {
+    pwm2_pinctrl_0:pwm2_grp_0 {
+    ts,pins = <PB2>;
+    mux,val = <3>;
+    function = "pwm2";
+    groups = "pwm2_grp_0";
+    };
+    pwm2_pinctrl_1:pwm2_grp_1 {
+    ts,pins = <PC4>;
+    mux,val = <3>;
+    function = "pwm2";
+    groups = "pwm2_grp_1";
+    };
+    pwm2_pinctrl_2:pwm2_grp_2 {
+    ts,pins = <PD3>;
+    mux,val = <0>;
+    function = "pwm2";
+    groups = "pwm2_grp_2";
+    };
+    pwm2_pinctrl_3:pwm2_grp_3 {
+    ts,pins = <PE6>;
+    mux,val = <3>;
+    function = "pwm2";
+    groups = "pwm2_grp_3";
+    };
+    pwm2_pinctrl_4:pwm2_grp_4 {
+    ts,pins = <PH6>;
+    mux,val = <3>;
+    function = "pwm2";
+    groups = "pwm2_grp_4";
+    };
+    };
+    pwm3 {
+    pwm3_pinctrl_0:pwm3_grp_0 {
+    ts,pins = <PB3>;
+    mux,val = <3>;
+    function = "pwm3";
+    groups = "pwm3_grp_0";
+    };
+    pwm3_pinctrl_1:pwm3_grp_1 {
+    ts,pins = <PC5>;
+    mux,val = <3>;
+    function = "pwm3";
+    groups = "pwm3_grp_1";
+    };
+    pwm3_pinctrl_2:pwm3_grp_2 {
+    ts,pins = <PD4>;
+    mux,val = <0>;
+    function = "pwm3";
+    groups = "pwm3_grp_2";
+    };
+    pwm3_pinctrl_3:pwm3_grp_3 {
+    ts,pins = <PE7>;
+    mux,val = <3>;
+    function = "pwm3";
+    groups = "pwm3_grp_3";
+    };
+    pwm3_pinctrl_4:pwm3_grp_4 {
+    ts,pins = <PJ6>;
+    mux,val = <3>;
+    function = "pwm3";
+    groups = "pwm3_grp_4";
+    };
+    };
+    pwm4 {
+    pwm4_pinctrl_0:pwm4_grp_0 {
+    ts,pins = <PB4>;
+    mux,val = <3>;
+    function = "pwm4";
+    groups = "pwm4_grp_0";
+    };
+    pwm4_pinctrl_1:pwm4_grp_1 {
+    ts,pins = <PC6>;
+    mux,val = <3>;
+    function = "pwm4";
+    groups = "pwm4_grp_1";
+    };
+    pwm4_pinctrl_2:pwm4_grp_2 {
+    ts,pins = <PD1>;
+    mux,val = <3>;
+    function = "pwm4";
+    groups = "pwm4_grp_2";
+    };
+    pwm4_pinctrl_3:pwm4_grp_3 {
+    ts,pins = <PD5>;
+    mux,val = <0>;
+    function = "pwm4";
+    groups = "pwm4_grp_3";
+    };
+    pwm4_pinctrl_4:pwm4_grp_4 {
+    ts,pins = <PH0>;
+    mux,val = <3>;
+    function = "pwm4";
+    groups = "pwm4_grp_4";
+    };
+    };
+    pwm5 {
+    pwm5_pinctrl_0:pwm5_grp_0 {
+    ts,pins = <PB5>;
+    mux,val = <3>;
+    function = "pwm5";
+    groups = "pwm5_grp_0";
+    };
+    pwm5_pinctrl_1:pwm5_grp_1 {
+    ts,pins = <PC7>;
+    mux,val = <3>;
+    function = "pwm5";
+    groups = "pwm5_grp_1";
+    };
+    pwm5_pinctrl_2:pwm5_grp_2 {
+    ts,pins = <PD2>;
+    mux,val = <3>;
+    function = "pwm5";
+    groups = "pwm5_grp_2";
+    };
+    pwm5_pinctrl_3:pwm5_grp_3 {
+    ts,pins = <PD6>;
+    mux,val = <0>;
+    function = "pwm5";
+    groups = "pwm5_grp_3";
+    };
+    pwm5_pinctrl_4:pwm5_grp_4 {
+    ts,pins = <PH1>;
+    mux,val = <3>;
+    function = "pwm5";
+    groups = "pwm5_grp_4";
+    };
+    };
+    pwm6 {
+    pwm6_pinctrl_0:pwm6_grp_0 {
+    ts,pins = <PA4>;
+    mux,val = <3>;
+    function = "pwm6";
+    groups = "pwm6_grp_0";
+    };
+    pwm6_pinctrl_1:pwm6_grp_1 {
+    ts,pins = <PD7>;
+    mux,val = <3>;
+    function = "pwm6";
+    groups = "pwm6_grp_1";
+    };
+    pwm6_pinctrl_2:pwm6_grp_2 {
+    ts,pins = <PG0>;
+    mux,val = <3>;
+    function = "pwm6";
+    groups = "pwm6_grp_2";
+    };
+    pwm6_pinctrl_3:pwm6_grp_3 {
+    ts,pins = <PJ0>;
+    mux,val = <3>;
+    function = "pwm6";
+    groups = "pwm6_grp_3";
+    };
+    pwm6_pinctrl_4:pwm6_grp_4 {
+    ts,pins = <PK0>;
+    mux,val = <3>;
+    function = "pwm6";
+    groups = "pwm6_grp_4";
+    };
+    };
+    pwm7 {
+    pwm7_pinctrl_0:pwm7_grp_0 {
+    ts,pins = <PA5>;
+    mux,val = <3>;
+    function = "pwm7";
+    groups = "pwm7_grp_0";
+    };
+    pwm7_pinctrl_1:pwm7_grp_1 {
+    ts,pins = <PE0>;
+    mux,val = <3>;
+    function = "pwm7";
+    groups = "pwm7_grp_1";
+    };
+    pwm7_pinctrl_2:pwm7_grp_2 {
+    ts,pins = <PG1>;
+    mux,val = <3>;
+    function = "pwm7";
+    groups = "pwm7_grp_2";
+    };
+    pwm7_pinctrl_3:pwm7_grp_3 {
+    ts,pins = <PJ1>;
+    mux,val = <3>;
+    function = "pwm7";
+    groups = "pwm7_grp_3";
+    };
+    pwm7_pinctrl_4:pwm7_grp_4 {
+    ts,pins = <PK1>;
+    mux,val = <3>;
+    function = "pwm7";
+    groups = "pwm7_grp_4";
+    };
+    };
+    pwm8 {
+    pwm8_pinctrl_0:pwm8_grp_0 {
+    ts,pins = <PA6>;
+    mux,val = <3>;
+    function = "pwm8";
+    groups = "pwm8_grp_0";
+    };
+    pwm8_pinctrl_1:pwm8_grp_1 {
+    ts,pins = <PE1>;
+    mux,val = <3>;
+    function = "pwm8";
+    groups = "pwm8_grp_1";
+    };
+    pwm8_pinctrl_2:pwm8_grp_2 {
+    ts,pins = <PG4>;
+    mux,val = <3>;
+    function = "pwm8";
+    groups = "pwm8_grp_2";
+    };
+    pwm8_pinctrl_3:pwm8_grp_3 {
+    ts,pins = <PJ2>;
+    mux,val = <3>;
+    function = "pwm8";
+    groups = "pwm8_grp_3";
+    };
+    pwm8_pinctrl_4:pwm8_grp_4 {
+    ts,pins = <PK2>;
+    mux,val = <3>;
+    function = "pwm8";
+    groups = "pwm8_grp_4";
+    };
+    };
+    pwm9 {
+    pwm9_pinctrl_0:pwm9_grp_0 {
+    ts,pins = <PA7>;
+    mux,val = <3>;
+    function = "pwm9";
+    groups = "pwm9_grp_0";
+    };
+    pwm9_pinctrl_1:pwm9_grp_1 {
+    ts,pins = <PE2>;
+    mux,val = <3>;
+    function = "pwm9";
+    groups = "pwm9_grp_1";
+    };
+    pwm9_pinctrl_2:pwm9_grp_2 {
+    ts,pins = <PG5>;
+    mux,val = <3>;
+    function = "pwm9";
+    groups = "pwm9_grp_2";
+    };
+    pwm9_pinctrl_3:pwm9_grp_3 {
+    ts,pins = <PJ3>;
+    mux,val = <3>;
+    function = "pwm9";
+    groups = "pwm9_grp_3";
+    };
+    pwm9_pinctrl_4:pwm9_grp_4 {
+    ts,pins = <PK3>;
+    mux,val = <3>;
+    function = "pwm9";
+    groups = "pwm9_grp_4";
+    };
+    };
+    pwm10 {
+    pwm10_pinctrl_0:pwm10_grp_0 {
+    ts,pins = <PB0>;
+    mux,val = <3>;
+    function = "pwm10";
+    groups = "pwm10_grp_0";
+    };
+    pwm10_pinctrl_1:pwm10_grp_1 {
+    ts,pins = <PE3>;
+    mux,val = <3>;
+    function = "pwm10";
+    groups = "pwm10_grp_1";
+    };
+    pwm10_pinctrl_2:pwm10_grp_2 {
+    ts,pins = <PG3>;
+    mux,val = <3>;
+    function = "pwm10";
+    groups = "pwm10_grp_2";
+    };
+    pwm10_pinctrl_3:pwm10_grp_3 {
+    ts,pins = <PJ4>;
+    mux,val = <3>;
+    function = "pwm10";
+    groups = "pwm10_grp_3";
+    };
+    pwm10_pinctrl_4:pwm10_grp_4 {
+    ts,pins = <PK4>;
+    mux,val = <3>;
+    function = "pwm10";
+    groups = "pwm10_grp_4";
+    };
+    };
+    pwm11 {
+    pwm11_pinctrl_0:pwm11_grp_0 {
+    ts,pins = <PB1>;
+    mux,val = <3>;
+    function = "pwm11";
+    groups = "pwm11_grp_0";
+    };
+    pwm11_pinctrl_1:pwm11_grp_1 {
+    ts,pins = <PE4>;
+    mux,val = <3>;
+    function = "pwm11";
+    groups = "pwm11_grp_1";
+    };
+    pwm11_pinctrl_2:pwm11_grp_2 {
+    ts,pins = <PG6>;
+    mux,val = <3>;
+    function = "pwm11";
+    groups = "pwm11_grp_2";
+    };
+    pwm11_pinctrl_3:pwm11_grp_3 {
+    ts,pins = <PJ5>;
+    mux,val = <3>;
+    function = "pwm11";
+    groups = "pwm11_grp_3";
+    };
+    pwm11_pinctrl_4:pwm11_grp_4 {
+    ts,pins = <PK5>;
+    mux,val = <3>;
+    function = "pwm11";
+    groups = "pwm11_grp_4";
+    };
+    };
+  };
+};

@@ -1,0 +1,152 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * dts file for tsingmicro tx536
+ *
+ * Copyright 2022 Beijing Tsingmicro Intelligent Technology Co.,Ltd.
+ *
+ */
+
+#include <dt-bindings/clock/xlnx-zynqmp-clk.h>
+#include <dt-bindings/clock/ts-tx536-clk.h>
+/ {
+	fpga_pll1_1: fpga_pll1_1 {
+		u-boot,dm-pre-reloc;
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <7379713>;
+		clock-accuracy = <100>;
+	};
+
+	osc24m: osc24m_clk {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <24000000>;
+		clock-accuracy = <100>;
+	};
+
+	osc32k: osc32k_clk {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <32768>;
+		clock-accuracy = <100>;
+	};
+	
+	ts_clk: tx536-clock-controller {
+		reg = <0x0 0xF0D9A000 0x0 0x1000>,
+			  <0x0 0xF128B000 0x0 0x1000>;
+		reg-io-width = <4>;
+		#clock-cells = <1>;
+		compatible = "ts,ts-common-clk";
+		clocks = <&osc24m>;
+	};
+};
+
+&cpu0 {
+	clocks = <&ts_clk TS_CLK_TX536_A53_CLKIN>;
+};
+
+&gmac0 {
+	clocks = <&ts_clk TS_CLK_TX536_MII_RXCLK>, <&ts_clk TS_CLK_TX536_GMII_TX_CLK>, <&ts_clk TS_CLK_TX536_PTP_REF_CLK>;
+	clock-names = "rx_clk", "tx_clk", "ptp_ref";
+};
+
+&nand0 {
+	clocks = <&ts_clk TS_CLK_TX536_NFC_CLKB>,
+		<&ts_clk TS_CLK_TX536_NFC_HCLK>;
+	clock-names = "nfc_clkb, nfc_hclk";
+};
+
+/* &gpio0 {
+ *	clocks = <&ts_clk TS_CLK_TX536_TOP_GPIO_PCLK>;
+ * };
+ */
+
+&qspi {
+	clocks = <&ts_clk TS_CLK_TX536_OSPI_REF_CLK>, <&ts_clk TS_CLK_TX536_OSPI_HCLK>, <&ts_clk TS_CLK_TX536_OSPI_BUS_CLK>;
+	clock-names = "ospi_ref_clk", "ospi_hclk", "ospi_pclk";
+	assigned-clocks = <&ts_clk TS_CLK_TX536_OSPI_REF_CLK>;
+	assigned-clock-rates = <300000000>;
+};
+
+&sdhci0 {
+	clocks = <&ts_clk TS_CLK_TX536_MSHC_0_HCLK>, <&ts_clk TS_CLK_TX536_MSHC_0_BCLK>;
+	clock-names = "biu", "ciu";
+	assigned-clocks = <&ts_clk TS_CLK_TX536_MSHC_0_BCLK>;
+	assigned-clock-parents = <&ts_clk TS_CLK_TX536_CPU_PLL_D2>;
+	assigned-clock-rates = <200000000>;
+};
+
+&sdhci1 {
+	clocks = <&ts_clk TS_CLK_TX536_MSHC_1_HCLK>, <&ts_clk TS_CLK_TX536_MSHC_1_BCLK>;
+	clock-names = "biu", "ciu";
+	assigned-clocks = <&ts_clk TS_CLK_TX536_MSHC_1_BCLK>;
+	assigned-clock-parents = <&ts_clk TS_CLK_TX536_CPU_PLL_D2>;
+	assigned-clock-rates = <200000000>;
+};
+
+&ssi0 {
+	clocks = <&ts_clk TS_CLK_TX536_SPI_0_SSICLK>;
+};
+
+&uart1 {
+	clocks = <&fpga_pll1_1>;
+};
+
+&mcu_i2c0 {
+	clocks = <&ts_clk TS_CLK_TX536_I2C_0_ICCLK>,
+			<&ts_clk TS_CLK_TX536_I2C_0_PCLK>;
+};
+
+&gpio0 {
+	clocks = <&ts_clk TS_CLK_TX536_TOP_GPIO_PCLK>;
+};
+
+&gpio1 {
+	clocks = <&ts_clk TS_CLK_TX536_TOP_GPIO_PCLK>;
+};
+
+&gpio2 {
+	clocks = <&ts_clk TS_CLK_TX536_TOP_GPIO_PCLK>;
+};
+
+&gpio3 {
+	clocks = <&ts_clk TS_CLK_TX536_MCU_GPIO_PCLK>;
+};
+
+&usb0 {
+	clocks = <&ts_clk TS_CLK_TX536_USB3C_BUS_CLK>,
+		<&ts_clk TS_CLK_TX536_USB_PHY_REFCLK>,
+		<&ts_clk TS_CLK_TX536_USB_CTL_REFCLK>;
+	clock-names = "usb3c_busclk", "usb_phy_refclk", "usb_ctl_refclk";
+
+	assigned-clocks = <&ts_clk TS_CLK_TX536_USB_PHY_REFCLK>;
+	assigned-clock-parents = <&osc24m>;
+		
+	assigned-clocks = <&ts_clk TS_CLK_TX536_USB3C_BUS_CLK>;
+	assigned-clock-rates = <125000000>;
+};
+
+&watchdog0 {
+	clocks = <&ts_clk TS_CLK_TX536_TOP_WDT_PCLK>, <&osc32k>;
+	clock-names = "pclk", "work_clk";
+};
+
+&otpc {
+	clocks = <&ts_clk TS_CLK_TX536_OTPC_PCLK>;
+	clock-names = "otpc_pclk";
+};
+
+&ts_ske {
+	clocks = <&ts_clk TS_CLK_TX536_CRYPTO_BUS_CLK>;
+	clock-names = "ske_clk";
+};
+
+&ts_hash {
+	clocks = <&ts_clk TS_CLK_TX536_CRYPTO_BUS_CLK>;
+	clock-names = "hash_clk";
+};
+
+&ts_pke {
+	clocks = <&ts_clk TS_CLK_TX536_CRYPTO_BUS_CLK>;
+	clock-names = "pke_clk";
+};

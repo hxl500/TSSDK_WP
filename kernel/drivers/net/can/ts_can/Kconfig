@@ -1,0 +1,5 @@
+config CAN_TSCAN
+	depends on HAS_IOMEM
+	tristate "Bosch TS_CAN devices"
+	---help---
+	  Say Y here if you want to support for Bosch TS_CAN controller.

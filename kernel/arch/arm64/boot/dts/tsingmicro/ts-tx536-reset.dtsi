@@ -1,0 +1,180 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * Reset specification for Tsingmicor Soc
+ *
+ * (C) Copyright 2022 - 2022, Tsingmicro, Inc.
+ *
+ */
+
+#include <dt-bindings/reset/ts-tx536-resets.h>
+/ {
+	ts_reset: reset-controller {
+		compatible = "ts,tx536-reset";
+		reg = <0x0 0xF0D9B000 0x0 0x1000>,
+			  <0x0 0xF128B000 0x0 0x1000>;
+		#reset-cells = <1>;
+	};
+};
+
+&dma0 {
+	resets = <&ts_reset TS_RST_DMAC0>;
+	reset-names = "dma";
+};
+
+&gmac0 {
+	resets = <&ts_reset TS_RST_GMAC_GLOBAL>;
+	reset-names = "stmmaceth";
+};
+
+&cve {
+	resets = <&ts_reset TS_RST_CVE_AHB>,
+		   <&ts_reset TS_RST_CVE_AXI>,
+		   <&ts_reset TS_RST_CVE_CORE>,
+		   <&ts_reset TS_RST_CVE_GLOBAL>;
+	reset-names = "cve_ahb","cve_axi","cve_core","cve_global";
+};
+&dp0{
+	resets = <&ts_reset TS_RST_DP650>;
+	reset-names = "rst_dp650";
+};
+&dwhdmi{
+	resets = <&ts_reset TS_RST_HDMI_TX_APB>,
+		   <&ts_reset TS_RST_HDMI_TX_MAIN>,
+		   <&ts_reset TS_RST_HDMI_TX_AHB>,
+		   <&ts_reset TS_RST_HDMI_TX_GLOBAL>;
+	reset-names = "apb","main","ahb","global";
+};
+
+&qspi {
+	resets = <&ts_reset TS_RST_OSPI_APB>,
+			 <&ts_reset TS_RST_OSPI_AHB>,
+			 <&ts_reset TS_RST_OSPI_SPI_INTF>,
+			 <&ts_reset TS_RST_OSPI_GLOBAL>;
+	reset-names = "ospi_apb", "ospi_ahb", "qspi_ocp", "qspi";
+};
+
+&nand0 {
+	resets = <&ts_reset TS_RST_NFC_AHB>,
+		 <&ts_reset TS_RST_NFC_FUNC_BLOCK>,
+		 <&ts_reset TS_RST_NFC_GLOBAL>;
+	reset-names = "nfc_ahb", "nfc_func_block", "nfc_global";
+};
+
+&spi0 {
+	resets = <&ts_reset TS_RST_SPI0_GLOBAL>;
+	reset-names = "spi";
+};
+
+&bt1120tx {
+	resets = <&ts_reset TS_RST_BT1120_RX_APB>,
+		<&ts_reset TS_RST_BT1120_RX_AXI>,
+		<&ts_reset TS_RST_BT1120_RX_GLOBAL>;
+	reset-name = "bt1120rx_apb", "bt1120rx_axi", "bt1120rx_global";
+};
+
+&bt1120rx {
+	resets = <&ts_reset TS_RST_BT1120_TX_GLOBAL>;
+	reset-name = "bt1120tx_global";
+};
+
+#if 0
+&ssi1 {
+	resets = <&ts_reset TS_RST_SPI1_GLOBAL>;
+	reset-names = "spi";
+};
+
+&ssi2 {
+	resets = <&ts_reset TS_RST_SPI2_GLOBAL>;
+	reset-names = "spi";
+};
+
+&ssi3 {
+	resets = <&ts_reset TS_RST_SPI3_GLOBAL>;
+	reset-names = "spi";
+};
+
+&ssi4 {
+	resets = <&ts_reset TS_RST_SPI4_GLOBAL>;
+	reset-names = "spi";
+};
+#endif
+
+&gpu {
+	resets = <&ts_reset TS_RST_GPU>;
+	reset-names = "gpu";
+};
+
+&aiisp {
+	resets = <&ts_reset TS_RST_AIISP_AHB>,
+	<&ts_reset TS_RST_AIISP_CORE>,
+	<&ts_reset TS_RST_AIISP_GLOBAL>,
+	/*rce*/
+	<&ts_reset TS_RST_RCE_AHB>,
+	<&ts_reset TS_RST_RCE_AXI>,
+	<&ts_reset TS_RST_RCE_CORE>,
+	<&ts_reset TS_RST_RCE_MEM>,
+	<&ts_reset TS_RST_RCE_GLOBAL>,
+	/*rne*/
+	<&ts_reset TS_RST_RNE_AHB>,
+	<&ts_reset TS_RST_RNE_AXI>,
+	<&ts_reset TS_RST_RNE_CORE>,
+	<&ts_reset TS_RST_RNE_MEM>,
+	<&ts_reset TS_RST_RNE_GLOBAL>;
+
+	reset-names = "aiisp_ahb", "aiisp_core", "aiisp_glb",
+		"rce_ahb", "rce_axi", "rce_core", "rce_mem", "rce_glb",
+		"rne_ahb", "rne_axi", "rne_core", "rne_mem", "rne_glb";
+};
+
+&adc {
+	resets = <&ts_reset TS_RST_TOP_ADC>;
+	reset-names = "adc";
+};
+
+&isp {
+	resets = <&ts_reset TS_RST_ISP_GLOBAL>,
+	<&ts_reset TS_RST_ISP_CORE>,
+	<&ts_reset TS_RST_ISP_AXI>,
+	<&ts_reset TS_RST_ISP_AHB>;
+	reset-names = "isp_glb", "isp_core", "isp_axi", "isp_ahb";
+};
+
+&usb0 {
+	resets = <&ts_reset TS_RST_USB3C>;
+};
+
+&ocotp {
+	resets = <&ts_reset TS_RST_TOP_OTPC>;
+	reset-names = "ts_otpc";
+};
+
+&wave {
+	resets = <&ts_reset TS_RST_WAVE_APB>,
+		 <&ts_reset TS_RST_WAVE_AXI>,
+		 <&ts_reset TS_RST_WAVE_CORE>,
+		 <&ts_reset TS_RST_WAVE_BPU>,
+		 <&ts_reset TS_RST_WAVE_GLOBAL>;
+	reset-names = "apb_rst", "axi_rst", "core_rst","bpu_rst","glb_rst";
+};
+
+&vpe {
+	resets = <&ts_reset TS_RST_VPE_GLOBAL>,
+	<&ts_reset TS_RST_VPE_CORE>,
+	<&ts_reset TS_RST_VPE_AXI>,
+	<&ts_reset TS_RST_VPE_APB>;
+	reset-names = "vpe_glb", "vpe_core", "vpe_axi", "vpe_ahb";
+};
+
+&watchdog0 {
+	resets = <&ts_reset TS_RST_TOP_WDT_APB>,
+		<&ts_reset TS_RST_TOP_WDT_TICK_TIMER>,
+		<&ts_reset TS_RST_TOP_WDT_GLOBAL>;
+	reset-name = "wdt_apb", "wdt_tick", "wdt_glb";
+};
+
+&watchdog1 {
+	resets = <&ts_reset TS_RST_SEC_WDT_APB>,
+		<&ts_reset TS_RST_SEC_WDT_TICK_TIMER>,
+		<&ts_reset TS_RST_SEC_WDT_GLOBAL>;
+	reset-name = "wdt_apb", "wdt_tick", "wdt_glb";
+};

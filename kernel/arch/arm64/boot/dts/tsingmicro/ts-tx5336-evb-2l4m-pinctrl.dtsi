@@ -1,0 +1,496 @@
+/*
+ * dts file for tsingmicro tx5336
+ *
+ * Copyright 2022 Tsingmicro, Inc.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ */
+
+#include <dt-bindings/pinctrl/pinctrl-ts-tx5336.h>
+
+/ {
+    pinctrl: pinctrl@f0389000 {
+        compatible = "ts,ts-pinctrl-tx5336";
+        status = "okay";
+        reg = <0x0 0xf0389000 0x0 0x1000>;
+        ts,npins = <PINMAX>;
+
+		mac0 {
+			//MAC_EPHY_CLK MAC_TXCLK MAC_TXEN MAC_TXD0 MAC_TXD1 MAC_RXDV MAC_RXD0 MAC_RXD1
+			//MAC_MDC MAC_MDIO MAC_TXD2 MAC_TXD3 MAC_RXCLK MAC_RXD2 MAC_RXD3
+			mac0_pinctrl0: mac0_grp_0 {
+				ts,pins = <PA0 PA1 PA2 PA3 PA4 PA5 PA6 PA7
+						   PB0 PB1 PB2 PB3 PB4 PB5 PB6>;
+				mux,val = <0>;
+				function = "mac0";
+				groups = "mac0_grp_0";
+                voltage-set-1v8;
+			};
+			//GPIOB16
+			mac0_rst_pinctrl: mac0_grp_rst {
+				ts,pins = <PG0>;
+				mux,val = <5>;
+				function = "mac0";
+				groups = "mac0_grp_rst";
+			};				
+		};
+        
+        gpioa15 {
+            gpioa15_pinctrl: gpioa15_grp {
+                ts,pins = <PB7>;
+                mux,val = <5>;
+                function = "gpioa15";
+                groups = "gpioa15_grp";
+                drive-strength = <8>;
+                voltage-set-1v8;
+            };
+        };
+
+        gpiob16 {
+            gpiob16_pinctrl: gpiob16_grp {
+                ts,pins = <PG0>;
+                mux,val = <5>;
+                function = "gpiob16";
+                groups = "gpiob16_grp";
+                drive-strength = <4>;
+                voltage-set-1v8;
+            };
+        };
+
+		uspi0 {
+            uspi0_pinctrl: uspi0_grp {
+                ts,pins = <PG3 PG4 PG6>;
+                mux,val = <1>;
+                function = "uspi0";
+                groups = "uspi0_grp";
+            };
+        };
+
+		gpiob21 {
+            gpiob21_pinctrl: gpiob21_grp {
+                ts,pins = <PG5>;
+                mux,val = <5>;
+                function = "gpiob21";
+                groups = "gpiob21_grp";
+            };
+        };
+
+		uspi1 {
+            uspi1_pinctrl: uspi1_grp {
+                ts,pins = <PD3 PD4 PD6>;
+                mux,val = <3>;
+                function = "uspi1";
+                groups = "uspi1_grp";
+            };
+        };
+
+		gpioa27 {
+			gpioa27_pinctrl: gpioa27_grp {
+				ts,pins = <PD3>;
+				mux,val = <5>;
+				function = "gpioa27";
+				groups = "gpioa27_grp";
+                voltage-set-1v8;
+			};
+		};
+
+        gpiob14 {
+            gpiob14_pinctrl: gpiob14_grp {
+                ts,pins = <PF6>;
+                mux,val = <5>;
+                function = "gpiob14";
+                groups = "gpiob14_grp";
+            };
+        };
+
+		gpioa28 {
+			gpioa28_pinctrl: gpioa28_grp {
+				ts,pins = <PD4>;
+				mux,val = <5>;
+				function = "gpioa28";
+				groups = "gpioa28_grp";
+                voltage-set-1v8;
+			};
+		};
+
+		gpioa29 {
+			gpioa29_pinctrl: gpioa29_grp {
+				ts,pins = <PD5>;
+				mux,val = <5>;
+				function = "gpioa29";
+				groups = "gpioa29_grp";
+                voltage-set-1v8;
+			};
+		};
+
+		gpioa30 {
+			gpioa30_pinctrl: gpioa30_grp {
+				ts,pins = <PD6>;
+				mux,val = <5>;
+				function = "gpioa30";
+				groups = "gpioa30_grp";
+                voltage-set-1v8;
+			};
+		};
+
+		chip_out0 {
+			chip_out0_pinctrl: chip_out0_grp {
+				ts,pins = <PD2>;
+				mux,val = <0>;
+				function = "chip_out0";
+				groups = "chip_out0_grp";
+			};
+		};
+
+		chip_out2 {
+			chip_out2_pinctrl: chip_out2_grp {
+				ts,pins = <PD7>;
+				mux,val = <0>;
+				function = "chip_out2";
+				groups = "chip_out2_grp";
+			};
+		};
+
+		spi0 {
+            spi0_pinctrl: spi0_grp {
+                ts,pins = <PE0 PE2 PE3>;
+                mux,val = <0>;
+                function = "spi0";
+                groups = "spi0_grp";
+            };
+        };
+
+		gpiob1 {
+            gpiob1_pinctrl: gpiob1_grp {
+                ts,pins = <PE1>;
+                mux,val = <5>;
+                function = "gpiob1";
+                groups = "gpiob1_grp";
+            };
+        };
+		spi1 {
+            spi1_pinctrl: spi1_grp {
+                ts,pins = <PC4 PC6 PC7>;
+                mux,val = <1>;
+                function = "spi1";
+                groups = "spi1_grp";
+            };
+        };
+
+		gpioa19 {
+            gpioa19_pinctrl: gpioa19_grp {
+                ts,pins = <PC3>;
+                mux,val = <5>;
+                function = "gpioa19";
+                groups = "gpioa19_grp";
+            };
+        };
+		
+		gpioa21 {
+            gpioa21_pinctrl: gpioa21_grp {
+                ts,pins = <PC5>;
+                mux,val = <5>;
+                function = "gpioa21";
+                groups = "gpioa21_grp";
+            };
+        };
+
+		cd_detn_gpio {
+            cd_detn_gpio_pinctrl: cd_detn_gpio_grp {
+                ts,pins = <PC2>;
+                mux,val = <5>;
+                function = "cd_detn_gpio";
+                groups = "cd_detn_gpio_grp";
+            };
+        };
+
+        emmc0 {
+            emmc0_pinctrl: emmc0_grp {
+                ts,pins = <PH0 PH1 PH2 PH3 PH4 PH5 PH6>;
+                mux,val = <0>;
+                function = "emmc0";
+                groups = "emmc0_grp";
+                voltage-set-1v8;
+            };
+            emmc0_bus_wd8_pinctrl: emmc0_grp_1 {
+                ts,pins = <PK0 PK1 PK2 PK3>;
+                mux,val = <1>;
+                function = "emmc0";
+                groups = "emmc0_grp_1";
+                voltage-set-1v8;
+            };
+        };
+
+        emmc1 {
+            emmc1_pinctrl: emmc1_grp {
+                ts,pins = <PJ0 PJ1 PJ2 PJ3 PJ4 PJ5>;
+                mux,val = <0>;
+                function = "emmc1";
+                groups = "emmc1_grp";
+            };
+            sd_pwr_gpio_pinctrl: emmc_sd_pwr_gpio_grp {
+                ts,pins = <PJ6>;
+                mux,val = <5>;
+                function = "emmc1";
+                groups = "emmc_sd_pwr_gpio_grp";
+            };
+        };
+
+        uart0 {
+            uart0_pinctrl: uart0_grp {
+                ts,pins = <PC0 PC1>;
+                mux,val = <0>;
+                function = "uart0";
+                groups = "uart0_grp";
+            };
+        };
+
+        uart1 {
+            uart1_pinctrl: uart1_grp {
+                ts,pins = <PF6 PF7>;
+                mux,val = <0>;
+                function = "uart1";
+                groups = "uart1_grp";
+            };
+        };
+
+        uart2 {
+            uart2_pinctrl: uart2_grp {
+                ts,pins = <PK0 PK1>;
+                mux,val = <2>;
+                function = "uart2";
+                groups = "uart2_grp";
+            };
+        };
+
+        uart3 {
+            uart3_pinctrl: uart3_grp {
+                ts,pins = <PH2 PH3>;
+                mux,val = <1>;
+                function = "uart3";
+                groups = "uart3_grp";
+            };
+        };
+
+		i2c0 {
+			i2c0_pinctrl_0: i2c0_grp_0 {
+				ts,pins = <PD0 PD1>;
+				mux,val = <0>;
+				function = "i2c0";
+				groups = "i2c0_grp_0";
+                voltage-set-1v8;
+			};
+		};
+
+		i2c1 {
+			i2c1_pinctrl_0: i2c1_grp_0 {
+				ts,pins = <PE4 PE5>;
+				mux,val = <0>;
+				function = "i2c1";
+				groups = "i2c1_grp_0";
+                voltage-set-1v8;
+            };
+        };
+
+        i2c2 {
+            i2c2_pinctrl: i2c2_grp {
+                ts,pins = <PE6 PE7>;
+                mux,val = <0>;
+                function = "i2c2";
+                groups = "i2c2_grp";
+            };
+        };
+
+        i2c3 {
+            i2c3_pinctrl: i2c3_grp {
+                ts,pins = <PE2 PE3>;
+                mux,val = <1>;
+                function = "i2c3";
+                groups = "i2c3_grp";
+            };
+        };
+
+        i2c4 {
+            i2c4_pinctrl: i2c4_grp {
+                ts,pins = <PB0 PB1>;        //confict with mac0
+                mux,val = <2>;
+                function = "i2c4";
+                groups = "i2c4_grp";
+            };
+        };
+
+        i2c5 {
+            i2c5_pinctrl: i2c5_grp {
+                ts,pins = <PC4 PC5>;
+                mux,val = <2>;
+                function = "i2c5";
+                groups = "i2c5_grp";
+            };
+        };
+
+        i2c6 {
+            i2c6_pinctrl: i2c6_grp {
+                ts,pins = <PC6 PC7>;
+                mux,val = <2>;
+                function = "i2c6";
+                groups = "i2c6_grp";
+            };
+        };
+
+        pwm0 {
+            pwm0_pinctrl:pwm0_grp{
+                ts,pins = <PE2>;
+                mux,val = <3>;
+                function = "pwm0";
+                groups = "pwm0_grp";
+            };
+
+        };
+        pwm1 {
+            pwm1_pinctrl:pwm1_grp{
+                ts,pins = <PF7>;
+                mux,val = <3>;
+                function = "pwm1";
+                groups = "pwm1_grp";
+            };
+        };
+
+        usart1 {
+            usart1_pinctrl:usart1_grp{
+                ts,pins = <PD3 PD4>;
+                mux,val = <3>;
+                function = "usart1";
+                groups = "usart1_grp";
+            };
+        };
+
+        pdmic0 {
+            pdmic0_pinctrl_0: pdmic0_grp {
+                ts,pins = <PK6 PK7>;
+                mux,val = <0>;
+                function = "pdmic0";
+                groups = "pdmic0_grp";
+            };
+
+            //pdmic0_pinctrl_0: pdmic0_grp {
+            //    ts,pins = <PE2 PE3>;
+            //    mux,val = <2>;
+            //    function = "pdmic0";
+            //    groups = "pdmic0_grp";
+            //};
+        };
+
+        pdmic1 {
+            pdmic1_pinctrl_0: pdmic1_grp {
+                ts,pins = <PK4 PK5>;
+                mux,val = <0>;
+                function = "pdmic1";
+                groups = "pdmic1_grp";
+            };
+        };
+
+        pdmic2 {
+            pdmic2_pinctrl_0: pdmic2_grp {
+                ts,pins = <PK0 PK1>;
+                mux,val = <0>;
+                function = "pdmic2";
+                groups = "pdmic2_grp";
+            };
+        };
+
+        pdmic3 {
+            pdmic3_pinctrl_0: pdmic3_grp {
+                ts,pins = <PK2 PK3>;
+                mux,val = <0>;
+                function = "pdmic3";
+                groups = "pdmic3_grp";
+            };
+        };
+        hdmi_virt {
+             hdmi_virt_pinctrl_0:hdmi_virt_grp_0 {
+                 ts,pins = <PF0 PF1 PF2 PF3 PF4 PF5 PG2 PG3 PG4 PG5 PG6 PG7 PE0 PE1 PE2 PE3 PE4 PE5 PD4 PD5 PD6 PD7>;//RGB
+                 mux,val = <4>;
+                 function = "hdmi_virt";
+                 groups = "hdmi_virt_grp_0";
+             };
+             hdmi_virt_pinctrl_spi:hdmi_virt_grp_spi {
+                ts,pins = <PK4 PK5 PK6 PK7>;
+                mux,val = <4>;
+                function = "hdmi_virt";
+                groups = "hdmi_virt_grp_spi";
+                };
+
+        };
+        // pf7 mipi_bl_pwm pwr
+        // gpiob15 {
+        //    gpiob15_pinctrl: gpiob15_grp {
+            //    ts,pins = <PF7>;
+            //    mux,val = <5>;
+            //    function = "gpiob15";
+            //    groups = "gpiob15_grp";
+        //    };
+        // };
+		
+		i2s {
+			i2s_pinctrl: i2s_grp {
+				ts,pins = <PF0 PF1 PF2 PF3 PF4>;
+				mux,val = <2>;
+				function = "i2s";
+				groups = "i2s_grp";
+			};
+
+			i2s_pinctrl_1: i2s_grp_1 {
+				ts,pins = <PG3 PG4 PG5 PG6 PG7>;
+				mux,val = <2>;
+				function = "i2s";
+				groups = "i2s_grp_1";
+			};
+		};
+
+		usb0 {
+			usb_drvvbus_pinctrl: usb_grp {
+				ts,pins = <PG7>;
+				mux,val = <5>;
+				function = "usb0";
+				groups = "usb_grp";
+			};
+		};
+
+        ui2c0 {
+            ui2c0_pinctrl_0: ui2c0_pinctrl_0_grp {
+				ts,pins = <PJ2 PJ3>;    //conflict with emmc1, can not test in evb
+				mux,val = <1>;
+				function = "ui2c0";
+				groups = "ui2c0_pinctrl_0_grp";                
+            };
+
+            ui2c0_pinctrl_1: ui2c0_pinctrl_1_grp {
+				ts,pins = <PG3 PG4>;    //conflict with hdmi_virt
+				mux,val = <1>;
+				function = "ui2c0";
+				groups = "ui2c0_pinctrl_1_grp";                
+            };
+        };
+
+        ui2c1 {
+            ui2c1_pinctrl_0: ui2c1_pinctrl_0_grp {
+				ts,pins = <PH0 PH1>;    //conflict with emmc0
+				mux,val = <4>;
+				function = "ui2c1";
+				groups = "ui2c1_pinctrl_0_grp";                
+            };
+
+            ui2c1_pinctrl_1: ui2c1_pinctrl_1_grp {
+				ts,pins = <PK4 PK5>;    //conflict with pdmic1
+				mux,val = <1>;
+				function = "ui2c1";
+				groups = "ui2c1_pinctrl_1_grp";                
+            };
+        };
+    };
+};
+
+

@@ -1,0 +1,11 @@
+if (ARMCB_CROSS_BUILD EQUAL 2)
+    add_subdirectory (${ARMCB_ISP_EXTERNAL}/cJSON/build             ${ARMCB_GENERATED_TEMP}/external/cJSON/)
+else()
+
+    add_subdirectory (${ARMCB_ISP_EXTERNAL}/cJSON/build             ${ARMCB_GENERATED_TEMP}/external/cJSON/)
+    if((NOT DEFINED ENV{BUILD_ISP_TUNNING}) OR (BUILD_ISP_TUNNING STREQUAL "y"))
+    	# add_subdirectory (${ARMCB_ISP_EXTERNAL}/libpcap/build           ${ARMCB_GENERATED_TEMP}/external/libpcap/)
+    endif()
+	#    add_subdirectory (${ARMCB_ISP_EXTERNAL}/glibc-2.26-dev/build    ${ARMCB_GENERATED_TEMP}/external/glibc/)
+	#    add_subdirectory (${ARMCB_ISP_EXTERNAL}/libgcc/build            ${ARMCB_GENERATED_TEMP}/external/libgcc/)
+endif()

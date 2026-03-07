@@ -1,0 +1,444 @@
+#!/bin/bash
+
+###############################################################################################
+#################################### Default Build Options ####################################
+###############################################################################################
+
+source ${TARGET_BUILD_DIR}/scripts/common_set.sh
+
+# Disable cross build
+#      CROSS_BUILD=10    ,  PC_LINUX
+#      CROSS_BUILD=11    ,  EMBEDDED_LINUX
+#      CROSS_BUILD=12    ,  EMBEDDED_BAREMENTAL
+export CROSS_BUILD=1
+# Debug build
+export ARMCB_DEBUG_BUILD=1
+# Static build to disable dynamical libraries compile
+export ARMCB_STATIC_COMPILE=0
+# build arm bit64 or bit32
+
+if [ ${TARGET_CHIP} == "tx536" ]; then
+export ARMCB_AARCH64_BUILD=1
+else
+export ARMCB_AARCH64_BUILD=0
+fi
+
+# Export project name
+#      HW_BUILD_FOR_I5      ,  I5  version
+#      HW_BUILD_FOR_I5_R1P0 ,  I5 R1P0 version
+#      HW_BUILD_FOR_I3      ,  I3  version
+#      HW_BUILD_FOR_CUST0   ,  custom0 version
+#      HW_BUILD_FOR_TITIAN  ,  TITAIN HW version
+export ARMCB_ISP_PROJECT=HW_BUILD_FOR_CUST0
+export ARMCB_CUST_BUILD=1
+
+if [ ${CROSS_BUILD} -eq 0 ]; then
+    TARGET_PLATFORM="PC_LINUX"
+elif [ ${CROSS_BUILD} -eq 1 ]; then
+    TARGET_PLATFORM="EMBEDDED_LINUX"
+elif [ ${CROSS_BUILD} -eq 2 ]; then
+    TARGET_PLATFORM="EMBEDDED_BAREMENTAL"
+fi
+HARDWARE_VER=${ARMCB_ISP_PROJECT}
+
+if [ ${TARGET_CHIP} == "" ]; then
+    TARGET_CHIP="unspecified"
+fi
+
+export BUILD_OPTION_UCLIBC=0
+if [ ${TARGET_LIBC} == "uclibc" ]; then
+    BUILD_OPTION_UCLIBC=1
+fi
+
+###############################################################################################
+##################################### Build Guide Function ####################################
+###############################################################################################
+
+function build_guidance()
+{
+    echo " "
+    echo "################# Default Build Options #################"
+    echo "###"
+    echo "### TARGET PLATFORM:  ${TARGET_PLATFORM}"
+    echo "### TARGET CHIP:      ${TARGET_CHIP}"
+    echo "### HARDWARE VERSION: ${HARDWARE_VER}"
+    echo "###"
+
+    #while true; do
+    #    read -p "####### Launch Build with Default Options? (y/n) ######## " DEFAULT_BUILD
+    #    case ${DEFAULT_BUILD} in
+    #        [Yy]* ) DEFAULT_BUILD=1; break;;
+    #        [Nn]* ) DEFAULT_BUILD=0; break;;
+    #    esac
+    #done
+    DEFAULT_BUILD=1
+
+    if [ ${DEFAULT_BUILD} -eq 0 ]; then
+
+        echo "###"
+        echo "############### Choose the Target Platform ##############"
+        echo "###"
+        echo "### 1. PC Linux"
+        echo "### 2. Embedded Linux"
+        echo "### 3. Embedded Baremental"
+        echo "###"
+
+        while true; do
+            read -p "######## Which Is Your Target Platform? (1/2/3) ######### " PLATFORM_NO
+            case ${PLATFORM_NO} in
+                1) export CROSS_BUILD=0;
+                TARGET_PLATFORM="PC_LINUX";
+                break;;
+                2) export CROSS_BUILD=1;
+                TARGET_PLATFORM="EMBEDDED_LINUX";
+                break;;
+                3) export CROSS_BUILD=2;
+                TARGET_PLATFORM="EMBEDDED_BAREMENTAL";
+                break;;
+            esac
+        done
+
+        echo "###"
+        echo "############### Choose the Hardware Version #############"
+        echo "###"
+        echo "### 1. I5_R0P0"
+        echo "### 2. I5_R1P0"
+        echo "### 3. I7_R0P0"
+        echo "### 4. CUST0"
+        echo "###"
+
+        while true; do
+            read -p "### Which Hardware Version To Be Compiled? (1/2/3/4) #### " HARDWARE_NO
+            case ${HARDWARE_NO} in
+                1) export ARMCB_ISP_PROJECT=HW_BUILD_FOR_I5;
+                HARDWARE_VER="I5_R0P0";
+                break;;
+                2) export ARMCB_ISP_PROJECT=HW_BUILD_FOR_I5_R1P0;
+                HARDWARE_VER="I5_R1P0";
+                break;;
+                3) export ARMCB_ISP_PROJECT=HW_BUILD_FOR_TITIAN;
+                HARDWARE_VER="I7_R0P0";
+                break;;
+                4) export ARMCB_ISP_PROJECT=HW_BUILD_FOR_CUST0;
+                HARDWARE_VER="CUST0";
+                break;;
+            esac
+        done
+
+        echo "###"
+        echo "################ Choose the Build Version ###############"
+        echo "###"
+        echo "### 1. DEBUG"
+        echo "### 2. PERFORMANCE"
+        echo "###"
+
+        while true; do
+            read -p "########## Which Version To Be Built? (1/2) ########### " BUILD_NO
+            case ${BUILD_NO} in
+                1) export ARMCB_DEBUG_BUILD=1
+                export ARMCB_ENABLE_SANITIZE=0
+                BUILD_VER="DEBUG";
+                break;;
+                2) export ARMCB_DEBUG_BUILD=0
+                export ARMCB_ENABLE_SANITIZE=0
+                BUILD_VER="PERFORMANCE";
+                break;;
+            esac
+        done
+
+        if [ ${CROSS_BUILD} -lt 2 ]; then
+            echo "###"
+            while true; do
+                read -p "############## Enable Static Compile? (y/n) ############# " ENABLE_STATIC_COMPILE
+                case ${ENABLE_STATIC_COMPILE} in
+                    [Yy]* ) export ARMCB_STATIC_COMPILE=1; break;;
+                    [Nn]* ) export ARMCB_STATIC_COMPILE=0; break;;
+                esac
+            done
+        fi
+
+        if [ ${CROSS_BUILD} -eq 2 ]; then
+            export ARMCB_STATIC_COMPILE=1;
+            echo "###"
+            while true; do
+                read -p "########## Rebuild Peripheral Libraries? (y/n) ########## " REBUILD_PERIPHERAL
+                case ${REBUILD_PERIPHERAL} in
+                    [Yy]* ) export REBUILD_PERIPHERAL=1; break;;
+                    [Nn]* ) export REBUILD_PERIPHERAL=0; break;;
+                esac
+            done
+        fi
+    fi
+}
+
+###############################################################################################
+#################################### Build Process Function ###################################
+###############################################################################################
+
+function assert()
+{
+    if [ $1 -ne 0 ]; then
+        echo "Failed  : "$?
+        cd ${ARMCB_CUR_DIR}
+        exit 1
+    fi
+}
+
+######################################## Noncross Build #######################################
+
+function normal_build()
+{
+    ### Build
+    cd ${ARMCB_TEMP_DIR}
+    cmake .
+    make -j8
+
+    ### Install
+    make install
+
+    cp -rf ${ARMCB_SRC_DIR}/app_layer       ${ARMCB_TEMP_DIR}/
+    cp -rf ${ARMCB_TEMP_DIR}/common.cmake   ${ARMCB_TEMP_DIR}/app_layer/build/
+    cp -rf ${ARMCB_TEMP_DIR}/env.cmake      ${ARMCB_TEMP_DIR}/app_layer/build/
+    cd ${ARMCB_TEMP_DIR}/app_layer/build/
+
+    sed -i '1iinclude(common.cmake)' ${ARMCB_TEMP_DIR}/app_layer/build/CMakeLists.txt
+    sed -i '1iproject("isp")' ${ARMCB_TEMP_DIR}/app_layer/build/CMakeLists.txt
+    sed -i '1icmake_minimum_required(VERSION 2.8.5)' ${ARMCB_TEMP_DIR}/app_layer/build/CMakeLists.txt
+    sed -i '1iset(CMAKE_CXX_COMPILER_WORKS 1)' ${ARMCB_TEMP_DIR}/app_layer/build/CMakeLists.txt
+    sed -i '1iset(CMAKE_C_COMPILER_WORKS 1)' ${ARMCB_TEMP_DIR}/app_layer/build/CMakeLists.txt
+
+    cmake .
+    assert $?
+
+    make -j8
+    assert $?
+
+}
+
+################################## Cross Build Linux Process ##################################
+function update()
+{
+    local export_dir
+  # cd ${ARMCB_TEMP_DIR}
+  # mkdir -p ${ARMCB_CUST_DIR}/.vscode
+  # mv compile_commands.json $_
+  #
+  # cd ${ARMCB_CUR_DIR}
+  # rm -rf /home/kai/work/nfs/out/
+  # cp -rf out/ /home/kai/work/nfs/
+
+    if [ "x"${TARGET_LIBS_TYPE} == "x""static" ] ; then
+        cp -af ${ARMCB_OUTPUT_LIB_DIR}/*.a            ${TARGET_STAGING_LIB}/
+    else
+        cp -af ${ARMCB_OUTPUT_LIB_DIR}/*.so*          ${TARGET_STAGING_LIB}/
+    fi
+    cp -af ${ARMCB_OUTPUT_DIR}/usr/lib/*          ${TARGET_STAGING_LIB}/
+    cp -af ${ARMCB_OUTPUT_DIR}/usr/bin/isp_app    ${TARGET_STAGING_BIN}/
+}
+
+function cross_build_linux()
+{
+	### Setup cross-compiler
+	COMPILER_GCC=${CROSS_COMPILER_PATH}/bin/${TOOLCHAIN_PRE}-gcc
+	COMPILER_GXX=${CROSS_COMPILER_PATH}/bin/${TOOLCHAIN_PRE}-g++
+
+	export CC=${COMPILER_GCC}
+	export CXX=${COMPILER_GXX}
+
+	### Copy LIBRARIES
+	echo "### Copy libraries--- Start ###"
+	export ARMCB_OUTPUT_LIB_DIR="${ARMCB_OUTPUT_DIR}/lib"
+	if [ ${ARMCB_AARCH64_BUILD} == 1 ]; then
+		ARMCB_OUTPUT_LIB_DIR="${ARMCB_OUTPUT_DIR}/lib64"
+	fi
+	mkdir -p ${ARMCB_OUTPUT_LIB_DIR}
+
+	### Build bins and libraries
+	echo "### Build bins and libraries--- Start ###"
+
+    cd ${ARMCB_TEMP_DIR}
+    cmake -DCMAKE_BUILD_TYPE=debug -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -S .
+    assert $?
+
+    make -j8
+    assert $?
+
+    make install
+    assert $?
+
+    cp -rf ${ARMCB_SRC_DIR}/app_layer       ${ARMCB_TEMP_DIR}/
+    cp -rf ${ARMCB_TEMP_DIR}/common.cmake   ${ARMCB_TEMP_DIR}/app_layer/build/
+    cp -rf ${ARMCB_TEMP_DIR}/env.cmake      ${ARMCB_TEMP_DIR}/app_layer/build/
+    cd ${ARMCB_TEMP_DIR}/app_layer/build/
+
+    sed -i '1iinclude(common.cmake)' ${ARMCB_TEMP_DIR}/app_layer/build/CMakeLists.txt
+    sed -i '1iproject("isp")' ${ARMCB_TEMP_DIR}/app_layer/build/CMakeLists.txt
+    sed -i '1icmake_minimum_required(VERSION 2.8.5)' ${ARMCB_TEMP_DIR}/app_layer/build/CMakeLists.txt
+    sed -i '1iset(CMAKE_CXX_COMPILER_WORKS 1)' ${ARMCB_TEMP_DIR}/app_layer/build/CMakeLists.txt
+    sed -i '1iset(CMAKE_C_COMPILER_WORKS 1)' ${ARMCB_TEMP_DIR}/app_layer/build/CMakeLists.txt
+
+    cmake .
+    assert $?
+
+    make -j8
+    assert $?
+
+    echo "### Build bins and libraries--- Done ###"
+
+    update
+    # ### Generate file-system
+    # echo "### Generate file-system --- Start ###"
+    # FS_ORI="${ARMCB_OPENSOURCE_SRC}/initramfs/uramdisk.image.gz"
+    # ARMCB_BUILD_FS_DIR="${ARMCB_TEMP_DIR}/fs/"
+    #
+    # rm -rf ${ARMCB_BUILD_FS_DIR}
+    # rm -rf ${ARMCB_OUTPUT_DIR}/uramdisk.image.gz
+    # mkdir -p ${ARMCB_BUILD_FS_DIR}
+    # dd if=${FS_ORI} of=${ARMCB_BUILD_FS_DIR}/ramdisk.image.gz bs=64 skip=1
+    #
+    # cd ${ARMCB_BUILD_FS_DIR}
+    # mkdir -p armcb_fs
+    # cd armcb_fs
+    # zcat ${ARMCB_BUILD_FS_DIR}/ramdisk.image.gz | cpio -idmu --no-absolute-filename
+    #
+    # cp -rf ${ARMCB_OUTPUT_DIR}/data ./
+    # cp -rf ${ARMCB_OUTPUT_DIR}/lib  ./
+    # cp -rf ${ARMCB_OUTPUT_DIR}/usr  ./
+    #
+    # echo "### Prepare file-system --- Finished ###"
+    #
+    # find . | cpio -o -H newc -R root:root | gzip -9 > ${ARMCB_BUILD_FS_DIR}/ramdisk_new.image.gz
+    # cd ${ARMCB_BUILD_FS_DIR}
+    # mkimage -A arm -T ramdisk -C gzip -d ramdisk_new.image.gz uramdisk_new.image.gz
+    # cp -rf ${ARMCB_BUILD_FS_DIR}/uramdisk_new.image.gz ${ARMCB_OUTPUT_DIR}/uramdisk.image.gz
+    #
+    # cd ${ARMCB_CUR_DIR}
+    # echo "### Generate file-system --- Done ###"
+}
+
+################################ Cross Build Baremental Process ###############################
+
+function cross_build_baremental()
+{
+    export COMPILER_GCC=${CROSS_COMPILER_PATH}/bin/arm-none-eabi-gcc
+    export COMPILER_GXX=${CROSS_COMPILER_PATH}/bin/arm-none-eabi-g++
+    export BOOTGEN=${BOOTGEN_PATH}/bootgen
+
+    export CC=${COMPILER_GCC}
+    export CXX=${COMPILER_GXX}
+
+    ### Build bins and libraries
+    echo "### Build bins and libraries--- Start ###"
+
+    cd ${ARMCB_TEMP_DIR}
+    cmake .
+    assert $?
+
+    sed -i "s/-rdynamic //g" `grep "rdynamic " -rl main/`
+
+    make -j8
+    assert $?
+
+    make install
+    assert $?
+
+    mkdir -p ${ARMCB_TEMP_DIR}/main
+    cp -rf ${ARMCB_SRC_DIR}/main.c          ${ARMCB_TEMP_DIR}/main/
+    cp -rf ${ARMCB_SRC_DIR}/CMakeLists.txt  ${ARMCB_TEMP_DIR}/main/
+    cp -rf ${ARMCB_TEMP_DIR}/common.cmake   ${ARMCB_TEMP_DIR}/main/
+    cp -rf ${ARMCB_TEMP_DIR}/env.cmake      ${ARMCB_TEMP_DIR}/main/
+    cd ${ARMCB_TEMP_DIR}/main/
+
+    sed -i '1iinclude(common.cmake)' ${ARMCB_TEMP_DIR}/main/CMakeLists.txt
+    sed -i '1iproject("isp")' ${ARMCB_TEMP_DIR}/main/CMakeLists.txt
+    sed -i '1icmake_minimum_required(VERSION 2.8.5)' ${ARMCB_TEMP_DIR}/main/CMakeLists.txt
+    sed -i '1iset(CMAKE_CXX_COMPILER_WORKS 1)' ${ARMCB_TEMP_DIR}/main/CMakeLists.txt
+    sed -i '1iset(CMAKE_C_COMPILER_WORKS 1)' ${ARMCB_TEMP_DIR}/main/CMakeLists.txt
+
+    cmake .
+    assert $?
+
+    sed -i "s/-rdynamic //g" `grep "rdynamic " -rl CMakeFiles/`
+
+    make -j8
+    assert $?
+
+    ### Generate the BOOT.bin
+    cd ${ARMCB_OUTPUT_DIR}
+    echo "//arch = zynq; split = false; format = BIN"               >    ${ARMCB_OUTPUT_DIR}/isp_firmware_x.bif
+    echo "the_ROM_image:"                                           >>   ${ARMCB_OUTPUT_DIR}/isp_firmware_x.bif
+    echo "{"                                                        >>   ${ARMCB_OUTPUT_DIR}/isp_firmware_x.bif
+    echo "    [bootloader]`find ${ARMCB_LIB_DIR} -name "*.elf"`"    >>   ${ARMCB_OUTPUT_DIR}/isp_firmware_x.bif
+    echo "    `find ${ARMCB_LIB_DIR} -name "*.bit"`"                >>   ${ARMCB_OUTPUT_DIR}/isp_firmware_x.bif
+    echo "    `find ${ARMCB_OUTPUT_DIR}/usr/bin -name "*.elf"`"     >>   ${ARMCB_OUTPUT_DIR}/isp_firmware_x.bif
+    echo "}"                                                        >>   ${ARMCB_OUTPUT_DIR}/isp_firmware_x.bif
+
+    ${BOOTGEN} -image isp_firmware_x.bif -arch zynq -o ${ARMCB_OUTPUT_DIR}/usr/bin/BOOT.bin
+
+    rm -rf ${ARMCB_OUTPUT_DIR}/isp_firmware_x.bif
+}
+
+##################################### Launch Build Process ####################################
+
+function build_process()
+{
+
+    if [ ${CROSS_BUILD} -eq 0 ]; then
+
+        normal_build
+
+    elif [ ${CROSS_BUILD} -eq 1 ]; then
+
+        cross_build_linux
+
+    elif [ ${CROSS_BUILD} -eq 2 ]; then
+
+        cross_build_baremental
+
+    fi
+}
+
+###############################################################################################
+######################################## Start to Build #######################################
+###############################################################################################
+
+build_guidance
+
+if [ "x"${TARGET_LIBS_TYPE} == "x""static" ] ; then
+    export ARMCB_STATIC_COMPILE=1
+fi
+
+echo "########################## FLAGS ########################"
+echo "### ARMCB_STATIC_COMPILE ${ARMCB_STATIC_COMPILE}              ###"
+echo "#########################################################"
+
+echo "###"
+echo "###"
+echo "###"
+echo "############## Start to Compile ISP system ##############"
+echo "###"
+START_TIME=`date +%Y%m%d-%H:%M:%S`
+startTime_s=`date +%s`
+echo "### Start Time: ${START_TIME}"
+echo "###"
+
+source ./env_setup.sh
+echo "### TOOLCHAIN: ${TOOLCHAIN_PRE}"
+echo "###"
+
+# Call build process function
+build_process
+
+# Calculate compilation time consumption
+FINISH_TIME=`date +%Y%m%d-%H:%M:%S`
+endTime_s=`date +%s`
+sumTime=$[${endTime_s}-${startTime_s}]
+
+echo "###"
+echo "################### Build Successfully ##################"
+echo "###                                                   ###"
+echo "###     Start Time:           ${START_TIME}       ###"
+echo "###     Finish Time:          ${FINISH_TIME}       ###"
+echo "###     Time Consumption:     ${sumTime} seconds              ###"
+echo "###                                                   ###"
+echo "#########################################################"

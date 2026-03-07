@@ -1,0 +1,1349 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * dts file for tsingmicro tx536
+ *
+ * Copyright 2022 Beijing Tsingmicro Intelligent Technology Co.,Ltd.
+ *
+ */
+
+&pinctrl {
+	a53_swj {
+		a53_swj_pinctrl: a53_swj_grp {
+			ts,pins = <0 1 2 3 4 5>; /* pinctrl number not equal gpio number. */
+			mux,val = <0>;
+			function = "a53_swj";
+			groups = "a53_swj_grp";
+		};
+	};
+	sd {
+		sd_pinctrl: sd_grp {
+			ts,pins = <95 96>;
+			mux,val = <0>;
+			function = "sd";
+			groups = "sd_grp";
+		};
+	};
+	i2s0 {
+		i2s0_pinctrl: i2s0_grp {
+			ts,pins = <6 7 8 9 10 11 12>;
+			mux,val = <0>;
+			function = "i2s0";
+			groups = "i2s0_grp";
+		};
+	};
+	uart1 {
+		uart1_pinctrl: uart1_grp {
+			ts,pins = <13 14 15 16>;
+			mux,val = <0>;
+			function = "uart1";
+			groups = "uart1_grp";
+		};
+	};
+	uart2 {
+		uart2_pinctrl: uart2_grp {
+			ts,pins = <17 18 19 20>;
+			mux,val = <0>;
+			function = "uart2";
+			groups = "uart2_grp";
+		};
+	};
+	i2c2 {
+		i2c2_pinctrl: i2c2_grp {
+			ts,pins = <21 22>;
+			mux,val = <0>;
+			function = "i2c2";
+			groups = "i2c2_grp";
+		};
+	};
+	i2c3 {
+		i2c3_pinctrl: i2c3_grp {
+			ts,pins = <23 24>;
+			mux,val = <0>;
+			function = "i2c3";
+			groups = "i2c3_grp";
+		};
+	};
+	spi0 {
+		spi0_pinctrl: spi0_grp {
+			ts,pins = <25 26 27 28>;
+			mux,val = <0>;
+			function = "spi0";
+			groups = "spi0_grp";
+		};
+	};
+	chip_out_clk {
+		chip_out_clk_0_pinctrl: chip_out_clk_0_grp {
+			ts,pins = <29>;
+			mux,val = <0>;
+			function = "chip_out_clk_0_pinctrl";
+			groups = "chip_out_clk_0_grp";
+		};
+		chip_out_clk_1_pinctrl: chip_out_clk_1_grp {
+			ts,pins = <30>;
+			mux,val = <0>;
+			function = "chip_out_clk_1_pinctrl";
+			groups = "chip_out_clk_1_grp";
+		};
+	};
+	ospi0 {
+		ospi0_pinctrl: ospi0_grp {
+			ts,pins = <31 32 33 34 35 36 37 38 39 40>;
+			mux,val = <0>;
+			function = "ospi0";
+			groups = "ospi0_grp";
+		};
+		ospi0_gpio_pinctrl: ospi0_gpio_grp {
+			ts,pins = <31 32 33 34 35 36 37 38 39 40>;
+			mux,val = <3>;
+			function = "ospi0";
+			groups = "ospi0_gpio_grp";
+		};
+	};
+	usi2 {
+		usi2_pinctrl: usi2_grp {
+			ts,pins = <41 42 43 44>;
+			mux,val = <0>;
+			function = "usi2";
+			groups = "usi2_grp";
+		};
+	};
+	usi3 {
+		usi3_pinctrl: usi3_grp {
+			ts,pins = <45 46 47 48>;
+			mux,val = <0>;
+			function = "usi3";
+			groups = "usi3_grp";
+		};
+	};
+	i2c7 {
+		i2c7_pinctrl: i2c7_grp {
+			ts,pins = <49 50>;
+			mux,val = <0>;
+			function = "i2c7";
+			groups = "i2c7_grp";
+		};
+	};
+	nf {
+		nf_pinctrl_0: nf_grp_0 {
+			ts,pins = <51 52 53 54 55 56 57 58
+						59 60 61 62 63 64 65>;
+			mux,val = <0>;
+			function = "nf";
+			groups = "nf_grp_0";
+		};
+		nf_pinctrl_1: nf_grp_1 {
+			ts,pins = <41 45 46>;
+			mux,val = <1>;
+			function = "nf";
+			groups = "nf_grp_1";
+		};
+	};
+	gmac0 {
+		gmac_pinctrl_0: gmac_grp_0 {
+			ts,pins = <66 67 68 69 70 71 72 73 74 75 76
+						77 78 79 80 81 82 83 84 85 86 87
+						88 89 90 91 92>;
+			mux,val = <0>;
+			function = "gmac0";
+			groups = "gmac_grp_0";
+		};
+		gmac_pinctrl_1: gmac_grp_1 {
+			ts,pins = <30>;
+			mux,val = <3>;
+			function = "gmac0";
+			groups = "gmac_grp_1";
+		};
+	};
+	hdmi_i2c {
+		hdmi_i2c_pinctrl: hdmi_i2c_grp {
+			ts,pins = <93 94>;
+			mux,val = <0>;
+			function = "hdmi_i2c";
+			groups = "hdmi_i2c_grp";
+		};
+	};
+	spi1 {
+		spi1_pinctrl: spi1_grp {
+			ts,pins = <0 1 2 3>;
+			mux,val = <1>;
+			function = "spi1";
+			groups = "spi1_grp";
+		};
+	};
+	uart5 {
+		uart5_pinctrl: uart5_grp {
+			ts,pins = <7 8 9 10>;
+			mux,val = <1>;
+			function = "uart5";
+			groups = "uart5_grp";
+		};
+	};
+	i2c8 {
+		i2c8_pinctrl: i2c8_grp {
+			ts,pins = <11 12>;
+			mux,val = <1>;
+			function = "i2c8";
+			groups = "i2c8_grp";
+		};
+	};
+	i2c5 {
+		i2c5_pinctrl: i2c5_grp {
+			ts,pins = <15 16>;
+			mux,val = <1>;
+			function = "i2c5";
+			groups = "i2c5_grp";
+		};
+	};
+	spi2 {
+		spi2_pinctrl: spi2_grp {
+			ts,pins = <17 18 19 20>;
+			mux,val = <1>;
+			function = "spi2";
+			groups = "spi2_grp";
+		};
+	};
+	spi4 {
+		spi4_pinctrl_0: spi4_grp_0 {
+			ts,pins = <21 22 23 24>;
+			mux,val = <1>;
+			function = "spi4";
+			groups = "spi4_grp_0";
+		};
+		spi4_pinctrl_1: spi4_grp_1 {
+			ts,pins = <52 53 54 55>;
+			mux,val = <1>;
+			function = "spi4";
+			groups = "spi4_grp_1";
+		};
+	};
+	uart6 {
+		uart6_pinctrl: uart6_grp {
+			ts,pins = <25 26 27 28>;
+			mux,val = <1>;
+			function = "uart6";
+			groups = "uart6_grp";
+		};
+	};
+	i2c6 {
+		i2c6_pinctrl: i2c6_grp {
+			ts,pins = <31 32>;
+			mux,val = <1>;
+			function = "i2c6";
+			groups = "i2c6_grp";
+		};
+	};
+	uart3 {
+		uart3_pinctrl: uart3_grp {
+			ts,pins = <33 34 35 36>;
+			mux,val = <1>;
+			function = "uart3";
+			groups = "uart3_grp";
+		};
+	};
+	spi3 {
+		spi3_pinctrl: spi3_grp {
+			ts,pins = <37 38 39 40>;
+			mux,val = <1>;
+			function = "spi3";
+			groups = "spi3_grp";
+		};
+	};
+	ospi1 {
+		ospi1_pinctrl: ospi1_grp {
+			ts,pins = <49 50 51 56 57 58 59 60 61 62 63 64 65>;
+			mux,val = <1>;
+			function = "ospi1";
+			groups = "ospi1_grp";
+		};
+	};
+	uart4 {
+		uart4_pinctrl: uart4_grp {
+			ts,pins = <66 67 68 69>;
+			mux,val = <1>;
+			function = "uart4";
+			groups = "uart4_grp";
+		};
+	};
+	trace {
+		trace_pinctrl_0: trace_grp_0 {
+			ts,pins = <70 71 72 73 74 75 76 77
+						78 79 80 81 82 83 84>;
+			mux,val = <1>;
+			function = "trace";
+			groups = "trace_grp_0";
+		};
+		trace_pinctrl_1: trace_grp_1 {
+			ts,pins = <90 91 92>;
+			mux,val = <1>;
+			function = "trace";
+			groups = "trace_grp_1";
+		};
+	};
+	lcd_spi {
+		lcd_spi_pinctrl: lcd_spi_grp {
+			ts,pins = <85 86 87 88 89 90 91 92>;
+			mux,val = <1>;
+			function = "lcd_spi";
+			groups = "lcd_spi_grp";
+		};
+	};
+	i2c4 {
+		i2c4_pinctrl: i2c4_grp {
+			ts,pins = <93 94>;
+			mux,val = <1>;
+			function = "i2c4";
+			groups = "i2c4_grp";
+		};
+	};
+	trng_ro {
+		trng_ro_pinctrl_0: trng_ro_grp_0 {
+			ts,pins = <30>;
+			mux,val = <1>;
+			function = "trng_ro";
+			groups = "trng_ro_grp_0";
+		};
+		trng_ro_pinctrl_1: trng_ro_grp_1 {
+			ts,pins = <0 1 2 13 14 17 18>;
+			mux,val = <2>;
+			function = "trng_ro";
+			groups = "trng_ro_grp_1";
+		};
+	};
+	standby_lo {
+		standby_lo_pinctrl: standby_lo_grp {
+			ts,pins = <6>;
+			mux,val = <2>;
+			function = "standby_lo";
+			groups = "standby_lo_grp";
+		};
+	};
+	do_lo_pwm {
+		do_lo_pwm_pinctrl: do_lo_pwm_grp {
+			ts,pins = <7 8 9 10>;
+			mux,val = <2>;
+			function = "do_lo_pwm";
+			groups = "do_lo_pwm_grp";
+		};
+	};
+	bt1120 {
+		bt1120_rx_pinctrl: bt1120_rx_grp {
+			ts,pins = <3 4 11 12 15 16 19 20
+						25 26 27 28 30 41 42 43 44>;
+			mux,val = <2>;
+			function = "bt1120";
+			groups = "bt1120_rx_grp";
+		};
+		bt1120_tx_pinctrl: bt1120_tx_grp {
+			ts,pins = <49 50 51 52 53 54 55 56
+						57 58 59 60 61 62 63 64 65>;
+			mux,val = <2>;
+			function = "bt1120";
+			groups = "bt1120_tx_grp";
+		};
+	};
+	trng_tero {
+		trng_tero_pinctrl_0: trng_tero_grp_0 {
+			ts,pins = <21 22 23 24>;
+			mux,val = <2>;
+			function = "trng_tero";
+			groups = "trng_tero_grp_0";
+		};
+		trng_tero_pinctrl_1: trng_tero_grp_1 {
+			ts,pins = <42>;
+			mux,val = <1>;
+			function = "trng_tero";
+			groups = "trng_tero_grp_1";
+		};
+	};
+	i2s1 {
+		i2s1_pinctrl: i2s1_grp {
+			ts,pins = <31 32 33 34 35 36 37>;
+			mux,val = <2>;
+			function = "i2s1";
+			groups = "i2s1_grp";
+		};
+	};
+	i2c9 {
+		i2c9_pinctrl: i2c9_grp {
+			ts,pins = <39 40>;
+			mux,val = <2>;
+			function = "i2c9";
+			groups = "i2c9_grp";
+		};
+	};
+	vpu_uart {
+		vpu_uart_pinctrl: vpu_uart_grp {
+			ts,pins = <45 46>;
+			mux,val = <2>;
+			function = "vpu_uart";
+			groups = "vpu_uart_grp";
+		};
+	};
+	lcd {
+		lcd_pinctrl_0: lcd_grp_0 {
+			ts,pins = <66 67 68 69 70 71 72 73 74 75
+						76 77 78 79 80 81 82 83 84 85
+						86 87 88 89 93 94>;
+			mux,val = <2>;
+			function = "lcd";
+			groups = "lcd_grp_0";
+		};
+		lcd_pinctrl_1: lcd_grp_1 {
+			ts,pins = <43 44>;
+			mux,val = <1>;
+			function = "lcd";
+			groups = "lcd_grp_1";
+		};
+	};
+
+	PA {
+		PA0_pinctrl: PA0_grp {
+			ts,pins = <0>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA0_grp";
+		};
+		PA1_pinctrl: PA1_grp {
+			ts,pins = <1>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA1_grp";
+		};
+		PA2_pinctrl: PA2_grp {
+			ts,pins = <2>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA2_grp";
+		};
+		PA3_pinctrl: PA3_grp {
+			ts,pins = <3>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA3_grp";
+		};
+		PA4_pinctrl: PA4_grp {
+			ts,pins = <4>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA4_grp";
+		};
+		PA5_pinctrl: PA5_grp {
+			ts,pins = <96>; /* pinctrl number 96, gpio number PA5 */
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA5_grp";
+		};
+		PA6_pinctrl: PA6_grp {
+			ts,pins = <6>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA6_grp";
+		};
+		PA7_pinctrl: PA7_grp {
+			ts,pins = <7>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA7_grp";
+		};
+		PA8_pinctrl: PA8_grp {
+			ts,pins = <8>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA8_grp";
+		};
+		PA9_pinctrl: PA9_grp {
+			ts,pins = <9>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA9_grp";
+		};
+		PA10_pinctrl: PA10_grp {
+			ts,pins = <10>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA10_grp";
+		};
+		PA11_pinctrl: PA11_grp {
+			ts,pins = <11>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA11_grp";
+		};
+		PA12_pinctrl: PA12_grp {
+			ts,pins = <12>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA12_grp";
+		};
+		PA13_pinctrl: PA13_grp {
+			ts,pins = <13>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA13_grp";
+		};
+		PA14_pinctrl: PA14_grp {
+			ts,pins = <14>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA14_grp";
+		};
+		PA15_pinctrl: PA15_grp {
+			ts,pins = <15>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA15_grp";
+		};
+		PA16_pinctrl: PA16_grp {
+			ts,pins = <16>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA16_grp";
+		};
+		PA17_pinctrl: PA17_grp {
+			ts,pins = <17>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA17_grp";
+		};
+		PA18_pinctrl: PA18_grp {
+			ts,pins = <18>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA18_grp";
+		};
+		PA19_pinctrl: PA19_grp {
+			ts,pins = <19>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA19_grp";
+		};
+		PA20_pinctrl: PA20_grp {
+			ts,pins = <20>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA20_grp";
+		};
+		PA21_pinctrl: PA21_grp {
+			ts,pins = <21>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA21_grp";
+		};
+		PA22_pinctrl: PA22_grp {
+			ts,pins = <22>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA22_grp";
+		};
+		PA23_pinctrl: PA23_grp {
+			ts,pins = <23>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA23_grp";
+		};
+		PA24_pinctrl: PA24_grp {
+			ts,pins = <24>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA24_grp";
+		};
+		PA25_pinctrl: PA25_grp {
+			ts,pins = <25>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA25_grp";
+		};
+		PA26_pinctrl: PA26_grp {
+			ts,pins = <26>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA26_grp";
+		};
+		PA27_pinctrl: PA27_grp {
+			ts,pins = <27>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA27_grp";
+		};
+		PA28_pinctrl: PA28_grp {
+			ts,pins = <28>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA28_grp";
+		};
+		PA29_pinctrl: PA29_grp {
+			ts,pins = <29>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA29_grp";
+		};
+		PA30_pinctrl: PA30_grp {
+			ts,pins = <30>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA30_grp";
+		};
+		PA31_pinctrl: PA31_grp {
+			ts,pins = <31>;
+			mux,val = <3>;
+			function = "PA";
+			groups = "PA31_grp";
+		};
+	};
+
+	PB {
+		PB0_pinctrl: PB0_grp {
+			ts,pins = <32>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB0_grp";
+		};
+		PB1_pinctrl: PB1_grp {
+			ts,pins = <33>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB1_grp";
+		};
+		PB2_pinctrl: PB2_grp {
+			ts,pins = <34>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB2_grp";
+		};
+		PB3_pinctrl: PB3_grp {
+			ts,pins = <35>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB3_grp";
+		};
+		PB4_pinctrl: PB4_grp {
+			ts,pins = <36>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB4_grp";
+		};
+		PB5_pinctrl: PB5_grp {
+			ts,pins = <37>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB5_grp";
+		};
+		PB6_pinctrl: PB6_grp {
+			ts,pins = <38>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB6_grp";
+		};
+		PB7_pinctrl: PB7_grp {
+			ts,pins = <39>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB7_grp";
+		};
+		PB8_pinctrl: PB8_grp {
+			ts,pins = <40>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB8_grp";
+		};
+		PB9_pinctrl: PB9_grp {
+			ts,pins = <41>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB9_grp";
+		};
+		PB10_pinctrl: PB10_grp {
+			ts,pins = <42>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB10_grp";
+		};
+		PB11_pinctrl: PB11_grp {
+			ts,pins = <43>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB11_grp";
+		};
+		PB12_pinctrl: PB12_grp {
+			ts,pins = <44>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB12_grp";
+		};
+		PB13_pinctrl: PB13_grp {
+			ts,pins = <45>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB13_grp";
+		};
+		PB14_pinctrl: PB14_grp {
+			ts,pins = <46>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB14_grp";
+		};
+		PB15_pinctrl: PB15_grp {
+			ts,pins = <47>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB15_grp";
+		};
+		PB16_pinctrl: PB16_grp {
+			ts,pins = <48>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB16_grp";
+		};
+		PB17_pinctrl: PB17_grp {
+			ts,pins = <49>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB17_grp";
+		};
+		PB18_pinctrl: PB18_grp {
+			ts,pins = <50>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB18_grp";
+		};
+		PB19_pinctrl: PB19_grp {
+			ts,pins = <51>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB19_grp";
+		};
+		PB20_pinctrl: PB20_grp {
+			ts,pins = <52>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB20_grp";
+		};
+		PB21_pinctrl: PB21_grp {
+			ts,pins = <53>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB21_grp";
+		};
+		PB22_pinctrl: PB22_grp {
+			ts,pins = <54>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB22_grp";
+		};
+		PB23_pinctrl: PB23_grp {
+			ts,pins = <55>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB23_grp";
+		};
+		PB24_pinctrl: PB24_grp {
+			ts,pins = <56>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB24_grp";
+		};
+		PB25_pinctrl: PB25_grp {
+			ts,pins = <57>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB25_grp";
+		};
+		PB26_pinctrl: PB26_grp {
+			ts,pins = <58>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB26_grp";
+		};
+		PB27_pinctrl: PB27_grp {
+			ts,pins = <59>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB27_grp";
+		};
+		PB28_pinctrl: PB28_grp {
+			ts,pins = <60>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB28_grp";
+		};
+		PB29_pinctrl: PB29_grp {
+			ts,pins = <61>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB29_grp";
+		};
+		PB30_pinctrl: PB30_grp {
+			ts,pins = <62>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB30_grp";
+		};
+		PB31_pinctrl: PB31_grp {
+			ts,pins = <63>;
+			mux,val = <3>;
+			function = "PB";
+			groups = "PB31_grp";
+		};
+	};
+
+	PC {
+		PC0_pinctrl: PC0_grp {
+			ts,pins = <64>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC0_grp";
+		};
+		PC1_pinctrl: PC1_grp {
+			ts,pins = <65>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC1_grp";
+		};
+		PC2_pinctrl: PC2_grp {
+			ts,pins = <66>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC2_grp";
+		};
+		PC3_pinctrl: PC3_grp {
+			ts,pins = <67>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC3_grp";
+		};
+		PC4_pinctrl: PC4_grp {
+			ts,pins = <68>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC4_grp";
+		};
+		PC5_pinctrl: PC5_grp {
+			ts,pins = <69>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC5_grp";
+		};
+		PC6_pinctrl: PC6_grp {
+			ts,pins = <70>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC6_grp";
+		};
+		PC7_pinctrl: PC7_grp {
+			ts,pins = <71>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC7_grp";
+		};
+		PC8_pinctrl: PC8_grp {
+			ts,pins = <72>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC8_grp";
+		};
+		PC9_pinctrl: PC9_grp {
+			ts,pins = <73>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC9_grp";
+		};
+		PC10_pinctrl: PC10_grp {
+			ts,pins = <74>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC10_grp";
+		};
+		PC11_pinctrl: PC11_grp {
+			ts,pins = <75>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC11_grp";
+		};
+		PC12_pinctrl: PC12_grp {
+			ts,pins = <76>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC12_grp";
+		};
+		PC13_pinctrl: PC13_grp {
+			ts,pins = <77>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC13_grp";
+		};
+		PC14_pinctrl: PC14_grp {
+			ts,pins = <78>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC14_grp";
+		};
+		PC15_pinctrl: PC15_grp {
+			ts,pins = <79>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC15_grp";
+		};
+		PC16_pinctrl: PC16_grp {
+			ts,pins = <80>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC16_grp";
+		};
+		PC17_pinctrl: PC17_grp {
+			ts,pins = <81>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC17_grp";
+		};
+		PC18_pinctrl: PC18_grp {
+			ts,pins = <82>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC18_grp";
+		};
+		PC19_pinctrl: PC19_grp {
+			ts,pins = <83>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC19_grp";
+		};
+		PC20_pinctrl: PC20_grp {
+			ts,pins = <84>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC20_grp";
+		};
+		PC21_pinctrl: PC21_grp {
+			ts,pins = <85>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC21_grp";
+		};
+		PC22_pinctrl: PC22_grp {
+			ts,pins = <86>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC22_grp";
+		};
+		PC23_pinctrl: PC23_grp {
+			ts,pins = <87>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC23_grp";
+		};
+		PC24_pinctrl: PC24_grp {
+			ts,pins = <88>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC24_grp";
+		};
+		PC25_pinctrl: PC25_grp {
+			ts,pins = <89>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC25_grp";
+		};
+		PC26_pinctrl: PC26_grp {
+			ts,pins = <90>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC26_grp";
+		};
+		PC27_pinctrl: PC27_grp {
+			ts,pins = <91>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC27_grp";
+		};
+		PC28_pinctrl: PC28_grp {
+			ts,pins = <92>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC28_grp";
+		};
+		PC29_pinctrl: PC29_grp {
+			ts,pins = <93>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC29_grp";
+		};
+		PC30_pinctrl: PC30_grp {
+			ts,pins = <94>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC30_grp";
+		};
+		PC31_pinctrl: PC31_grp {
+			ts,pins = <95>;
+			mux,val = <3>;
+			function = "PC";
+			groups = "PC31_grp";
+		};
+	};
+};
+
+&mcu_pinctrl {
+	pinctrl_names = "mcu_pinctrl";
+	mcu_i2c0 {	/* function */
+		mcu_i2c0_pinctrl: mcu_i2c0_grp { /* groups */
+			ts,pins = <0 1>;
+			mux,val = <0>;
+			function = "mcu_i2c0";
+			groups = "mcu_i2c0_grp";
+		};
+	};
+
+	mcu_pwm_ch4 {
+		mcu_pwm_ch4_pinctrl: mcu_pwm_ch4_grp {
+			ts,pins = <0>;
+			mux,val = <1>;
+			function = "mcu_pwm_ch4";
+			groups = "mcu_pwm_ch4_grp";
+		};
+	};
+
+	mcu_pwm_ch5 {
+		mcu_pwm_ch5_pinctrl: mcu_pwm_ch5_grp {
+			ts,pins = <1>;
+			mux,val = <1>;
+			function = "mcu_pwm_ch5";
+			groups = "mcu_pwm_ch5_grp";
+		};
+	};
+
+	mcu_usi0 {
+		mcu_usi0_pinctrl: mcu_usi0_grp {
+			ts,pins = <2 3 4 5>;
+			mux,val = <0>;
+			function = "mcu_usi0";
+			groups = "mcu_usi0_grp";
+		};
+	};
+
+	mcu_otp_spi {
+		mcu_otp_spi_pinctrl: mcu_otp_spi_grp {
+			ts,pins = <0 1 2 3>;
+			mux,val = <2>;
+			function = "mcu_otp_spi";
+			groups = "mcu_otp_spi_grp";
+		};
+	};
+
+	mcu_i2c1 {
+		mcu_i2c1_pinctrl: mcu_i2c1_grp {
+			ts,pins = <4 5>;
+			mux,val = <1>;
+			function = "mcu_i2c1";
+			groups = "mcu_i2c1_grp";
+		};
+	};
+
+	mcu_uart0_2 {
+		mcu_uart0_2_pinctrl: mcu_uart0_2_grp {
+			ts,pins = <4 5>;
+			mux,val = <2>;
+			function = "mcu_uart0_2";
+			grpups = "mcu_uart0_2_grp";
+		};
+	};
+
+	mcu_uart0 {
+		mcu_uart0_pinctrl: mcu_uart0_grp {
+			ts,pins = <6 7>;
+			mux,val = <0>;
+			function = "mcu_uart0";
+			groups = "mcu_uart0_grp";
+		};
+	};
+
+	mcu_uart0_sir {
+		mcu_uart0_sir_pinctrl: mcu_uart0_sir_grp {
+			ts,pins = <6 7>;
+			mux,val = <1>;
+			function = "mcu_uart0_sir";
+			groups = "mcu_uart0_sir_grp";
+		};
+	};
+
+	mcu_pwm_ch0 {
+		mcu_pwm_ch0_pinctrl: mcu_pwm_ch0_grp {
+			ts,pins = <8>;
+			mux,val = <0>;
+			function = "mcu_pwm_ch0";
+			groups = "mcu_pwm_ch0_grp";
+		};
+	};
+
+	mcu_pwm_ch1 {
+		mcu_pwm_ch1_pinctrl: mcu_pwm_ch1_grp {
+			ts,pins = <9>;
+			mux,val = <0>;
+			function = "mcu_pwm_ch1";
+			groups = "mcu_pwm_ch1_grp";
+		};
+	};
+
+	mcu_chip_clk_out4 {
+		mcu_chip_clk_out4_pinctrl: mcu_chip_clk_out4_grp {
+			ts,pins = <9>;
+			mux,val = <1>;
+			function = "mcu_chip_clk_out4";
+			groups = "mcu_chip_clk_out4_grp";
+		};
+	};
+
+	mcu_dvp_0_9 {
+		mcu_dvp_0_9_pinctrl: mcu_dvp_0_9_grp {
+			ts,pins = <10 11 12 13 14 15 16 17 18 19 20>;
+			mux,val = <0>;
+			function = "mcu_dvp_0_9";
+			groups = "mcu_dvp_0_9_grp";
+		};
+	};
+
+	mcu_dvp_10_11 {
+		mcu_dvp_10_11_pinctrl: mcu_dvp_10_11_grp {
+			ts,pins = <23 24>;
+			mux,val = <1>;
+			function = "mcu_dvp_10_11";
+			groups = "mcu_dvp_10_11_grp";
+		};
+	};
+
+	mcu_usi1 {
+		mcu_usi1_pinctrl: mcu_usi1_grp {
+			ts,pins = <19 20 23 24>;
+			mux,val = <2>;
+			function = "mcu_usi1";
+			groups = "mcu_usi1_grp";
+		};
+	};
+
+	mcu_pwm_ch2 {
+		mcu_pwm_ch2_pinctrl: mcu_pwm_ch2_grp {
+			ts,pins = <19>;
+			mux,val = <1>;
+			function = "mcu_pwm_ch2";
+			groups = "mcu_pwm_ch2_grp";
+		};
+	};
+
+	mcu_pwm_ch3 {
+		mcu_pwm_ch3_pinctrl: mcu_pwm_ch3_grp {
+			ts,pins = <20>;
+			mux,val = <1>;
+			function = "mcu_pwm_ch3";
+			groups = "mcu_pwm_ch3_grp";
+		};
+	};
+
+	mcu_jtg {
+		mcu_jtg_pinctrl: mcu_jtg_grp {
+			ts,pins = <23 24>;
+			mux,val = <0>;
+			function = "mcu_jtg";
+			groups = "mcu_jtg_grp";
+		};
+	};
+
+	mcu_do_bo_pwm {
+		mcu_do_bo_pwm_pinctrl: mcu_do_bo_pwm_grp {
+			ts,pins = <25 26 27 28>;
+			mux,val = <0>;
+			function = "mcu_do_bo_pwm";
+			groups = "mcu_do_bo_pwm_grp";
+		};
+	};
+
+	mcu_standby_bo {
+		mcu_standby_bo_pinctrl: mcu_standby_bo_grp {
+			ts,pins = <29>;
+			mux,val = <0>;
+			function = "mcu_standby_bo";
+			groups = "mcu_standby_bo_grp";
+		};
+	};
+
+	mcu_gpio {
+		mcu_gpio0_pinctrl: mcu_gpio0_grp {
+			ts,pins = <0>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio0_grp";
+		};
+		mcu_gpio1_pinctrl: mcu_gpio1_grp {
+			ts,pins = <1>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio1_grp";
+		};
+		mcu_gpio2_pinctrl: mcu_gpio2_grp {
+			ts,pins = <2>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio2_grp";
+		};
+		mcu_gpio3_pinctrl: mcu_gpio3_grp {
+			ts,pins = <3>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio3_grp";
+		};
+		mcu_gpio4_pinctrl: mcu_gpio4_grp {
+			ts,pins = <4>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio4_grp";
+		};
+		mcu_gpio5_pinctrl: mcu_gpio5_grp {
+			ts,pins = <5>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio5_grp";
+		};
+		mcu_gpio6_pinctrl: mcu_gpio6_grp {
+			ts,pins = <6>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio6_grp";
+		};
+		mcu_gpio7_pinctrl: mcu_gpio7_grp {
+			ts,pins = <7>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio7_grp";
+		};
+		mcu_gpio8_pinctrl: mcu_gpio8_grp {
+			ts,pins = <8>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio8_grp";
+		};
+		mcu_gpio9_pinctrl: mcu_gpio9_grp {
+			ts,pins = <9>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio9_grp";
+		};
+		mcu_gpio10_pinctrl: mcu_gpio10_grp {
+			ts,pins = <10>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio10_grp";
+		};
+		mcu_gpio11_pinctrl: mcu_gpio11_grp {
+			ts,pins = <11>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio11_grp";
+		};
+		mcu_gpio12_pinctrl: mcu_gpio12_grp {
+			ts,pins = <12>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio12_grp";
+		};
+		mcu_gpio13_pinctrl: mcu_gpio13_grp {
+			ts,pins = <13>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio13_grp";
+		};
+		mcu_gpio14_pinctrl: mcu_gpio14_grp {
+			ts,pins = <14>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio14_grp";
+		};
+		mcu_gpio15_pinctrl: mcu_gpio15_grp {
+			ts,pins = <15>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio15_grp";
+		};
+		mcu_gpio16_pinctrl: mcu_gpio16_grp {
+			ts,pins = <16>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio16_grp";
+		};
+		mcu_gpio17_pinctrl: mcu_gpio17_grp {
+			ts,pins = <17>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio17_grp";
+		};
+		mcu_gpio18_pinctrl: mcu_gpio18_grp {
+			ts,pins = <18>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio18_grp";
+		};
+		mcu_gpio19_pinctrl: mcu_gpio19_grp {
+			ts,pins = <19>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio19_grp";
+		};
+		mcu_gpio20_pinctrl: mcu_gpio20_grp {
+			ts,pins = <20>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio20_grp";
+		};
+		mcu_gpio21_pinctrl: mcu_gpio21_grp {
+			ts,pins = <21>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio21_grp";
+		};
+		mcu_gpio22_pinctrl: mcu_gpio22_grp {
+			ts,pins = <22>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio22_grp";
+		};
+		mcu_gpio23_pinctrl: mcu_gpio23_grp {
+			ts,pins = <23>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio23_grp";
+		};
+		mcu_gpio24_pinctrl: mcu_gpio24_grp {
+			ts,pins = <24>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio24_grp";
+		};
+		mcu_gpio25_pinctrl: mcu_gpio25_grp {
+			ts,pins = <25>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio25_grp";
+		};
+		mcu_gpio26_pinctrl: mcu_gpio26_grp {
+			ts,pins = <26>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio26_grp";
+		};
+		mcu_gpio27_pinctrl: mcu_gpio27_grp {
+			ts,pins = <27>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio27_grp";
+		};
+		mcu_gpio28_pinctrl: mcu_gpio28_grp {
+			ts,pins = <28>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio28_grp";
+		};
+		mcu_gpio29_pinctrl: mcu_gpio29_grp {
+			ts,pins = <29>;
+			mux,val = <3>;
+			function = "mcu_gpio";
+			groups = "mcu_gpio29_grp";
+		};
+	};
+};

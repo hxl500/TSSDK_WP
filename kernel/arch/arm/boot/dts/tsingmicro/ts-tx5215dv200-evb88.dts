@@ -1,0 +1,44 @@
+/*
+ * dts file for tsingmicro tx511 haps
+ *
+ * Copyright 2022 Tsingmicro, Inc.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ */
+
+/dts-v1/;
+
+#include "ts-tx52xx-evb88.dtsi"
+
+/ {
+	model = "TS TX5215DV200";
+	compatible = "tsingmicro,ts-tx5215";//smp need
+
+	aliases {
+		sd0 = &sdhci1;
+		serial0 = &uart0;
+	};
+	memory@0 {
+		device_type = "memory";
+		reg = <0x0 0x08000000>;
+	};
+	reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+		/* global autoconfigured region for contiguous allocations */
+		linux,cma {
+			compatible = "shared-dma-pool";
+			reusable;
+			reg = <0x04000000 0x04000000>;  //64M
+			linux,cma-default;
+		};
+	};
+
+};
+&sram {
+	status = "okay";
+};

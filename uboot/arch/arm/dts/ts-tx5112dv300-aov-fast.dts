@@ -1,0 +1,30 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * dts file for tsingmicro tx51xx
+ *
+ * Copyright 2022 Beijing Tsingmicro Intelligent Technology Co.,Ltd.
+ *
+ */
+
+/dts-v1/;
+
+#include "ts_tx5112.dtsi"
+#include "ts_tx51xx_aov_fast.dtsi"
+
+/ {
+	model = "Tsingmicro TX5112DV300";
+	compatible = "ts,tx5112dv300-aov-fast";
+
+	aliases {
+		gpio0 = &gpio0;
+		mmc0 = &sdhci0;
+		sd0 = &sdhci1;
+		serial0 = &uart0;
+		spi0 = &qspi;
+	};
+	memory@0 {
+		device_type = "memory";
+		reg = <0x0 0x08000000>;
+		// reg = <0x0 0x04000000>;
+	};
+};

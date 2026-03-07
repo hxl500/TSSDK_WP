@@ -1,0 +1,8 @@
+#!/bin/sh
+
+insmod /lib/modules/sunrpc.ko
+insmod /lib/modules/grace.ko
+insmod /lib/modules/lockd.ko
+insmod /lib/modules/nfs.ko
+insmod /lib/modules/nfsv2.ko
+insmod /lib/modules/nfsv3.ko

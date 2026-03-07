@@ -1,0 +1,2 @@
+config MOTOR_DRV_TS
+	tristate "Tsingmicro motor_drv support"

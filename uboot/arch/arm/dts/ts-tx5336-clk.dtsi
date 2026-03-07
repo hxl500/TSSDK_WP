@@ -1,0 +1,135 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * dts file for tsingmicro dt53
+ *
+ * Copyright 2022 Beijing Tsingmicro Intelligent Technology Co.,Ltd.
+ *
+ */
+
+#include <dt-bindings/clock/xlnx-zynqmp-clk.h>
+#include <dt-bindings/clock/ts-tx5336-clk.h>
+/ {
+	fpga_pll1_1: fpga_pll1_1 {
+		u-boot,dm-pre-reloc;
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <7379713>;
+		/*clock-frequency = <5000000>;*/
+		clock-accuracy = <100>;
+	};
+
+	osc24m: osc24m_clk {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <24000000>;
+		clock-accuracy = <100>;
+	};
+
+	ts_clk: tx5336-clock-controller {
+		reg = <0x0 0xF038A000 0x0 0x1000>;
+		reg-io-width = <4>;
+		#clock-cells = <1>;
+		compatible = "ts,ts-common-clk";
+		clocks = <&osc24m>;
+	};
+
+};
+
+&cpu0 {
+	clocks = <&ts_clk TS_CLK_TX5336_CPU_CLK_MUX>;
+};
+
+&otpc {
+    clocks = <&ts_clk TS_CLK_TX5336_OTPC_APB_CLK_GATE>;
+    clock-names = "otpc_pclk";
+};
+
+&gpio0 {
+	clocks = <&ts_clk TS_CLK_PERIPH0_GPIO_APB_CLK_GATE>;
+    clock-names = "gpio_pclk";
+};
+
+&gpio1 {
+	clocks = <&ts_clk TS_CLK_PERIPH0_GPIO_APB_CLK_GATE>;
+    clock-names = "gpio_pclk";
+};
+
+&gpio2 {
+	clocks = <&ts_clk TS_CLK_PERIPH0_GPIO_APB_CLK_GATE>;
+    clock-names = "gpio_pclk";
+};
+
+&pinctrl {
+    clocks = <&ts_clk TS_CLK_PERIPH0_IOMUX_APB_CLK_GATE>;
+    clock-names = "iomux_pclk";
+
+	assigned-clocks = <&ts_clk TS_CLK_PERI0_APB_CLK_MUX>, <&ts_clk TS_CLK_PERI1_APB_CLK_MUX>;
+	assigned-clock-parents = <&ts_clk TS_CLK_PLL0_D2_PERI0_APB_CLK_DIV>, <&ts_clk TS_CLK_PLL0_D2_PERI1_APB_CLK_DIV>;
+};
+
+&qspi {
+    clocks = <&ts_clk TS_CLK_TOP_OSC_QSPI_REF_CLK_MUX>, <&ts_clk TS_CLK_TOP_OSC_QSPI_AHB_CLK_GATE>, <&ts_clk TS_CLK_PERIPH1_QSPI_APB_CLK_GATE>, <&ts_clk TS_CLK_TOP_OSC_QSPI_REF_CLK_GATE>, <&ts_clk TS_CLK_TOP_OSC_QSPI_REF_CLK_DIV>;
+    clock-names = "qspi_ref_clk_mux", "qspi_ahb_clk_icg", "qspi_apb_clk_icg", "qspi_ref_clk_icg", "qspi_ref_clk_div";
+
+	assigned-clocks = <&ts_clk TS_CLK_TOP_OSC_QSPI_REF_CLK_DIV>;
+	assigned-clock-rates = <250000000>;
+};
+
+&sdhci0 {
+	clocks = <&ts_clk TS_CLK_PERIPH2_SDHC0_AHB_CLK_GATE>, <&ts_clk TS_CLK_PERIPH2_SDHC0_CORE_CLK_MUX>, <&ts_clk TS_CLK_PERIPH2_PLL0_SDHC0_CORE_CLK_DIV>, <&ts_clk TS_CLK_PERIPH2_OSC_SDHC0_CORE_CLK_GATE>;
+	clock-names = "biu", "ciu_mux", "ciu_div", "ciu_icg";
+
+    assigned-clocks = <&ts_clk TS_CLK_PERIPH2_PLL0_SDHC0_CORE_CLK_DIV>;
+	assigned-clock-rates = <200000000>;
+};
+
+&sdhci1 {
+	clocks = <&ts_clk TS_CLK_PERIPH2_SDHC1_AHB_CLK_GATE>, <&ts_clk TS_CLK_PERIPH2_SDHC1_CORE_CLK_MUX>, <&ts_clk TS_CLK_PERIPH2_PLL0_SDHC1_CORE_CLK_DIV>;
+	clock-names = "biu", "ciu_mux", "ciu_div";
+
+	assigned-clocks = <&ts_clk TS_CLK_PERIPH2_SDHC1_CORE_CLK_MUX>;
+	assigned-clock-rates = <200000000>;
+};
+
+#if 0
+
+&nand0 {
+	clocks = <&ts_clk TS_CLK_TX5336_NFC_CLKB>,
+		<&ts_clk TS_CLK_TX5336_NFC_HCLK>;
+	clock-names = "nfc_clkb, nfc_hclk";
+};
+
+&cpu0 {
+	clocks = <&ts_clk TS_CLK_TX5336_A53_CLKIN>;
+};
+&gmac0 {
+	clocks = <&ts_clk TS_CLK_TX5336_MII_RXCLK>, <&ts_clk TS_CLK_TX5336_GMII_TX_CLK>,
+		 <&ts_clk TS_CLK_TX5336_PTP_REF_CLK>;
+	clock-names = "rx_clk", "tx_clk", "ptp_ref";
+};
+
+&nand0 {
+	clocks = <&ts_clk TS_CLK_TX5336_NFC_CLKB>,
+		<&ts_clk TS_CLK_TX5336_NFC_HCLK>;
+	clock-names = "nfc_clkb, nfc_hclk";
+};
+
+// &sdhci0 {
+	// clocks = <&ts_clk TS_CLK_TX5336_MSHC_0_HCLK>, <&ts_clk TS_CLK_TX5336_MSHC_0_BCLK>;
+	// clock-names = "biu", "ciu";
+// };
+
+&sdhci1 {
+	clocks = <&ts_clk TS_CLK_TX5336_MSHC_1_HCLK>, <&ts_clk TS_CLK_TX5336_MSHC_1_BCLK>;
+	clock-names = "biu", "ciu";
+};
+
+&ssi0 {
+	clocks = <&ts_clk TS_CLK_TX5336_SPI_0_SSICLK>;
+};
+
+#endif 
+
+&uart0 {
+	clocks = <&fpga_pll1_1>;
+};
