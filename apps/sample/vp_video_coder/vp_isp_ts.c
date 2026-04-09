@@ -5,6 +5,8 @@
 #include "vp_isp.h"
 #include "sample_comm.h"
 #include "vp_printf.h"
+#include "mpi_ae.h"
+#include "mpi_awb.h"
 
 
 #define VP_SENSOR_NUM 3

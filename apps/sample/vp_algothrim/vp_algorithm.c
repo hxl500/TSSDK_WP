@@ -1,5 +1,8 @@
 #include <string.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "vp_algorithm.h"
+#include "sample_comm.h"
 // #include "vp_sensor_config.h"
 #include "vp_video_coder_type.h"
 #include "vp_video_encoder.h"
@@ -42,6 +45,17 @@
 #endif
 
 // static void * g_singletrack_handle = NULL;
+
+#define SAVE_RGBA_PATH  "/mnt/sda0/rgba/"
+#define SAVE_RGBA_ENABLE 0  // 1=启用保存，0=禁用保存
+#define SAVE_RGBA_INTERVAL_BASE 30  // 初始保存间隔（帧数）
+#define SAVE_RGBA_INTERVAL_STEP 30  // 每保存200张后增加的间隔
+#define SAVE_RGBA_BATCH_SIZE 200  // 累计保存多少张后增加间隔
+#define SAVE_RGBA_CROP_PADDING 0  // 1=裁剪填充区域保存640x360，0=保存完整640x384
+#define SAVE_RGB_FORMAT 1  // 1=保存为RGB三通道，0=保存为RGBA四通道
+
+#define LOAD_RGBA_FROM_SD 0  // 1=从SD卡读取固定RGBA文件，0=使用实时图像
+#define LOAD_RGBA_FILE_PATH "/mnt/sda0/rgba/cam1_rgba_120.rgba"  // 要读取的RGBA文件路径
 
 typedef struct {
     volatile uint8_t enable: 1;
@@ -393,6 +407,12 @@ static void vp_algorithm_human_clear_boxes(uint8_t idx, vp_video_chn_t chn) {
     }
 }
 
+static void vp_algorithm_cat_clear_boxes(uint8_t idx, vp_video_chn_t chn) {
+    for (int i = 0; i < VP_VIDEO_OSD_RECT_MAX; ++i) {
+        vp_video_osd_hide_rect(idx, chn, i);
+    }
+}
+
 static void vp_algorithm_human_clear_mosaic(uint8_t idx, vp_video_chn_t chn) {
     for (int i = 0; i < VP_VIDEO_OSD_MOSAIC_MAX; ++i) {
         vp_video_osd_hide_mosaic(idx, chn, i);
@@ -406,16 +426,19 @@ static void vp_algorithm_cat_clear_mosaic(uint8_t idx, vp_video_chn_t chn) {
 }
 
 static int vp_algorithm_cat_draw_boxes(uint8_t idx, vp_video_chn_t chn, uint32_t width, uint32_t height,
-                                      vp_cat_detect_result_t *result) {
+                                      vp_cat_detect_result_t *result) 
+{
+    //return 0;
     if (g_shutting_down) return -1;
-    //if (width == 0 || height == 0) return -1;
+    if (width == 0 || height == 0) return -1;
     vp_video_encoder_config_t config;
     if (vp_video_encoder_get_config(idx, chn, &config) != 0) return -1;
     
     uint64_t current_time = get_timestamp_ms();
     
     // 处理检测到的目标
-    for (int i = 0; i < result->count && i < VP_VIDEO_OSD_RECT_MAX; ++i) {
+    for (int i = 0; i < result->count && i < VP_VIDEO_OSD_RECT_MAX; ++i) 
+    {
         vp_cat_obj_t *obj = &result->objs[i];
         // 直接使用归一化坐标乘以config.width和config.height，避免双重缩放
         uint32_t dest_x = obj->f32Xmin * config.width;
@@ -431,14 +454,6 @@ static int vp_algorithm_cat_draw_boxes(uint8_t idx, vp_video_chn_t chn, uint32_t
         if (dest_w < 10) dest_w = 10;
         if (dest_h < 10) dest_h = 10;
         
-        // 平滑防抖：使用加权平均，新位置 = 0.7 * 当前检测位置 + 0.3 * 上一帧位置
-        if (g_cat_box_states[i].valid) {
-            //dest_x = (uint32_t)(0.7 * dest_x + 0.3 * g_cat_box_states[i].last_x);
-            //dest_y = (uint32_t)(0.7 * dest_y + 0.3 * g_cat_box_states[i].last_y);
-            //dest_w = (uint32_t)(0.7 * dest_w + 0.3 * g_cat_box_states[i].last_width);
-            //dest_h = (uint32_t)(0.7 * dest_h + 0.3 * g_cat_box_states[i].last_height);
-        }
-        
         // 更新状态
         g_cat_box_states[i].valid = 1;
         g_cat_box_states[i].last_x = dest_x;
@@ -446,69 +461,13 @@ static int vp_algorithm_cat_draw_boxes(uint8_t idx, vp_video_chn_t chn, uint32_t
         g_cat_box_states[i].last_width = dest_w;
         g_cat_box_states[i].last_height = dest_h;
         g_cat_box_states[i].last_detected = current_time;
-        g_cat_box_states[i].fail_count = 0;
         
         // 确保划线可见：每次检测到目标都确保显示
-        if (!g_cat_box_states[i].visible) {
-            vp_video_osd_show_rect(idx, chn, i);
-        }
+        vp_video_osd_show_rect(idx, chn, i);
         g_cat_box_states[i].visible = 1;
         
         // 更新划线位置
-        int ret = vp_video_osd_update_rect(idx, chn, i, dest_x, dest_y, dest_w, dest_h);
-        if (ret != 0) {
-            // 划线更新失败，增加失败计数
-            g_cat_box_states[i].fail_count++;
-            if (g_cat_box_states[i].fail_count >= 3) {
-                // 连续失败3次，隐藏划线
-                vp_video_osd_hide_rect(idx, chn, i);
-                g_cat_box_states[i].visible = 0;
-                g_cat_box_states[i].fail_count = 0;
-            }
-        } else {
-            // 更新成功，重置失败计数
-            g_cat_box_states[i].fail_count = 0;
-        }
-    }
-    
-    uint64_t diff =current_time - g_cat_mosaic_states[0].last_detected;
-        printf("3s detect hide  diff:%d\n",diff);
-    // 处理未检测到的目标：3s内按上一帧位置显示，3s以上立即隐藏
-    for (int i = result->count; i < VP_VIDEO_OSD_RECT_MAX; ++i) {
-        if (g_cat_box_states[i].valid) {
-            // 检查是否超过3秒未检测到
-            if (diff > 3000) {
-                // 超过3秒，立即隐藏划线
-                if (g_cat_box_states[i].visible) {
-                    vp_video_osd_hide_rect(idx, chn, i);
-                    g_cat_box_states[i].visible = 0;
-                    printf("3s detect hide\n");
-                }
-                g_cat_box_states[i].valid = 0;
-                g_cat_box_states[i].fail_count = 0;
-            } else if (g_cat_box_states[i].visible) {
-                // 未超过3秒，使用上一帧坐标更新划线
-                printf("3s detect osd\n");
-                int ret = vp_video_osd_update_rect(idx, chn, i, 
-                    g_cat_box_states[i].last_x, 
-                    g_cat_box_states[i].last_y, 
-                    g_cat_box_states[i].last_width, 
-                    g_cat_box_states[i].last_height);
-                if (ret != 0) {
-                    // 划线更新失败，增加失败计数
-                    g_cat_box_states[i].fail_count++;
-                    if (g_cat_box_states[i].fail_count >= 3) {
-                        // 连续失败3次，隐藏划线
-                        vp_video_osd_hide_rect(idx, chn, i);
-                        g_cat_box_states[i].visible = 0;
-                        g_cat_box_states[i].fail_count = 0;
-                    }
-                } else {
-                    // 更新成功，重置失败计数
-                    g_cat_box_states[i].fail_count = 0;
-                }
-            }
-        }
+        vp_video_osd_update_rect(idx, chn, i, dest_x, dest_y, dest_w, dest_h);
     }
     
     return 0;
@@ -516,11 +475,10 @@ static int vp_algorithm_cat_draw_boxes(uint8_t idx, vp_video_chn_t chn, uint32_t
 
 static int vp_algorithm_cat_draw_mosaic(uint8_t idx, vp_video_chn_t chn, uint32_t width, uint32_t height,
                                       vp_cat_detect_result_t *result) {
-    ////if (width == 0 || height == 0) return -1;
-    printf("g_shutting_down %d result->count:%d width:%d height:%d\n",g_shutting_down,result->count,width,height);
     
+    return 0;
     if (g_shutting_down) return -1;
-    ////if (width == 0 || height == 0) return -1;
+    if (width == 0 || height == 0) return -1;
     vp_video_encoder_config_t config;
     if (vp_video_encoder_get_config(idx, chn, &config) != 0) return -1;
     
@@ -543,14 +501,6 @@ static int vp_algorithm_cat_draw_mosaic(uint8_t idx, vp_video_chn_t chn, uint32_
         if (dest_w < 10) dest_w = 10;
         if (dest_h < 10) dest_h = 10;
         
-        // 平滑防抖：使用加权平均，新位置 = 0.7 * 当前检测位置 + 0.3 * 上一帧位置
-        if (g_cat_mosaic_states[i].valid) {
-            //dest_x = (uint32_t)(0.7 * dest_x + 0.3 * g_cat_mosaic_states[i].last_x);
-            //dest_y = (uint32_t)(0.7 * dest_y + 0.3 * g_cat_mosaic_states[i].last_y);
-            //dest_w = (uint32_t)(0.7 * dest_w + 0.3 * g_cat_mosaic_states[i].last_width);
-            //dest_h = (uint32_t)(0.7 * dest_h + 0.3 * g_cat_mosaic_states[i].last_height);
-        }
-        
         // 更新状态
         g_cat_mosaic_states[i].valid = 1;
         g_cat_mosaic_states[i].last_x = dest_x;
@@ -558,76 +508,13 @@ static int vp_algorithm_cat_draw_mosaic(uint8_t idx, vp_video_chn_t chn, uint32_
         g_cat_mosaic_states[i].last_width = dest_w;
         g_cat_mosaic_states[i].last_height = dest_h;
         g_cat_mosaic_states[i].last_detected = current_time;
-        g_cat_mosaic_states[i].fail_count = 0;
         
         // 确保马赛克可见：每次检测到目标都确保显示
-        if (!g_cat_mosaic_states[i].visible) {
-            vp_video_osd_show_mosaic(idx, chn, i);
-        }
+        vp_video_osd_show_mosaic(idx, chn, i);
         g_cat_mosaic_states[i].visible = 1;
         
         // 更新马赛克位置
-        int ret = vp_video_osd_update_mosaic(idx, chn, i, dest_x, dest_y, dest_w, dest_h);
-        if (ret != 0) {
-            // 马赛克更新失败，增加失败计数
-            g_cat_mosaic_states[i].fail_count++;
-            if (g_cat_mosaic_states[i].fail_count >= 3) {
-                // 连续失败3次，隐藏马赛克
-                vp_video_osd_hide_mosaic(idx, chn, i);
-                g_cat_mosaic_states[i].visible = 0;
-                g_cat_mosaic_states[i].fail_count = 0;
-            }
-        } else {
-            // 更新成功，重置失败计数
-            g_cat_mosaic_states[i].fail_count = 0;
-        }
-    }
-    
-    // for (int i = result->count; i < VP_VIDEO_OSD_MOSAIC_MAX; ++i) {
-    //     vp_mosaic_state_t *s = &g_cat_box_states[i];
-    //     if (!s->valid)
-    //         continue;
-    // }
-    uint64_t diff =current_time - g_cat_mosaic_states[0].last_detected;
-        printf("3s detect hide  diff:%d\n",diff);
-
-    // 处理未检测到的目标：3s内按上一帧位置显示，3s以上立即隐藏
-    for (int i = result->count; i < VP_VIDEO_OSD_MOSAIC_MAX; ++i) {
-        if (g_cat_mosaic_states[i].valid) {
-            // 检查是否超过3秒未检测到
-            if (diff > 3000) {
-                // 超过3秒，立即隐藏马赛克
-                if (g_cat_mosaic_states[i].visible) {
-                    printf("3s detect hideedih tceted s3\n");
-                    vp_video_osd_hide_mosaic(idx, chn, i);
-                    g_cat_mosaic_states[i].visible = 0;
-                }
-                g_cat_mosaic_states[i].valid = 0;
-                g_cat_mosaic_states[i].fail_count = 0;
-            } else if (g_cat_mosaic_states[i].visible) {
-                // 未超过3秒，使用上一帧坐标更新马赛克
-                printf("3s detect osddso\n");
-
-                int ret = vp_video_osd_update_mosaic(idx, chn, i, 
-                    g_cat_mosaic_states[i].last_x, 
-                    g_cat_mosaic_states[i].last_y, 
-                    g_cat_mosaic_states[i].last_width, 
-                    g_cat_mosaic_states[i].last_height);
-                if (ret != 0) {
-                    // 马赛克更新失败，增加失败计数
-                    g_cat_mosaic_states[i].fail_count++;
-                    if (g_cat_mosaic_states[i].fail_count >= 3) {
-                        // 连续失败3次，隐藏马赛克
-                        vp_video_osd_hide_mosaic(idx, chn, i);
-                        g_cat_mosaic_states[i].visible = 0;
-                        g_cat_mosaic_states[i].fail_count = 0;
-                    }
-                } else {
-                    // 更新成功，重置失败计数
-                    g_cat_mosaic_states[i].fail_count = 0;
-                }
-            }
-        }
+        vp_video_osd_update_mosaic(idx, chn, i, dest_x, dest_y, dest_w, dest_h);
     }
     
     return 0;
@@ -652,7 +539,7 @@ static int vp_algorithm_detect_init(vp_algorithm_ivs_args_t *args) {
 
     if (pimage != NULL && pimage->pData == NULL) {
         pimage->s32W = 640;
-        pimage->s32H = 384;
+        pimage->s32H = 384;//384;
         pimage->s32C = 4;
         int alg_rgba_size = pimage->s32W * pimage->s32H * pimage->s32C;
         if (TS_MPI_SYS_MmzAlloc_Cached(&(pimage->pDataPhy), &(pimage->pData), NULL, NULL, alg_rgba_size)) {
@@ -990,8 +877,10 @@ static TS_S32 vp_algorithm_yuv2rgb(TS_U8 *y_image, TS_U8 *uv_image, TS_U8 *rgb_i
     return TS_SUCCESS;
 }
 
+int ptime = 0;
 static int vp_algorithm_detect_process(uint8_t idx, uint8_t chn, vp_algorithm_ivs_args_t *args,
-                                       vp_video_source_t *frame) {
+                                       vp_video_source_t *frame) 
+{
     struct timeval start_time, end_time;
     gettimeofday(&start_time, NULL);
     time_t start_sec = start_time.tv_sec;
@@ -1019,7 +908,8 @@ static int vp_algorithm_detect_process(uint8_t idx, uint8_t chn, vp_algorithm_iv
     if (frame->width != 640 || frame->height != 360) {
         vp_error("human detect and motion detect only support 640 * 360.\n");
         return -1;
-    } else {
+    } 
+    else {
         
         if (pimage == NULL || pimage->pData == NULL || frame->frame_data == NULL) {
             vp_error("Invalid params: pimage-%p, frame_data:%p.\n", pimage, frame->frame_data);
@@ -1029,7 +919,141 @@ static int vp_algorithm_detect_process(uint8_t idx, uint8_t chn, vp_algorithm_iv
         vp_algorithm_yuv2rgb(frame->frame_data, frame->frame_data + frame->width * frame->height, 
             ((TS_U8*)(uintptr_t)pimage->pData) + 4 * 12 * pimage->s32W, frame->width, frame->height, 
             frame->width, frame->height, ALG_RGB_TYPE_RGBA32);
+
         TS_MPI_SYS_MmzFlushCache(pimage->pDataPhy, pimage->pData, pimage->s32W * pimage->s32H * pimage->s32C);
+
+#if LOAD_RGBA_FROM_SD
+        {
+            static int load_once = 0;
+            static uint8_t *loaded_rgba_data = NULL;
+            if (!load_once) {
+                FILE *fp = fopen(LOAD_RGBA_FILE_PATH, "rb");
+                if (fp) {
+                    uint32_t rgba_size = 640 * 384 * 4;
+                    loaded_rgba_data = (uint8_t *)malloc(rgba_size);
+                    if (loaded_rgba_data) {
+                        size_t read_size = fread(loaded_rgba_data, 1, rgba_size, fp);
+                        if (read_size == rgba_size) {
+                            vp_debug("Load RGBA from SD: %s (%dx%d)\n", LOAD_RGBA_FILE_PATH, 640, 384);
+                        } else {
+                            vp_error("Read RGBA file incomplete: %s, read=%zu, expected=%u\n", 
+                                     LOAD_RGBA_FILE_PATH, read_size, rgba_size);
+                            free(loaded_rgba_data);
+                            loaded_rgba_data = NULL;
+                        }
+                    }
+                    fclose(fp);
+                } else {
+                    vp_error("Open RGBA file failed: %s\n", LOAD_RGBA_FILE_PATH);
+                }
+                load_once = 1;
+            }
+            if (loaded_rgba_data) {
+                memcpy(pimage->pData, loaded_rgba_data, 640 * 384 * 4);
+                TS_MPI_SYS_MmzFlushCache(pimage->pDataPhy, pimage->pData, pimage->s32W * pimage->s32H * pimage->s32C);
+            }
+        }
+#endif
+
+        static uint32_t save_frame_count = 0;
+        static uint32_t saved_image_count = 0;
+        static uint32_t current_save_interval = SAVE_RGBA_INTERVAL_BASE;
+        
+#if SAVE_RGBA_ENABLE
+        save_frame_count++;
+        if (save_frame_count % current_save_interval == 0) {
+            struct stat st = {0};
+            if (stat(SAVE_RGBA_PATH, &st) == -1) {
+                mkdir(SAVE_RGBA_PATH, 0777);
+                vp_debug("Create directory: %s\n", SAVE_RGBA_PATH);
+            }
+            
+            // 1. 保存RGBA格式
+            char rgba_filename[256];
+            snprintf(rgba_filename, sizeof(rgba_filename), "%scam%d_rgba_%u.rgba", SAVE_RGBA_PATH, idx, save_frame_count);
+            
+            FILE *rgba_fp = fopen(rgba_filename, "wb");
+            if (rgba_fp) {
+#if SAVE_RGBA_CROP_PADDING
+                uint32_t save_width = pimage->s32W;
+                uint32_t save_height = 360;
+                uint32_t padding_top = 12;
+                uint8_t* src_ptr = (uint8_t*)pimage->pData + padding_top * save_width * 4;
+#else
+                uint32_t save_width = pimage->s32W;
+                uint32_t save_height = pimage->s32H;
+                uint8_t* src_ptr = (uint8_t*)pimage->pData;
+#endif
+                uint32_t data_size = save_width * save_height * 4;
+                size_t written = fwrite(src_ptr, 1, data_size, rgba_fp);
+                fclose(rgba_fp);
+                if (written == data_size) {
+                    saved_image_count++;
+                    vp_debug("Save clean RGBA image: %s (%dx%d), saved_count=%u, interval=%u\n", 
+                             rgba_filename, save_width, save_height, saved_image_count, current_save_interval);
+                } else {
+                    vp_error("Save RGBA image failed: %s\n", rgba_filename);
+                }
+            } else {
+                vp_error("Open RGBA file failed: %s\n", rgba_filename);
+            }
+            
+            // 2. 保存RGB格式
+            char rgb_filename[256];
+            snprintf(rgb_filename, sizeof(rgb_filename), "%scam%d_rgb_%u.rgb", SAVE_RGBA_PATH, idx, save_frame_count);
+            
+            FILE *rgb_fp = fopen(rgb_filename, "wb");
+            if (rgb_fp) {
+#if SAVE_RGBA_CROP_PADDING
+                uint32_t save_width = pimage->s32W;
+                uint32_t save_height = 360;
+                uint32_t padding_top = 12;
+                uint8_t* src_ptr = (uint8_t*)pimage->pData + padding_top * save_width * 4;
+#else
+                uint32_t save_width = pimage->s32W;
+                uint32_t save_height = pimage->s32H;
+                uint8_t* src_ptr = (uint8_t*)pimage->pData;
+#endif
+                uint32_t src_stride = save_width * 4;
+                uint32_t dst_stride = save_width * 3;
+                uint32_t data_size = save_width * save_height * 3;
+                uint8_t* rgb_buffer = (uint8_t*)malloc(data_size);
+                if (rgb_buffer) {
+                    for (uint32_t y = 0; y < save_height; y++) {
+                        uint8_t* src_line = src_ptr + y * src_stride;
+                        uint8_t* dst_line = rgb_buffer + y * dst_stride;
+                        for (uint32_t x = 0; x < save_width; x++) {
+                            dst_line[x * 3 + 0] = src_line[x * 4 + 0];
+                            dst_line[x * 3 + 1] = src_line[x * 4 + 1];
+                            dst_line[x * 3 + 2] = src_line[x * 4 + 2];
+                        }
+                    }
+                    size_t written = fwrite(rgb_buffer, 1, data_size, rgb_fp);
+                    free(rgb_buffer);
+                    fclose(rgb_fp);
+                    if (written == data_size) {
+                        saved_image_count++;
+                        vp_debug("Save clean RGB image: %s (%dx%d), saved_count=%u, interval=%u\n", 
+                                 rgb_filename, save_width, save_height, saved_image_count, current_save_interval);
+                    } else {
+                        vp_error("Save RGB image failed: %s\n", rgb_filename);
+                    }
+                } else {
+                    fclose(rgb_fp);
+                    vp_error("Malloc RGB buffer failed\n");
+                }
+            } else {
+                vp_error("Open RGB file failed: %s\n", rgb_filename);
+            }
+            
+            // 调整保存间隔
+            if (saved_image_count % SAVE_RGBA_BATCH_SIZE == 0) {
+                current_save_interval += SAVE_RGBA_INTERVAL_STEP;
+                vp_debug("Increase save interval to %u after %u images saved\n", 
+                         current_save_interval, saved_image_count);
+            }
+        }
+#endif
         //frame_data = frame->frame_data;
         //frame->frame_data = pimage;
     }
@@ -1213,6 +1237,7 @@ static int vp_algorithm_detect_process(uint8_t idx, uint8_t chn, vp_algorithm_iv
                     continue;
                 }
                 ret = vp_multiobject_detect_process(info->handle, frame);
+                
                 if (ret > 0) {
                     vp_lock(&channel->lock);
                     vp_multiobject_detect_human_result(info->handle, &info->result.human);
@@ -1331,93 +1356,52 @@ static int vp_algorithm_detect_process(uint8_t idx, uint8_t chn, vp_algorithm_iv
                         vp_cat_detect_result(info->handle, (vp_cat_detect_result_t*)&info->result.cat);
                         info->result.timestamp = frame->timestamp;
                         vp_unlock(&channel->lock);
-                        // 强制使用猫咪检测的默认参数：启用画框和马赛克
-                        if (1 || info->param.cat.draw_box || info->param.cat.draw_mosaic) {
-                            box_flag[idx] = 1;
-                            box_count[idx] = 0;
-                            if (1 || info->param.cat.draw_box) {
-                                vp_algorithm_cat_draw_boxes(idx, 0, frame->width, frame->height, (vp_cat_detect_result_t*)&info->result.cat);
-                                vp_algorithm_cat_draw_boxes(idx, 1, frame->width, frame->height, (vp_cat_detect_result_t*)&info->result.cat);
-                            }
-                            if (1 || info->param.cat.draw_mosaic) {
-                                uint64_t start_time = get_timestamp_ms();
-                                vp_algorithm_cat_draw_mosaic(idx, 0, frame->width, frame->height, (vp_cat_detect_result_t*)&info->result.cat);
-                                vp_algorithm_cat_draw_mosaic(idx, 1, frame->width, frame->height, (vp_cat_detect_result_t*)&info->result.cat);
-                                uint64_t end_time = get_timestamp_ms();
-                                vp_debug("Cat mosaic processing time: %llu ms", end_time - start_time);
-                            }
-                        } else {
-                            if (box_flag[idx] == 1) {
-                                vp_algorithm_human_clear_boxes(idx, 0);
-                                vp_algorithm_human_clear_boxes(idx, 1);
-                                vp_algorithm_cat_clear_mosaic(idx, 0);
-                                vp_algorithm_cat_clear_mosaic(idx, 1);
-                                box_flag[idx] = 0;
-                                box_count[idx] = 0;
-                            }
+                        
+                        for(int i = 0;i<info->result.cat.count;i++)
+                        {
+                            vp_algorithm_cat_draw_boxes(idx, 0, frame->width, frame->height, (vp_cat_detect_result_t*)&info->result.cat);
+                        vp_algorithm_cat_draw_boxes(idx, 1, frame->width, frame->height, (vp_cat_detect_result_t*)&info->result.cat);
+                        
+                        uint64_t start_time = get_timestamp_ms();
+                        vp_algorithm_cat_draw_mosaic(idx, 0, frame->width, frame->height, (vp_cat_detect_result_t*)&info->result.cat);
+                        vp_algorithm_cat_draw_mosaic(idx, 1, frame->width, frame->height, (vp_cat_detect_result_t*)&info->result.cat);
+                        uint64_t end_time = get_timestamp_ms();
+                        if(0 == ptime)
+                        {
+                            //sleep(60*5);
+                            ptime++;
                         }
-
-                        // if (info->param.human.enable_track && g_singletrack_handle) {
-                        //     ALG_SINGLE_TARGET_INPUT_BOX_S tarck_input_box = {0};
-                        //     ALG_SINGLE_TARGET_TRACK_RESULTS_S track_result = {0};
-
-                        //     for (int j = 0; j < info->result.human.count; ++j) {
-                        //         tarck_input_box.detBox[i].f32Score = info->result.human.objs[j].score;
-                        //         tarck_input_box.detBox[i].u32X = info->result.human.objs[j].rect.x;
-                        //         tarck_input_box.detBox[i].u32Y = info->result.human.objs[j].rect.y;
-                        //         tarck_input_box.detBox[i].u32Width = info->result.human.objs[j].rect.w;
-                        //         tarck_input_box.detBox[i].u32Height = info->result.human.objs[j].rect.h;
-                        //     }
-
-                        //     tarck_input_box.u32ObjNum = info->result.human.count;
-                        //     TS_ALG_SingleTgtTrack_Process(g_singletrack_handle, &tarck_input_box, &track_result);
-
-                        //     // if (track_result.u32TrackNum && track->track_target) {
-                        //     //     g_context.track_objs[0].idx = idx;
-                        //     //     g_context.track_objs[0].track_id = 0;
-                        //     //     g_context.track_objs[0].score =  track_result.stBox.f32Score;
-                        //     //     g_context.track_objs[0].x = track_result.stBox.u32X;
-                        //     //     g_context.track_objs[0].y = track_result.stBox.u32Y;
-                        //     //     g_context.track_objs[0].w = track_result.stBox.u32Width
-                        //     //     g_context.track_objs[0].h = track_result.stBox.u32Height;
-                        //     //     g_context.track_objs[0].width = frame->width;
-                        //     //     g_context.track_objs[0].height = frame->height;
-
-                        //     //     track->track_target(g_context.track_objs, info->result.human.count);
-
-                        //     // }
-                        // }
+                        }
+                        
+                        
+                        //vp_debug("Cat mosaic processing time: %llu ms", end_time - start_time);
                     } else {
-                        // 未检测到猫咪时，继续调用划线和马赛克函数，让它们使用上一帧坐标继续显示3秒
-                        if (box_flag[idx] == 1) {
-                            if (1 || info->param.cat.draw_box) {
-                                vp_cat_detect_result_t empty_result = {0};
-                                vp_algorithm_cat_draw_boxes(idx, 0, frame->width, frame->height, &empty_result);
-                                vp_algorithm_cat_draw_boxes(idx, 1, frame->width, frame->height, &empty_result);
-                            }
-                            if (1 || info->param.cat.draw_mosaic) {
-                                vp_cat_detect_result_t empty_result = {0};
-                                vp_algorithm_cat_draw_mosaic(idx, 0, frame->width, frame->height, &empty_result);
-                                vp_algorithm_cat_draw_mosaic(idx, 1, frame->width, frame->height, &empty_result);
-                            }
+                        vp_algorithm_cat_clear_boxes(idx, 0);
+                        vp_algorithm_cat_clear_boxes(idx, 1);
+                        vp_algorithm_cat_clear_mosaic(idx, 0);
+                        vp_algorithm_cat_clear_mosaic(idx, 1);
+                        if(0 == ptime)
+                        {
+                            //sleep(60*5);
+                            ptime++;
                         }
                     }
                     break;
                 }
 #endif
-            case VP_ALGORITHM_TYPE_CONVERGENCE_DETECT: {
-                // ret = vp_convergence_detect_process(info->handle, channel->human_timestamp, human_result, frame);
-                // if (ret > 0) {
-                //     vp_lock(&channel->lock);
-                //     info->result.state = 1;
-                //     vp_convergence_detect_result(info->handle, &info->result.convergence);
-                //     info->result.timestamp = frame->timestamp;
-                //     vp_unlock(&channel->lock);
-                // }
-            }
-            case VP_ALGORITHM_TYPE_MAX:
-            default:
-                break;
+                case VP_ALGORITHM_TYPE_CONVERGENCE_DETECT: {
+                    // ret = vp_convergence_detect_process(info->handle, channel->human_timestamp, human_result, frame);
+                    // if (ret > 0) {
+                    //     vp_lock(&channel->lock);
+                    //     info->result.state = 1;
+                    //     vp_convergence_detect_result(info->handle, &info->result.convergence);
+                    //     info->result.timestamp = frame->timestamp;
+                    //     vp_unlock(&channel->lock);
+                    // }
+                }
+                case VP_ALGORITHM_TYPE_MAX:
+                default:
+                    break;
         }
         info->detect_timestamp = frame->timestamp;
         vp_events_send(channel->events, VP_EVENT_BIT(i));
@@ -1462,8 +1446,8 @@ static int vp_algorithm_detect_process(uint8_t idx, uint8_t chn, vp_algorithm_iv
     }
 
     uint8_t need_notify = 0;
-    for (int i = 0; i < VP_ALGORITHM_TYPE_MAX; ++i) {
-        info = &channel->infos[i];
+    for (int j = 0; j < VP_ALGORITHM_TYPE_MAX; ++j) {
+        info = &channel->infos[j];
         if (info->has_notify) {
             need_notify = 1;
             info->has_notify = 0;

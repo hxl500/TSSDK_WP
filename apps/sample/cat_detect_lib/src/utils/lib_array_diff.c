@@ -458,6 +458,14 @@ int  get_catName_id(float *src,char*idstr){
 	pthread_mutex_lock(&mut);
 	if(g_picdata && cat_pic_num){
 		cat_data_num = cat_pic_num;
+		if(g_catdata) {
+			free(g_catdata);
+			g_catdata = NULL;
+		}
+		if(g_catdata2) {
+			free(g_catdata2);
+			g_catdata2 = NULL;
+		}
 		g_catdata = (struct cat_data *)malloc(sizeof(struct cat_data)*cat_data_num);
 		g_catdata2 = (struct cat_data *)malloc(sizeof(struct cat_data)*cat_data_num);
 		for(i=0;i<cat_data_num;i++){

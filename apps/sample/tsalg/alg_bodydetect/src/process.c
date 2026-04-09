@@ -150,6 +150,7 @@ void ts_bodydetect_post_process(TS_U8 **blob, ALG_BODY_RESULT_S *out, TS_U32 *cs
     //TS_U32 time1 = TIME_CACL_GET();
 	//初始化先验眶
     int anch[3][6] = {{10,13, 16,30, 33,23}, {30,61, 62,45, 59,119}, {116,90, 156,198, 373,326} };
+    
     //std::vector<std::vector<int> > anch = { {10,13, 16,30, 33,23}, {30,61, 62,45, 59,119}, {116,90, 156,198, 373,326}  };
 
     float value_det = 0.5f; //_makeGrid : float value = 0.5;

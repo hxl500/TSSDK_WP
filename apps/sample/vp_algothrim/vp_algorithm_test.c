@@ -208,7 +208,7 @@ int main(int argv, const char **args) {
         //     vp_debug("vp_algorithm_start(0,1)error:%d", ret);
         //     return ret;
         // }
-
+        //vp_isp_set_mirr_flip(j,3);
         vp_cat_detect_param_default(&human_param.cat);
         ret = vp_algorithm_start(j, 1, VP_ALGORITHM_TYPE_HUMAN_DETECT, &human_param);
         if (ret) {

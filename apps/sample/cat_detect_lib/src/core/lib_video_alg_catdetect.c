@@ -209,6 +209,11 @@ TS_S32 TS_ALG_CatDetect_Init(TS_VOID **pHandle, ALG_CAT_MODEL_INIT_S *param)
 	alg_param.eImageType = ALG_IMAGE_TYPE_INT_HWC_RGB0;
 	alg_param.bRneOff = 0;
 
+	// for (int i = 0; i < MAX_CAM_NUM; i++) {
+	// 	shake_window_init(&g_shake_windows[i]);
+	// 	shake_window_init(&g_eat_shake_windows[i]);
+	// }
+
 	pInst = (SAMPLE_ALG_INSTANCE_S*)malloc(sizeof(SAMPLE_ALG_INSTANCE_S));
 	if (!pInst) {
 		ALG_LOGE("malloc SAMPLE_ALG_INSTANCE_S failed\n");
@@ -242,46 +247,117 @@ init_exit:
 	if (pWeightBuf) free(pWeightBuf);
 	return s32Ret;
 }
+extern void set_result(ALG_CatDetect_DET_RESULT_S *data);
+// TS_S32 VIDEO_ALG_CatDetect_Proc(TS_VOID *pHandle, ALG_IMAGE_S *pImage, ALG_IMAGE_S *pImageDet, ALG_CatDetect_DET_RESULT_S *pResult, TS_U8 cam_id)
+// {
+// 	TS_S32 s32Ret = TS_SUCCESS;
+	
 
+// 	SAMPLE_ALG_INSTANCE_S* pInst = (SAMPLE_ALG_INSTANCE_S*)pHandle;
+// 	if (!pHandle|| !pImageDet || !pResult) {
+// 		ALG_LOGE("VIDEO_ALG_CatDetect_Proc param is null\n");
+// 		return TS_FAILURE;
+// 	}
+
+// 	ALG_CatDetect_DET_RESULT_S *pTmpResult = (ALG_CatDetect_DET_RESULT_S *)pResult;
+// 	s32Ret = TS_ALG_BodyDetect_Process(pInst->pHandle, pImageDet, pTmpResult);
+// 	if (0 != s32Ret) {
+// 		ALG_LOGE("TS_ALG_BodyDetect_Process error\n");
+// 	}
+
+// 	RECT rect;
+// 	const float img_w = (float)pImage->s32W;
+// 	const float img_h = (float)pImage->s32H;
+
+// 	for (int i = 0; i < pTmpResult->u32ObjNum; i++)
+// 	{
+// 		if(pTmpResult->stBox[i].f32Xmin > 1.0){
+// 			pTmpResult->stBox[i].f32Xmin = 1.0;
+// 		}else if(pTmpResult->stBox[i].f32Xmin < 0){
+// 			pTmpResult->stBox[i].f32Xmin = 0;
+// 		}
+// 		if(pTmpResult->stBox[i].f32Ymin > 1.0){
+// 			pTmpResult->stBox[i].f32Ymin = 1.0;
+// 		}else if(pTmpResult->stBox[i].f32Ymin < 0){
+// 			pTmpResult->stBox[i].f32Ymin = 0;
+// 		}
+// 		if(pTmpResult->stBox[i].f32Xmax > 1.0){
+// 			pTmpResult->stBox[i].f32Xmax = 1.0;
+// 		}else if(pTmpResult->stBox[i].f32Xmax < 0){
+// 			pTmpResult->stBox[i].f32Xmax = 0;
+// 		}
+// 		if(pTmpResult->stBox[i].f32Ymax > 1.0){
+// 			pTmpResult->stBox[i].f32Ymax = 1.0;
+// 		}else if(pTmpResult->stBox[i].f32Ymax < 0){
+// 			pTmpResult->stBox[i].f32Ymax = 0;
+// 		}
+
+// 		rect.left = pTmpResult->stBox[i].f32Xmin * img_w;
+// 		rect.top = pTmpResult->stBox[i].f32Ymin * img_h;
+// 		rect.right = pTmpResult->stBox[i].f32Xmax * img_w;
+// 		rect.bottom = pTmpResult->stBox[i].f32Ymax * img_h;
+// 		pTmpResult->stBox[i].cam_id = cam_id;
+// 	}
+
+// 	set_result(pTmpResult);
+
+// 	return s32Ret;
+// }
 TS_S32 VIDEO_ALG_CatDetect_Proc(TS_VOID *pHandle, ALG_IMAGE_S *pImage, ALG_IMAGE_S *pImageDet, ALG_CatDetect_DET_RESULT_S *pResult, TS_U8 cam_id)
 {
-	TS_S32 s32Ret = TS_SUCCESS;
-	extern void set_result(ALG_CatDetect_DET_RESULT_S *data);
+    TS_S32 s32Ret = TS_SUCCESS;
 
-	SAMPLE_ALG_INSTANCE_S* pInst = (SAMPLE_ALG_INSTANCE_S*)pHandle;
-	if (!pHandle|| !pImageDet || !pResult) {
-		ALG_LOGE("VIDEO_ALG_CatDetect_Proc param is null\n");
-		return TS_FAILURE;
-	}
+    SAMPLE_ALG_INSTANCE_S *pInst = (SAMPLE_ALG_INSTANCE_S *)pHandle;
+    if (!pHandle || !pImageDet || !pResult) {
+        ALG_LOGE("VIDEO_ALG_CatDetect_Proc param is null\\n");
+        return TS_FAILURE;
+    }
 
-	ALG_CatDetect_DET_RESULT_S *pTmpResult = (ALG_CatDetect_DET_RESULT_S *)pResult;
-	s32Ret = TS_ALG_BodyDetect_Process(pInst->pHandle, pImageDet, pTmpResult);
-	if (0 != s32Ret) {
-		ALG_LOGE("TS_ALG_BodyDetect_Process error\n");
-	}
+    memset(pResult, 0, sizeof(ALG_CatDetect_DET_RESULT_S));
+    ALG_CatDetect_DET_RESULT_S *pTmpResult = pResult;
 
-	RECT rect;
-	const float img_w = (float)pImage->s32W;
-	const float img_h = (float)pImage->s32H;
+    s32Ret = TS_ALG_BodyDetect_Process(pInst->pHandle, pImageDet, pTmpResult);
+    if (s32Ret != 0) {
+        ALG_LOGE("TS_ALG_BodyDetect_Process error\\n");
+        pTmpResult->u32ObjNum = 0;
+        return s32Ret;
+    }
 
-	for (int i = 0; i < pTmpResult->u32ObjNum; i++)
-	{
-		pTmpResult->stBox[i].f32Xmin = CLAMP(pTmpResult->stBox[i].f32Xmin, MIN_COORD, MAX_COORD);
-		pTmpResult->stBox[i].f32Ymin = CLAMP(pTmpResult->stBox[i].f32Ymin, MIN_COORD, MAX_COORD);
-		pTmpResult->stBox[i].f32Xmax = CLAMP(pTmpResult->stBox[i].f32Xmax, MIN_COORD, MAX_COORD);
-		pTmpResult->stBox[i].f32Ymax = CLAMP(pTmpResult->stBox[i].f32Ymax, MIN_COORD, MAX_COORD);
+    if (pTmpResult->u32ObjNum > MAX_CAT_DET_NUM || pTmpResult->u32ObjNum < 0) {
+        ALG_LOGE("invalid u32ObjNum: %d, clear\\n", pTmpResult->u32ObjNum);
+        pTmpResult->u32ObjNum = 0;
+        return TS_FAILURE;
+    }
 
-		rect.left = pTmpResult->stBox[i].f32Xmin * img_w;
-		rect.top = pTmpResult->stBox[i].f32Ymin * img_h;
-		rect.right = pTmpResult->stBox[i].f32Xmax * img_w;
-		rect.bottom = pTmpResult->stBox[i].f32Ymax * img_h;
-		pTmpResult->stBox[i].cam_id = cam_id;
-	}
+    RECT rect;
+    const float img_w = (float)pImage->s32W;
+    const float img_h = (float)pImage->s32H;
 
-	set_result(pTmpResult);
+    for (int i = 0; i < pTmpResult->u32ObjNum; i++) {
+        if (pTmpResult->stBox[i].f32Xmin < 0.0f) pTmpResult->stBox[i].f32Xmin = 0.0f;
+        if (pTmpResult->stBox[i].f32Xmin > 1.0f) pTmpResult->stBox[i].f32Xmin = 1.0f;
 
-	return s32Ret;
+        if (pTmpResult->stBox[i].f32Ymin < 0.0f) pTmpResult->stBox[i].f32Ymin = 0.0f;
+        if (pTmpResult->stBox[i].f32Ymin > 1.0f) pTmpResult->stBox[i].f32Ymin = 1.0f;
+
+        if (pTmpResult->stBox[i].f32Xmax < 0.0f) pTmpResult->stBox[i].f32Xmax = 0.0f;
+        if (pTmpResult->stBox[i].f32Xmax > 1.0f) pTmpResult->stBox[i].f32Xmax = 1.0f;
+
+        if (pTmpResult->stBox[i].f32Ymax < 0.0f) pTmpResult->stBox[i].f32Ymax = 0.0f;
+        if (pTmpResult->stBox[i].f32Ymax > 1.0f) pTmpResult->stBox[i].f32Ymax = 1.0f;
+
+        rect.left = pTmpResult->stBox[i].f32Xmin * img_w;
+        rect.top = pTmpResult->stBox[i].f32Ymin * img_h;
+        rect.right = pTmpResult->stBox[i].f32Xmax * img_w;
+        rect.bottom = pTmpResult->stBox[i].f32Ymax * img_h;
+
+        pTmpResult->stBox[i].cam_id = cam_id;
+    }
+
+    set_result(pTmpResult);
+    return s32Ret;
 }
+
 
 void overlay_bitmap_on_nv12(Uint8 *nv12_y, int width, int height, TS_BITMAP_CHAT_S *bitmapArray, int arraySize, int posX, int posY)
 {

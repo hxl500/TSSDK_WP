@@ -73,7 +73,7 @@ TARGET_LINK_LIBRARIES(${VP_VIDEO_CODER_TEST} -Wl,--start-group dl pthread stdc++
     librne_rt_g3.a
     librne_pal_linux.a
     librne_common.a 
-    # ${APP_SRC_DIR}/../../libs/yuv/lib/libyuv.a
+    ${APP_SRC_DIR}/../../libs/yuv/lib/libyuv.a
     dl
 	pthread
 	rt

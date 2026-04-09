@@ -26,22 +26,26 @@ enum{
 #define MAX_CAT_DET_NUM     25		// max obj detect number
 
 typedef struct tsALG_CatDetect_DET_BOX_S {
-    // the range of x and y is 0.0f~1.0f
-    TS_FLOAT f32Xmin;
-    TS_FLOAT f32Ymin;
-    TS_FLOAT f32Xmax;
-    TS_FLOAT f32Ymax;
-	float DetectionConf; //这个猫的检测框置信度
-	float MaxSimilarity; //这个猫与数据库中图片的最大相似度
-	char nameid[64];
-	int act;//检测出的猫进入事件 结束 进入 进食 进食结束
-	int class_id;//ALG_CAT_CLASS_ID 检测出的猫行为 正脸 余粮 头顶 离开
-	char first_in;//1表示第一次进入
-	char first_eat;//1表示第一次吃东西
-	int cam_id;//0表示上方摄像头1，1表示下方摄像头1
-	int act_cat;//检测出的猫当前进食事件 结束 进入 进食 进食结束     录像编码使用字段
-	char cat_first_in;//1表示第一次进入						 	录像编码使用字段
-	char cat_first_eat;//1表示第一次吃东西					 	录像编码使用字段
+    TS_FLOAT f32Xmin;        // 检测框左上角X坐标 (0.0f~1.0f 归一化)
+    TS_FLOAT f32Ymin;        // 检测框左上角Y坐标 (0.0f~1.0f 归一化)
+    TS_FLOAT f32Xmax;        // 检测框右下角X坐标 (0.0f~1.0f 归一化)
+    TS_FLOAT f32Ymax;        // 检测框右下角Y坐标 (0.0f~1.0f 归一化)
+	float DetectionConf;     // 猫脸检测置信度 (0.0~1.0)
+	float MaxSimilarity;     // 与数据库图片的最大相似度 (0.0~1.0)
+	char nameid[64];         // 猫咪身份标识 (由embedding模型识别)
+	int act;                 // 当前行为动作 (ALG_CAT_ACT_OUT/INT/EAT/EAT_OUT)
+	int class_id;            // 检测目标类别 (ALG_CAT_CLASS_ID_FACE/FOOD/HEAD/SIDE)
+	char first_in;           // 1=首次触发进入事件 (本次检测周期内)
+	char first_eat;          // 1=首次触发进食事件 (本次检测周期内)
+	int cam_id;              // 摄像头ID (0=上方摄像头, 1=下方摄像头)
+	int act_cat;             // 猫的当前进食状态 (录像编码使用) 每一帧的实时事件状态
+	int act_cat_stable;      // 防抖后的稳定状态 (防抖事件内真的实际状态)
+	char cat_first_in;      // 1=首次进入标志 (录像编码使用)
+	char cat_first_eat;      // 1=首次进食标志 (录像编码使用)
+	int state;               // 猫咪状态机 (0=ABSENT, 1=INCOMING, 2=IN_DONE, 3=EATING, 4=EAT_DONE, 5=OUT)//防抖下的实时状态
+	int event_type;          // 当前事件类型 (0=NONE, 1=IN, 2=EAT)
+	int cat_first_in_count;  // 累计首次进入触发次数 (cat_first_in=1时累加)
+	int cat_first_eat_count; // 累计首次进食触发次数 (cat_first_eat=1时累加)
 } ALG_CatDetect_DET_BOX_S;
 
 typedef struct tsALG_CatDetect_DET_RESULT_S {
@@ -145,47 +149,5 @@ TS_CHAR* CatYoloModelVerGet(void);
 //获取当前embedding模型的版本号
 TS_CHAR* CatEmbeddingModelVerGet(void);
 
-// /**
-//  * @brief 垂直拼接NV12格式的视频帧
-//  *
-//  * @param Src_NV12_Top  顶部视频帧的NV12数据指针
-//  * @param Src_NV12_Bottom 底部视频帧的NV12数据指针
-//  * @param Dst_NV12  输出拼接后的NV12数据指针
-//  * @param Width  视频帧的宽度
-//  * @param Height 视频帧的高度
-//  * @param StrideY  Y平面的行 stride
-//  * @param StrideUV UV平面的行 stride
-//  *
-//  * @return 0 成功 -1 失败
-//  */
-// TS_S32 TS_NV12_Vertical_Concat_Correct(const TS_U8 *Src_NV12_Top,
-//                                  const TS_U8 *Src_NV12_Bottom,
-//                                  TS_U8 *Dst_NV12,
-//                                  TS_S32 Width, TS_S32 Height,
-//                                  TS_S32 StrideY, TS_S32 StrideUV);
-
-// /**
-//  * @brief 缩放NV12格式的视频帧
-//  *
-//  * @param Src  输入视频帧的NV12数据指针
-//  * @param Src_Width  输入视频帧的宽度
-//  * @param Src_Height 输入视频帧的高度
-//  * @param Dst  输出缩放后的NV12数据指针
-//  * @param Dst_Width  输出视频帧的宽度
-//  * @param Dst_Height 输出视频帧的高度
-//  * @param Keep_Aspect  是否保持宽高比，1表示保持，0表示不保持
-//  *
-//  * @return 0 成功 -1 失败
-//  */
-// TS_S32 TS_NV12_Scale_Ex(TS_U8 *Src, TS_S32 Src_Width, TS_S32 Src_Height,
-//                    TS_U8* Dst, TS_S32 Dst_Width, TS_S32 Dst_Height,
-//                   TS_S32 Keep_Aspect);
-
-// // int nv12_scale_fit_fast(const uint8_t *src_nv12,
-// //                          int src_w, int src_h, int src_stride,
-// //                          uint8_t *dst_nv12,
-// //                          int dst_w, int dst_h);
-// TS_S32 TS_NV12_Scale_Fit_Fast(TS_U8 *Src_NV12, TS_S32 Src_Width, TS_S32 Src_Height,TS_S32 Src_Stride,
-//                    TS_U8* Dst_NV12, TS_S32 Dst_Width, TS_S32 Dst_Height);
 
 #endif

@@ -804,7 +804,7 @@ static void* vp_video_mipi_reset_thread(void* p) {
                 }
                 pclose(fp);
             }
-
+             
             sleep(1);
         }
     }
@@ -917,7 +917,7 @@ static int vp_video_draw_rect_by_soft(VIDEO_FRAME_INFO_S *in, vp_channel_config_
 
                 lineWidth = item->rect.line;
                 YUV_Draw_Rect(YuvBuf, width, height, 12, &rect, color, lineWidth);
-                overlay_letter(person, YuvBuf, width, height, rect.left, rect.top, color, 2);
+                //overlay_letter(person, YuvBuf, width, height, rect.left, rect.top, color, 2);
                 break;
             case VP_VIDEO_OSD_TYPE_MAX:
                 break;
@@ -1334,6 +1334,7 @@ int vp_video_encoder_init(int format)
     for (int s = 0; s < VP_SENSOR_NUM; ++s) {
         vp_channel_config_t *channels = vp_video_channels(s);
         for (int i = 0; i < VP_VIDEO_CHANNEL_MAX; ++i) {
+            //vp_isp_set_mirr_flip(i,3); 
             vp_channel_config_t *channel = &channels[i];
             switch (channel->format) {
             case vp_video_encoder_format_h264:

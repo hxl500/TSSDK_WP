@@ -101,6 +101,9 @@ include_directories(${SAMPLE_CATDETECT_DIR}/src/record_file)
 # include_directories($ENV{TARGET_STAGING_INC}/opencv4)
 # link_directories($ENV{TARGET_STAGING_LIB}/opencv4/3rdparty)
 # link_directories($ENV{TARGET_STAGING_LIB})
+include_directories(${APP_SRC_DIR}/../../libs/RNE-RT-Lib/include)
+include_directories(${APP_SRC_DIR}/../../libs/RNE-RT-Lib/libs/32bit)
+link_directories(${APP_SRC_DIR}/../../libs/trp/rne/lib/uclibc)
 
 include_directories(${APP_SRC_DIR}/../../libs/algstore/opencv4.5.5/include/opencv4)
 include_directories(${APP_SRC_DIR}/../../libs/algstore/opencv4.5.5/include/opencv4/opencv2)
@@ -114,7 +117,7 @@ link_directories(${APP_SRC_DIR}/../../libs/yuv/lib)
 # include_directories(${APP_SRC_DIR}/../../libs/tscv/include/opencv4)
 # include_directories(${APP_SRC_DIR}/../../libs/tscv/include/opencv4/opencv2)
 # link_directories(${APP_SRC_DIR}/../../libs/tscv/lib/uclibc)
-# link_directories(${APP_SRC_DIR}/../../libs/tscv/lib/uclibc/opencv4)
+#link_directories(${APP_SRC_DIR}/../../libs/tscv/lib/uclibc/opencv4)
 #link_directories(${APP_SRC_DIR}/../../libs/tscv/lib/uclibc/opencv4/3rdparty)
 
 # include_directories(${APP_SRC_DIR}/../../libs/trp/cve/lib/uclibc)
@@ -179,6 +182,7 @@ target_link_libraries(${SAMPLE_LIB_CATDETECT} -Wl,--start-group dl pthread stdc+
 		librne_rt_g3.a
 	librne_pal_linux.a
 	librne_common.a
+	librne_pal_linux_a7.a
 	${ALGO_LIB}
 		libtrp.a
 		# dl

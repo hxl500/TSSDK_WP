@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include "vp_cat_detect.h"
 #include "vp_printf.h"
 #include "ts_alg_log.h"
@@ -79,12 +82,12 @@ vp_cat_detect_handle_p vp_cat_detect_create(uint32_t width, uint32_t height, vp_
         vp_error("===================== 模型加载成功 =====================");
 
         ALG_CatDetect_DET_PARAM_S config = {0};
-        config.DetectionConfThres    = 0.65f;
+        config.DetectionConfThres    = 0.65f;//0.35f;// 降低置信度阈值，减少漏检
         config.SimilarityThres_Day   = 0.6f;
         config.SimilarityThres_Night = 0.65f;
-        config.EAT_Thres             = 0.25f;
+        config.EAT_Thres             = 0.0625f;
         config.OUT_times             = 3;
-        config.EAT_OUT_times         = 10;
+        //config.EAT_OUT_times         = 10;
         TS_ALG_CatDetect_SetParam(&config);
 
         CatSetPicDir("/tmp");
@@ -165,70 +168,198 @@ static void vp_cat_detect_set_score(vp_cat_detect_handle_p handle, float value)
     }
 }
 
+// int vp_cat_detect_process(vp_cat_detect_handle_p handle, ALG_IMAGE_S *rgba_image, uint8_t *yuv_data, uint8_t cam_id)
+// {
+//     if (!handle || !rgba_image || !yuv_data || !rgba_image->pData) {
+//         vp_debug("vp_cat_detect_process: image or data null\\n");
+//         return 0;
+//     }
+
+//     vp_cat_detect_handle_t* h = (vp_cat_detect_handle_t*)handle;
+//     if (!h || !h->cat_detect_handle) {
+//         vp_error("vp_cat_detect_process: handle is null !!!\\n");
+//         return -1;
+//     }
+
+//     h->cam_id = cam_id;
+
+//     h->record_frame_count++;
+//     if (h->record_frame_count < h->skip_num) {
+//         return h->result.count > 0 ? 1 : 0;
+//     }
+//     h->record_frame_count = 0;
+
+//     ALG_IMAGE_S yuv_image = {0};
+//     yuv_image.s32H = h->height;
+//     yuv_image.s32W = h->width;
+//     yuv_image.s32C = 1;
+//     yuv_image.pData = yuv_data;
+//     yuv_image.pDataPhy = 0;
+
+//     // ====================== 核心修复：栈上独立结果，不再共用 h->cat_result ======================
+//     ALG_CatDetect_DET_RESULT_S result = {0};
+
+//     int ret = VIDEO_ALG_CatDetect_Proc(h->cat_detect_handle, &yuv_image, rgba_image, &result, h->cam_id);
+
+//     if (ret != 0) {
+//         vp_error("CatDetect_Proc fail: %d\\n", ret);
+//         return 0;
+//     }
+
+//     //vp_debug("[vp_cat_detect_process] result.u32ObjNum=%d, h->score=%.2f\\n", result.u32ObjNum, h->score);
+//     h->result.count = 0;
+
+//     // 防止目标数越界
+//     int process_num = result.u32ObjNum;
+//     if (process_num > VP_MAX_CAT_DET_NUM)
+//         process_num = VP_MAX_CAT_DET_NUM;
+
+//     for (int i = 0; i < process_num && h->result.count < VP_MAX_CAT_DET_NUM; i++) {
+//         // 打印真实置信度，方便定位
+//         //vp_debug("[vp_cat_detect_process] box[%d] conf=%.6f\\n", i, result.stBox[i].DetectionConf);
+
+//         // 阈值判断
+//         if (result.stBox[i].DetectionConf >= h->score) {
+//             vp_cat_obj_t *cat = &h->result.objs[h->result.count++];
+//             cat->f32Xmin         = result.stBox[i].f32Xmin;
+//             cat->f32Ymin         = result.stBox[i].f32Ymin;
+//             cat->f32Xmax         = result.stBox[i].f32Xmax;
+//             cat->f32Ymax         = result.stBox[i].f32Ymax;
+//             cat->DetectionConf   = result.stBox[i].DetectionConf;
+//             cat->MaxSimilarity   = result.stBox[i].MaxSimilarity;
+//             memcpy(cat->nameid, result.stBox[i].nameid, 64);
+//             cat->act             = (vp_cat_act_t)result.stBox[i].act;
+//             cat->class_id        = (vp_cat_class_id_t)result.stBox[i].class_id;
+//             cat->first_in        = result.stBox[i].first_in;
+//             cat->first_eat       = result.stBox[i].first_eat;
+//             cat->cam_id          = h->cam_id;
+//             cat->act_cat         = result.stBox[i].act_cat;
+//             cat->cat_first_in    = result.stBox[i].cat_first_in;
+//             cat->cat_first_eat   = result.stBox[i].cat_first_eat;
+//         }
+//     }
+
+//     // 按置信度排序
+//     if (h->result.count > 0) {
+//         qsort(h->result.objs, h->result.count, sizeof(vp_cat_obj_t), cat_info_cmp);
+//     }
+
+//     //vp_debug("=== CAT DETECT: count=%d ===\\n", h->result.count);
+//     for (int i = 0; i < h->result.count; i++) {
+//         // vp_cat_obj_t *cat = &h->result.objs[i];
+//         // vp_debug("  [%d] conf=%.3f, box=(%.3f,%.3f,%.3f,%.3f), class_id=%d, act_cat=%d\\n",
+//         //          i, cat->DetectionConf, cat->f32Xmin, cat->f32Ymin, cat->f32Xmax, cat->f32Ymax,
+//         //          cat->class_id, cat->act_cat);
+//     }
+
+//     // 无结果逻辑
+//     if (h->result.count == 0) {
+//         h->no_result_count++;
+//         if (h->no_result_count > 10000)
+//             h->no_result_count = 21;
+
+//         if (h->no_result_count > 20 && h->update_flag) {
+//             vp_cat_detect_set_score(handle, CAT_DEFAULT_SCORE);
+//             vp_cat_detect_set_skip_num(handle, h->vp_cat_no_checked_skip_num);
+//             h->update_flag = 0;
+//         }
+//         return 0;
+//     } else {
+//         h->no_result_count = 0;
+//         if (!h->update_flag) {
+//             vp_cat_detect_set_score(handle, CAT_ACTIVITY_SCORE);
+//             vp_cat_detect_set_skip_num(handle, h->vp_cat_checked_skip_num);
+//             h->update_flag = 1;
+//         }
+//         return 1;
+//     }
+// }
 int vp_cat_detect_process(vp_cat_detect_handle_p handle, ALG_IMAGE_S *rgba_image, uint8_t *yuv_data, uint8_t cam_id)
 {
     if (!handle || !rgba_image || !yuv_data || !rgba_image->pData) {
-        vp_debug("vp_cat_detect_process: image or data null\n");
+        vp_debug("vp_cat_detect_process: image or data null\\n");
         return 0;
     }
 
-    vp_cat_detect_handle_t* h = (vp_cat_detect_handle_t*)handle;
+    vp_cat_detect_handle_t *h = (vp_cat_detect_handle_t *)handle;
     if (!h || !h->cat_detect_handle) {
-        vp_error("vp_cat_detect_process: handle is null !!!\n");
+        vp_error("vp_cat_detect_process: handle is null !!!\\n");
         return -1;
     }
 
     h->cam_id = cam_id;
-
     h->record_frame_count++;
+
     if (h->record_frame_count < h->skip_num) {
         return h->result.count > 0 ? 1 : 0;
     }
     h->record_frame_count = 0;
 
-    ALG_CatDetect_DET_RESULT_S* result = &h->cat_result;
     ALG_IMAGE_S yuv_image = {0};
-    
     yuv_image.s32H = h->height;
     yuv_image.s32W = h->width;
     yuv_image.s32C = 1;
     yuv_image.pData = yuv_data;
     yuv_image.pDataPhy = 0;
 
-    int ret = VIDEO_ALG_CatDetect_Proc(h->cat_detect_handle, &yuv_image, rgba_image, result, h->cam_id);
+    ALG_CatDetect_DET_RESULT_S result = {0};
+    int ret = VIDEO_ALG_CatDetect_Proc(h->cat_detect_handle, &yuv_image, rgba_image, &result, h->cam_id);
 
     if (ret != 0) {
-        vp_error("CatDetect_Proc fail: %d\n", ret);
+        vp_error("CatDetect_Proc fail: %d\\n", ret);
+        memset(&h->result, 0, sizeof(h->result));
+        return 0;
+    }
+
+    if (result.u32ObjNum > VP_MAX_CAT_DET_NUM || result.u32ObjNum < 0) {
+        vp_error("invalid u32ObjNum: %d, drop\\n", result.u32ObjNum);
+        memset(&h->result, 0, sizeof(h->result));
         return 0;
     }
 
     h->result.count = 0;
-    for (int i = 0; i < result->u32ObjNum && h->result.count < VP_MAX_CAT_DET_NUM; i++) {
-        if (result->stBox[i].DetectionConf >= h->score) {
-            vp_cat_obj_t *cat = &h->result.objs[h->result.count++];
-            cat->f32Xmin         = result->stBox[i].f32Xmin;
-            cat->f32Ymin         = result->stBox[i].f32Ymin;
-            cat->f32Xmax         = result->stBox[i].f32Xmax;
-            cat->f32Ymax         = result->stBox[i].f32Ymax;
-            cat->DetectionConf   = result->stBox[i].DetectionConf;
-            cat->MaxSimilarity   = result->stBox[i].MaxSimilarity;
-            memcpy(cat->nameid, result->stBox[i].nameid, 64);
-            cat->act             = (vp_cat_act_t)result->stBox[i].act;
-            cat->class_id        = (vp_cat_class_id_t)result->stBox[i].class_id;
-            cat->first_in        = result->stBox[i].first_in;
-            cat->first_eat       = result->stBox[i].first_eat;
-            cat->cam_id          = h->cam_id;
-            cat->act_cat         = result->stBox[i].act_cat;
-            cat->cat_first_in    = result->stBox[i].cat_first_in;
-            cat->cat_first_eat   = result->stBox[i].cat_first_eat;
+    int process_num = result.u32ObjNum;
+
+    for (int i = 0; i < process_num && h->result.count < VP_MAX_CAT_DET_NUM; i++) {
+        if (result.stBox[i].DetectionConf < h->score) {
+            continue;
         }
+
+        // 空ID直接丢弃，防止strcmp崩溃
+        if (result.stBox[i].nameid[0] == '\\0') {
+            continue;
+        }
+
+        vp_cat_obj_t *cat = &h->result.objs[h->result.count++];
+        cat->f32Xmin = result.stBox[i].f32Xmin;
+        cat->f32Ymin = result.stBox[i].f32Ymin;
+        cat->f32Xmax = result.stBox[i].f32Xmax;
+        cat->f32Ymax = result.stBox[i].f32Ymax;
+        cat->DetectionConf = result.stBox[i].DetectionConf;
+        cat->MaxSimilarity = result.stBox[i].MaxSimilarity;
+
+        memcpy(cat->nameid, result.stBox[i].nameid, sizeof(cat->nameid) - 1);
+        cat->nameid[sizeof(cat->nameid) - 1] = '\\0';
+
+        cat->act = (vp_cat_act_t)result.stBox[i].act;
+        cat->class_id = (vp_cat_class_id_t)result.stBox[i].class_id;
+        cat->first_in = result.stBox[i].first_in;
+        cat->first_eat = result.stBox[i].first_eat;
+        cat->cam_id = h->cam_id;
+        cat->act_cat = result.stBox[i].act_cat;
+        cat->cat_first_in = result.stBox[i].cat_first_in;
+        cat->cat_first_eat = result.stBox[i].cat_first_eat;
     }
-    
-    qsort(h->result.objs, h->result.count, sizeof(vp_cat_obj_t), cat_info_cmp);
-    
+
+    if (h->result.count > 0) {
+        qsort(h->result.objs, h->result.count, sizeof(vp_cat_obj_t), cat_info_cmp);
+    }
+
     if (h->result.count == 0) {
         h->no_result_count++;
-        if (h->no_result_count > 10000) h->no_result_count = 21;
+        if (h->no_result_count > 10000)
+            h->no_result_count = 21;
+
         if (h->no_result_count > 20 && h->update_flag) {
             vp_cat_detect_set_score(handle, CAT_DEFAULT_SCORE);
             vp_cat_detect_set_skip_num(handle, h->vp_cat_no_checked_skip_num);
@@ -245,6 +376,7 @@ int vp_cat_detect_process(vp_cat_detect_handle_p handle, ALG_IMAGE_S *rgba_image
         return 1;
     }
 }
+
 
 int vp_cat_detect_result(vp_cat_detect_handle_p handle, vp_cat_detect_result_t *result)
 {
