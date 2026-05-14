@@ -221,21 +221,26 @@ typedef enum {
 #define VP_MAX_CAT_DET_NUM     25
 
 typedef struct {
-    float f32Xmin;
-    float f32Ymin;
-    float f32Xmax;
-    float f32Ymax;
-    float DetectionConf;
-    float MaxSimilarity;
+    float Xmin;
+    float Ymin;
+    float Xmax;
+    float Ymax;
+    float Conf;
+    float Sim;
     char nameid[64];
     vp_cat_act_t act;
-    vp_cat_class_id_t class_id;
-    char first_in;
-    char first_eat;
+    int cls_id;
+    char f_in;
+    char f_eat;
     int cam_id;
     vp_cat_act_t act_cat;
-    char cat_first_in;
-    char cat_first_eat;
+    int act_sta;
+    char cat_f_in;
+    char cat_f_eat;
+    int sta;
+    int evt;
+    int cnt_in;
+    int cnt_eat;
 } vp_cat_obj_t;
 
 typedef struct {

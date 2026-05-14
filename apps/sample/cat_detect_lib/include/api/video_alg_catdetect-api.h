@@ -17,35 +17,35 @@ enum{
 };
 
 enum{
-	ALG_CAT_CLASS_ID_FACE = 0,
-	ALG_CAT_CLASS_ID_FOOD,
-	ALG_CAT_CLASS_ID_HEAD,
-	ALG_CAT_CLASS_ID_SIDE,
+	ALG_CAT_CLASS_ID_FACE = 0,//猫脸
+	ALG_CAT_CLASS_ID_BODY,//身体
+	ALG_CAT_CLASS_ID_HEAD,//头顶
+	ALG_CAT_CLASS_ID_SIDE,//侧脸
 };
 
 #define MAX_CAT_DET_NUM     25		// max obj detect number
 
 typedef struct tsALG_CatDetect_DET_BOX_S {
-    TS_FLOAT f32Xmin;        // 检测框左上角X坐标 (0.0f~1.0f 归一化)
-    TS_FLOAT f32Ymin;        // 检测框左上角Y坐标 (0.0f~1.0f 归一化)
-    TS_FLOAT f32Xmax;        // 检测框右下角X坐标 (0.0f~1.0f 归一化)
-    TS_FLOAT f32Ymax;        // 检测框右下角Y坐标 (0.0f~1.0f 归一化)
-	float DetectionConf;     // 猫脸检测置信度 (0.0~1.0)
-	float MaxSimilarity;     // 与数据库图片的最大相似度 (0.0~1.0)
+    TS_FLOAT Xmin;        // 检测框左上角X坐标 (0.0f~1.0f 归一化)
+    TS_FLOAT Ymin;        // 检测框左上角Y坐标 (0.0f~1.0f 归一化)
+    TS_FLOAT Xmax;        // 检测框右下角X坐标 (0.0f~1.0f 归一化)
+    TS_FLOAT Ymax;        // 检测框右下角Y坐标 (0.0f~1.0f 归一化)
+	float Conf;     // 猫脸检测置信度 (0.0~1.0)
+	float Sim;     // 与数据库图片的最大相似度 (0.0~1.0)
 	char nameid[64];         // 猫咪身份标识 (由embedding模型识别)
 	int act;                 // 当前行为动作 (ALG_CAT_ACT_OUT/INT/EAT/EAT_OUT)
-	int class_id;            // 检测目标类别 (ALG_CAT_CLASS_ID_FACE/FOOD/HEAD/SIDE)
-	char first_in;           // 1=首次触发进入事件 (本次检测周期内)
-	char first_eat;          // 1=首次触发进食事件 (本次检测周期内)
+	int cls_id;            // 检测目标类别 (ALG_CAT_CLASS_ID_FACE/body/HEAD/SIDE)//04.27版本的模型 类别1为body
+	char f_in;           // 1=首次触发进入事件 (本次检测周期内)
+	char f_eat;          // 1=首次触发进食事件 (本次检测周期内)
 	int cam_id;              // 摄像头ID (0=上方摄像头, 1=下方摄像头)
 	int act_cat;             // 猫的当前进食状态 (录像编码使用) 每一帧的实时事件状态
-	int act_cat_stable;      // 防抖后的稳定状态 (防抖事件内真的实际状态)
-	char cat_first_in;      // 1=首次进入标志 (录像编码使用)
-	char cat_first_eat;      // 1=首次进食标志 (录像编码使用)
-	int state;               // 猫咪状态机 (0=ABSENT, 1=INCOMING, 2=IN_DONE, 3=EATING, 4=EAT_DONE, 5=OUT)//防抖下的实时状态
-	int event_type;          // 当前事件类型 (0=NONE, 1=IN, 2=EAT)
-	int cat_first_in_count;  // 累计首次进入触发次数 (cat_first_in=1时累加)
-	int cat_first_eat_count; // 累计首次进食触发次数 (cat_first_eat=1时累加)
+	int act_sta;      // 防抖后的稳定状态 (防抖事件内真的实际状态)
+	char cat_f_in;      // 1=首次进入标志 (录像编码使用)
+	char cat_f_eat;      // 1=首次进食标志 (录像编码使用)
+	int sta;               // 猫咪状态机 (0=ABSENT, 1=INCOMING, 2=IN_DONE, 3=EATING, 4=EAT_DONE, 5=OUT)//防抖下的实时状态
+	int evt;          // 当前事件类型 (0=NONE, 1=IN, 2=EAT)
+	int cnt_in;  // 累计首次进入触发次数 (cat_first_in=1时累加)
+	int cnt_eat; // 累计首次进食触发次数 (cat_first_eat=1时累加)
 } ALG_CatDetect_DET_BOX_S;
 
 typedef struct tsALG_CatDetect_DET_RESULT_S {

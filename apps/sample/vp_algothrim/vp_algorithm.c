@@ -97,84 +97,27 @@ static vp_algorithm_context_t g_context = {0};
 static volatile int g_shutting_down = 0;
 static pthread_t g_notify_thread = 0;
 
-// 马赛克状态管理结构体
 typedef struct {
-    uint8_t valid;          // 是否有效
-    uint32_t last_x;        // 上一帧X坐标
-    uint32_t last_y;        // 上一帧Y坐标
-    uint32_t last_width;    // 上一帧宽度
-    uint32_t last_height;   // 上一帧高度
-    uint64_t last_detected; // 最后检测到的时间戳
-    uint8_t visible;        // 是否可见
-    uint8_t fail_count;     // 更新失败计数
+    uint8_t visible;
 } vp_mosaic_state_t;
 
-// 划线状态管理结构体
 typedef struct {
-    uint8_t valid;          // 是否有效
-    uint32_t last_x;        // 上一帧X坐标
-    uint32_t last_y;        // 上一帧Y坐标
-    uint32_t last_width;    // 上一帧宽度
-    uint32_t last_height;   // 上一帧高度
-    uint64_t last_detected; // 最后检测到的时间戳
-    uint8_t visible;        // 是否可见
-    uint8_t fail_count;     // 更新失败计数
+    uint8_t visible;
 } vp_box_state_t;
 
-// 状态数组
 static vp_mosaic_state_t g_human_mosaic_states[VP_VIDEO_OSD_MOSAIC_MAX];
 static vp_mosaic_state_t g_cat_mosaic_states[VP_VIDEO_OSD_MOSAIC_MAX];
 static vp_box_state_t g_human_box_states[VP_VIDEO_OSD_RECT_MAX];
 static vp_box_state_t g_cat_box_states[VP_VIDEO_OSD_RECT_MAX];
 
-// 初始化状态数组
 static void vp_algorithm_init_states() {
-    // 初始化人类检测马赛克状态
     for (int i = 0; i < VP_VIDEO_OSD_MOSAIC_MAX; ++i) {
-        g_human_mosaic_states[i].valid = 0;
-        g_human_mosaic_states[i].last_x = 0;
-        g_human_mosaic_states[i].last_y = 0;
-        g_human_mosaic_states[i].last_width = 0;
-        g_human_mosaic_states[i].last_height = 0;
-        g_human_mosaic_states[i].last_detected = 0;
         g_human_mosaic_states[i].visible = 0;
-        g_human_mosaic_states[i].fail_count = 0;
-    }
-    
-    // 初始化猫检测马赛克状态
-    for (int i = 0; i < VP_VIDEO_OSD_MOSAIC_MAX; ++i) {
-        g_cat_mosaic_states[i].valid = 0;
-        g_cat_mosaic_states[i].last_x = 0;
-        g_cat_mosaic_states[i].last_y = 0;
-        g_cat_mosaic_states[i].last_width = 0;
-        g_cat_mosaic_states[i].last_height = 0;
-        g_cat_mosaic_states[i].last_detected = 0;
         g_cat_mosaic_states[i].visible = 0;
-        g_cat_mosaic_states[i].fail_count = 0;
     }
-    
-    // 初始化人类检测划线状态
     for (int i = 0; i < VP_VIDEO_OSD_RECT_MAX; ++i) {
-        g_human_box_states[i].valid = 0;
-        g_human_box_states[i].last_x = 0;
-        g_human_box_states[i].last_y = 0;
-        g_human_box_states[i].last_width = 0;
-        g_human_box_states[i].last_height = 0;
-        g_human_box_states[i].last_detected = 0;
         g_human_box_states[i].visible = 0;
-        g_human_box_states[i].fail_count = 0;
-    }
-    
-    // 初始化猫检测划线状态
-    for (int i = 0; i < VP_VIDEO_OSD_RECT_MAX; ++i) {
-        g_cat_box_states[i].valid = 0;
-        g_cat_box_states[i].last_x = 0;
-        g_cat_box_states[i].last_y = 0;
-        g_cat_box_states[i].last_width = 0;
-        g_cat_box_states[i].last_height = 0;
-        g_cat_box_states[i].last_detected = 0;
         g_cat_box_states[i].visible = 0;
-        g_cat_box_states[i].fail_count = 0;
     }
 }
 
@@ -191,101 +134,36 @@ static int vp_algorithm_human_draw_boxes(uint8_t idx, vp_video_chn_t chn, uint32
     vp_video_encoder_config_t config;
     if (vp_video_encoder_get_config(idx, chn, &config) != 0) return -1;
     vp_area_rect_t *rect;
-    uint64_t current_time = get_timestamp_ms();
     
-    // 处理检测到的目标
-    for (int i = 0; i < result->count && i < VP_VIDEO_OSD_RECT_MAX; ++i) {
-        rect = &result->objs[i].rect;
-        uint32_t dest_x = rect->x, dest_y = rect->y;
-        uint32_t dest_w = rect->w, dest_h = rect->h;
-        if (config.width != width) {
-            dest_x = rect->x * config.width / width;
-            dest_w = rect->w * config.width / width;
-        }
-        if (config.height != height) {
-            dest_y = rect->y * config.height / height;
-            dest_h = rect->h * config.height / height;
-        }
-        
-        // 确保坐标和尺寸有效
-        if (dest_x >= config.width) dest_x = config.width - 1;
-        if (dest_y >= config.height) dest_y = config.height - 1;
-        if (dest_x + dest_w > config.width) dest_w = config.width - dest_x;
-        if (dest_y + dest_h > config.height) dest_h = config.height - dest_y;
-        if (dest_w < 10) dest_w = 10;
-        if (dest_h < 10) dest_h = 10;
-        
-        // 平滑防抖：使用加权平均，新位置 = 0.7 * 当前检测位置 + 0.3 * 上一帧位置
-        if (g_cat_box_states[i].valid) {
-            dest_x = (uint32_t)(0.7 * dest_x + 0.3 * g_cat_box_states[i].last_x);
-            dest_y = (uint32_t)(0.7 * dest_y + 0.3 * g_cat_box_states[i].last_y);
-            dest_w = (uint32_t)(0.7 * dest_w + 0.3 * g_cat_box_states[i].last_width);
-            dest_h = (uint32_t)(0.7 * dest_h + 0.3 * g_cat_box_states[i].last_height);
-        }
-        
-        // 更新状态
-        g_human_box_states[i].valid = 1;
-        g_human_box_states[i].last_x = dest_x;
-        g_human_box_states[i].last_y = dest_y;
-        g_human_box_states[i].last_width = dest_w;
-        g_human_box_states[i].last_height = dest_h;
-        g_human_box_states[i].last_detected = current_time;
-        g_human_box_states[i].fail_count = 0;
-        
-        // 显示并更新划线
-        if (!g_human_box_states[i].visible) {
+    for (int i = 0; i < VP_VIDEO_OSD_RECT_MAX; ++i) {
+        if (i < result->count) {
+            rect = &result->objs[i].rect;
+            uint32_t dest_x = rect->x, dest_y = rect->y;
+            uint32_t dest_w = rect->w, dest_h = rect->h;
+            if (config.width != width) {
+                dest_x = rect->x * config.width / width;
+                dest_w = rect->w * config.width / width;
+            }
+            if (config.height != height) {
+                dest_y = rect->y * config.height / height;
+                dest_h = rect->h * config.height / height;
+            }
+            
+            if (dest_x >= config.width) dest_x = config.width - 1;
+            if (dest_y >= config.height) dest_y = config.height - 1;
+            if (dest_x + dest_w > config.width) dest_w = config.width - dest_x;
+            if (dest_y + dest_h > config.height) dest_h = config.height - dest_y;
+            if (dest_w < 10) dest_w = 10;
+            if (dest_h < 10) dest_h = 10;
+            
             vp_video_osd_show_rect(idx, chn, i);
             g_human_box_states[i].visible = 1;
-        }
-        
-        int ret = vp_video_osd_update_rect(idx, chn, i, dest_x, dest_y, dest_w, dest_h);
-        if (ret != 0) {
-            // 划线更新失败，增加失败计数
-            g_human_box_states[i].fail_count++;
-            if (g_human_box_states[i].fail_count >= 3) {
-                // 连续失败3次，隐藏划线
+            
+            vp_video_osd_update_rect(idx, chn, i, dest_x, dest_y, dest_w, dest_h);
+        } else {
+            if (g_human_box_states[i].visible) {
                 vp_video_osd_hide_rect(idx, chn, i);
                 g_human_box_states[i].visible = 0;
-                g_human_box_states[i].fail_count = 0;
-            }
-        } else {
-            // 更新成功，重置失败计数
-            g_human_box_states[i].fail_count = 0;
-        }
-    }
-    
-    // 处理未检测到的目标（使用上一帧坐标）
-    for (int i = result->count; i < VP_VIDEO_OSD_RECT_MAX; ++i) {
-        if (g_human_box_states[i].valid) {
-            // 检查是否超过3秒未检测到
-            if (current_time - g_human_box_states[i].last_detected > 3000) {
-                // 超过3秒，隐藏划线
-                if (g_human_box_states[i].visible) {
-                    vp_video_osd_hide_rect(idx, chn, i);
-                    g_human_box_states[i].visible = 0;
-                }
-                g_human_box_states[i].valid = 0;
-                g_human_box_states[i].fail_count = 0;
-            } else if (g_human_box_states[i].visible) {
-                // 未超过3秒，使用上一帧坐标更新划线
-                int ret = vp_video_osd_update_rect(idx, chn, i, 
-                    g_human_box_states[i].last_x, 
-                    g_human_box_states[i].last_y, 
-                    g_human_box_states[i].last_width, 
-                    g_human_box_states[i].last_height);
-                if (ret != 0) {
-                    // 划线更新失败，增加失败计数
-                    g_human_box_states[i].fail_count++;
-                    if (g_human_box_states[i].fail_count >= 3) {
-                        // 连续失败3次，隐藏划线
-                        vp_video_osd_hide_rect(idx, chn, i);
-                        g_human_box_states[i].visible = 0;
-                        g_human_box_states[i].fail_count = 0;
-                    }
-                } else {
-                    // 更新成功，重置失败计数
-                    g_human_box_states[i].fail_count = 0;
-                }
             }
         }
     }
@@ -299,101 +177,36 @@ static int vp_algorithm_human_draw_mosaic(uint8_t idx, vp_video_chn_t chn, uint3
     vp_video_encoder_config_t config;
     if (vp_video_encoder_get_config(idx, chn, &config) != 0) return -1;
     vp_area_rect_t *rect;
-    uint64_t current_time = get_timestamp_ms();
     
-    // 处理检测到的目标
-    for (int i = 0; i < result->count && i < VP_VIDEO_OSD_MOSAIC_MAX; ++i) {
-        rect = &result->objs[i].rect;
-        uint32_t dest_x = rect->x, dest_y = rect->y;
-        uint32_t dest_w = rect->w, dest_h = rect->h;
-        if (config.width != width) {
-            dest_x = rect->x * config.width / width;
-            dest_w = rect->w * config.width / width;
-        }
-        if (config.height != height) {
-            dest_y = rect->y * config.height / height;
-            dest_h = rect->h * config.height / height;
-        }
-        
-        // 确保坐标和尺寸有效
-        if (dest_x >= config.width) dest_x = config.width - 1;
-        if (dest_y >= config.height) dest_y = config.height - 1;
-        if (dest_x + dest_w > config.width) dest_w = config.width - dest_x;
-        if (dest_y + dest_h > config.height) dest_h = config.height - dest_y;
-        if (dest_w < 10) dest_w = 10;
-        if (dest_h < 10) dest_h = 10;
-        
-        // 平滑防抖：使用加权平均，新位置 = 0.7 * 当前检测位置 + 0.3 * 上一帧位置
-        if (g_cat_box_states[i].valid) {
-            dest_x = (uint32_t)(0.7 * dest_x + 0.3 * g_cat_box_states[i].last_x);
-            dest_y = (uint32_t)(0.7 * dest_y + 0.3 * g_cat_box_states[i].last_y);
-            dest_w = (uint32_t)(0.7 * dest_w + 0.3 * g_cat_box_states[i].last_width);
-            dest_h = (uint32_t)(0.7 * dest_h + 0.3 * g_cat_box_states[i].last_height);
-        }
-        
-        // 更新状态
-        g_human_mosaic_states[i].valid = 1;
-        g_human_mosaic_states[i].last_x = dest_x;
-        g_human_mosaic_states[i].last_y = dest_y;
-        g_human_mosaic_states[i].last_width = dest_w;
-        g_human_mosaic_states[i].last_height = dest_h;
-        g_human_mosaic_states[i].last_detected = current_time;
-        g_human_mosaic_states[i].fail_count = 0;
-        
-        // 显示并更新马赛克
-        if (!g_human_mosaic_states[i].visible) {
+    for (int i = 0; i < VP_VIDEO_OSD_MOSAIC_MAX; ++i) {
+        if (i < result->count) {
+            rect = &result->objs[i].rect;
+            uint32_t dest_x = rect->x, dest_y = rect->y;
+            uint32_t dest_w = rect->w, dest_h = rect->h;
+            if (config.width != width) {
+                dest_x = rect->x * config.width / width;
+                dest_w = rect->w * config.width / width;
+            }
+            if (config.height != height) {
+                dest_y = rect->y * config.height / height;
+                dest_h = rect->h * config.height / height;
+            }
+            
+            if (dest_x >= config.width) dest_x = config.width - 1;
+            if (dest_y >= config.height) dest_y = config.height - 1;
+            if (dest_x + dest_w > config.width) dest_w = config.width - dest_x;
+            if (dest_y + dest_h > config.height) dest_h = config.height - dest_y;
+            if (dest_w < 10) dest_w = 10;
+            if (dest_h < 10) dest_h = 10;
+            
             vp_video_osd_show_mosaic(idx, chn, i);
             g_human_mosaic_states[i].visible = 1;
-        }
-        
-        int ret = vp_video_osd_update_mosaic(idx, chn, i, dest_x, dest_y, dest_w, dest_h);
-        if (ret != 0) {
-            // 马赛克更新失败，增加失败计数
-            g_human_mosaic_states[i].fail_count++;
-            if (g_human_mosaic_states[i].fail_count >= 3) {
-                // 连续失败3次，隐藏马赛克
+            
+            vp_video_osd_update_mosaic(idx, chn, i, dest_x, dest_y, dest_w, dest_h);
+        } else {
+            if (g_human_mosaic_states[i].visible) {
                 vp_video_osd_hide_mosaic(idx, chn, i);
                 g_human_mosaic_states[i].visible = 0;
-                g_human_mosaic_states[i].fail_count = 0;
-            }
-        } else {
-            // 更新成功，重置失败计数
-            g_human_mosaic_states[i].fail_count = 0;
-        }
-    }
-    
-    // 处理未检测到的目标（使用上一帧坐标）
-    for (int i = result->count; i < VP_VIDEO_OSD_MOSAIC_MAX; ++i) {
-        if (g_human_mosaic_states[i].valid) {
-            // 检查是否超过3秒未检测到
-            if (current_time - g_human_mosaic_states[i].last_detected > 3000) {
-                // 超过3秒，隐藏马赛克
-                if (g_human_mosaic_states[i].visible) {
-                    vp_video_osd_hide_mosaic(idx, chn, i);
-                    g_human_mosaic_states[i].visible = 0;
-                }
-                g_human_mosaic_states[i].valid = 0;
-                g_human_mosaic_states[i].fail_count = 0;
-            } else if (g_human_mosaic_states[i].visible) {
-                // 未超过3秒，使用上一帧坐标更新马赛克
-                int ret = vp_video_osd_update_mosaic(idx, chn, i, 
-                    g_human_mosaic_states[i].last_x, 
-                    g_human_mosaic_states[i].last_y, 
-                    g_human_mosaic_states[i].last_width, 
-                    g_human_mosaic_states[i].last_height);
-                if (ret != 0) {
-                    // 马赛克更新失败，增加失败计数
-                    g_human_mosaic_states[i].fail_count++;
-                    if (g_human_mosaic_states[i].fail_count >= 3) {
-                        // 连续失败3次，隐藏马赛克
-                        vp_video_osd_hide_mosaic(idx, chn, i);
-                        g_human_mosaic_states[i].visible = 0;
-                        g_human_mosaic_states[i].fail_count = 0;
-                    }
-                } else {
-                    // 更新成功，重置失败计数
-                    g_human_mosaic_states[i].fail_count = 0;
-                }
             }
         }
     }
@@ -428,46 +241,36 @@ static void vp_algorithm_cat_clear_mosaic(uint8_t idx, vp_video_chn_t chn) {
 static int vp_algorithm_cat_draw_boxes(uint8_t idx, vp_video_chn_t chn, uint32_t width, uint32_t height,
                                       vp_cat_detect_result_t *result) 
 {
-    //return 0;
     if (g_shutting_down) return -1;
     if (width == 0 || height == 0) return -1;
     vp_video_encoder_config_t config;
     if (vp_video_encoder_get_config(idx, chn, &config) != 0) return -1;
     
-    uint64_t current_time = get_timestamp_ms();
-    
-    // 处理检测到的目标
-    for (int i = 0; i < result->count && i < VP_VIDEO_OSD_RECT_MAX; ++i) 
-    {
-        vp_cat_obj_t *obj = &result->objs[i];
-        // 直接使用归一化坐标乘以config.width和config.height，避免双重缩放
-        uint32_t dest_x = obj->f32Xmin * config.width;
-        uint32_t dest_y = obj->f32Ymin * config.height;
-        uint32_t dest_w = (obj->f32Xmax - obj->f32Xmin) * config.width;
-        uint32_t dest_h = (obj->f32Ymax - obj->f32Ymin) * config.height;
-        
-        // 确保坐标和尺寸有效
-        if (dest_x >= config.width) dest_x = config.width - 1;
-        if (dest_y >= config.height) dest_y = config.height - 1;
-        if (dest_x + dest_w > config.width) dest_w = config.width - dest_x;
-        if (dest_y + dest_h > config.height) dest_h = config.height - dest_y;
-        if (dest_w < 10) dest_w = 10;
-        if (dest_h < 10) dest_h = 10;
-        
-        // 更新状态
-        g_cat_box_states[i].valid = 1;
-        g_cat_box_states[i].last_x = dest_x;
-        g_cat_box_states[i].last_y = dest_y;
-        g_cat_box_states[i].last_width = dest_w;
-        g_cat_box_states[i].last_height = dest_h;
-        g_cat_box_states[i].last_detected = current_time;
-        
-        // 确保划线可见：每次检测到目标都确保显示
-        vp_video_osd_show_rect(idx, chn, i);
-        g_cat_box_states[i].visible = 1;
-        
-        // 更新划线位置
-        vp_video_osd_update_rect(idx, chn, i, dest_x, dest_y, dest_w, dest_h);
+    for (int i = 0; i < VP_VIDEO_OSD_RECT_MAX; ++i) {
+        if (i < result->count) {
+            vp_cat_obj_t *obj = &result->objs[i];
+            uint32_t dest_x = obj->Xmin * config.width;
+            uint32_t dest_y = obj->Ymin * config.height;
+            uint32_t dest_w = (obj->Xmax - obj->Xmin) * config.width;
+            uint32_t dest_h = (obj->Ymax - obj->Ymin) * config.height;
+            
+            if (dest_x >= config.width) dest_x = config.width - 1;
+            if (dest_y >= config.height) dest_y = config.height - 1;
+            if (dest_x + dest_w > config.width) dest_w = config.width - dest_x;
+            if (dest_y + dest_h > config.height) dest_h = config.height - dest_y;
+            if (dest_w < 10) dest_w = 10;
+            if (dest_h < 10) dest_h = 10;
+            
+            vp_video_osd_show_rect(idx, chn, i);
+            g_cat_box_states[i].visible = 1;
+            
+            vp_video_osd_update_rect(idx, chn, i, dest_x, dest_y, dest_w, dest_h);
+        } else {
+            if (g_cat_box_states[i].visible) {
+                vp_video_osd_hide_rect(idx, chn, i);
+                g_cat_box_states[i].visible = 0;
+            }
+        }
     }
     
     return 0;
@@ -475,46 +278,37 @@ static int vp_algorithm_cat_draw_boxes(uint8_t idx, vp_video_chn_t chn, uint32_t
 
 static int vp_algorithm_cat_draw_mosaic(uint8_t idx, vp_video_chn_t chn, uint32_t width, uint32_t height,
                                       vp_cat_detect_result_t *result) {
-    
     return 0;
     if (g_shutting_down) return -1;
     if (width == 0 || height == 0) return -1;
     vp_video_encoder_config_t config;
     if (vp_video_encoder_get_config(idx, chn, &config) != 0) return -1;
     
-    uint64_t current_time = get_timestamp_ms();
-    
-    // 处理检测到的目标
-    for (int i = 0; i < result->count && i < VP_VIDEO_OSD_MOSAIC_MAX; ++i) {
-        vp_cat_obj_t *obj = &result->objs[i];
-        // 直接使用归一化坐标乘以config.width和config.height，避免双重缩放
-        uint32_t dest_x = obj->f32Xmin * config.width;
-        uint32_t dest_y = obj->f32Ymin * config.height;
-        uint32_t dest_w = (obj->f32Xmax - obj->f32Xmin) * config.width;
-        uint32_t dest_h = (obj->f32Ymax - obj->f32Ymin) * config.height;
-        
-        // 确保坐标和尺寸有效
-        if (dest_x >= config.width) dest_x = config.width - 1;
-        if (dest_y >= config.height) dest_y = config.height - 1;
-        if (dest_x + dest_w > config.width) dest_w = config.width - dest_x;
-        if (dest_y + dest_h > config.height) dest_h = config.height - dest_y;
-        if (dest_w < 10) dest_w = 10;
-        if (dest_h < 10) dest_h = 10;
-        
-        // 更新状态
-        g_cat_mosaic_states[i].valid = 1;
-        g_cat_mosaic_states[i].last_x = dest_x;
-        g_cat_mosaic_states[i].last_y = dest_y;
-        g_cat_mosaic_states[i].last_width = dest_w;
-        g_cat_mosaic_states[i].last_height = dest_h;
-        g_cat_mosaic_states[i].last_detected = current_time;
-        
-        // 确保马赛克可见：每次检测到目标都确保显示
-        vp_video_osd_show_mosaic(idx, chn, i);
-        g_cat_mosaic_states[i].visible = 1;
-        
-        // 更新马赛克位置
-        vp_video_osd_update_mosaic(idx, chn, i, dest_x, dest_y, dest_w, dest_h);
+    for (int i = 0; i < VP_VIDEO_OSD_MOSAIC_MAX; ++i) {
+        if (i < result->count) {
+            vp_cat_obj_t *obj = &result->objs[i];
+            uint32_t dest_x = obj->Xmin * config.width;
+            uint32_t dest_y = obj->Ymin * config.height;
+            uint32_t dest_w = (obj->Xmax - obj->Xmin) * config.width;
+            uint32_t dest_h = (obj->Ymax - obj->Ymin) * config.height;
+            
+            if (dest_x >= config.width) dest_x = config.width - 1;
+            if (dest_y >= config.height) dest_y = config.height - 1;
+            if (dest_x + dest_w > config.width) dest_w = config.width - dest_x;
+            if (dest_y + dest_h > config.height) dest_h = config.height - dest_y;
+            if (dest_w < 10) dest_w = 10;
+            if (dest_h < 10) dest_h = 10;
+            
+            vp_video_osd_show_mosaic(idx, chn, i);
+            g_cat_mosaic_states[i].visible = 1;
+            
+            vp_video_osd_update_mosaic(idx, chn, i, dest_x, dest_y, dest_w, dest_h);
+        } else {
+            if (g_cat_mosaic_states[i].visible) {
+                vp_video_osd_hide_mosaic(idx, chn, i);
+                g_cat_mosaic_states[i].visible = 0;
+            }
+        }
     }
     
     return 0;
@@ -877,7 +671,6 @@ static TS_S32 vp_algorithm_yuv2rgb(TS_U8 *y_image, TS_U8 *uv_image, TS_U8 *rgb_i
     return TS_SUCCESS;
 }
 
-int ptime = 0;
 static int vp_algorithm_detect_process(uint8_t idx, uint8_t chn, vp_algorithm_ivs_args_t *args,
                                        vp_video_source_t *frame) 
 {
@@ -1357,34 +1150,16 @@ static int vp_algorithm_detect_process(uint8_t idx, uint8_t chn, vp_algorithm_iv
                         info->result.timestamp = frame->timestamp;
                         vp_unlock(&channel->lock);
                         
-                        for(int i = 0;i<info->result.cat.count;i++)
-                        {
-                            vp_algorithm_cat_draw_boxes(idx, 0, frame->width, frame->height, (vp_cat_detect_result_t*)&info->result.cat);
+                        vp_algorithm_cat_draw_boxes(idx, 0, frame->width, frame->height, (vp_cat_detect_result_t*)&info->result.cat);
                         vp_algorithm_cat_draw_boxes(idx, 1, frame->width, frame->height, (vp_cat_detect_result_t*)&info->result.cat);
                         
-                        uint64_t start_time = get_timestamp_ms();
                         vp_algorithm_cat_draw_mosaic(idx, 0, frame->width, frame->height, (vp_cat_detect_result_t*)&info->result.cat);
                         vp_algorithm_cat_draw_mosaic(idx, 1, frame->width, frame->height, (vp_cat_detect_result_t*)&info->result.cat);
-                        uint64_t end_time = get_timestamp_ms();
-                        if(0 == ptime)
-                        {
-                            //sleep(60*5);
-                            ptime++;
-                        }
-                        }
-                        
-                        
-                        //vp_debug("Cat mosaic processing time: %llu ms", end_time - start_time);
                     } else {
                         vp_algorithm_cat_clear_boxes(idx, 0);
                         vp_algorithm_cat_clear_boxes(idx, 1);
                         vp_algorithm_cat_clear_mosaic(idx, 0);
                         vp_algorithm_cat_clear_mosaic(idx, 1);
-                        if(0 == ptime)
-                        {
-                            //sleep(60*5);
-                            ptime++;
-                        }
                     }
                     break;
                 }
@@ -1406,8 +1181,9 @@ static int vp_algorithm_detect_process(uint8_t idx, uint8_t chn, vp_algorithm_iv
         info->detect_timestamp = frame->timestamp;
         vp_events_send(channel->events, VP_EVENT_BIT(i));
 
-        if (ret > 0 && info->param.notify && info->notify == 0) {
-            if (info->last_notify == 0 || (frame->timestamp - info->last_notify) > (info->param.interval * 1000000)) {
+        // if (ret > 0 && info->param.notify && info->notify == 0) {
+        if (info->param.notify && info->notify == 0) {
+            if (info->last_notify == 0 || (frame->timestamp - info->last_notify) > (1 * 1000000)) {
                 if (info->param.jpeg) need_jpeg = 1;
                 info->has_notify = 1;
                 info->last_notify = frame->timestamp;

@@ -179,6 +179,45 @@ static int vp_video_mosaic_create(vp_channel_config_t *channel, vp_osd_item_t *i
     return 0;
 }
 
+static int vp_video_cover_create(vp_channel_config_t *channel, vp_osd_item_t *item) {
+    if (channel == NULL || item == NULL || 0 == item->handle) return -1;
+    int ret = 0;
+    RGN_HANDLE cover_handle = (RGN_HANDLE)item->handle;
+    MPP_CHN_S stChn;
+    stChn.enModId = TS_ID_VPSS;
+    stChn.s32DevId = channel->osd_config.dev;
+    stChn.s32ChnId = channel->osd_config.chn;
+
+    RGN_ATTR_S stRegion;
+    memset(&stRegion, 0, sizeof(stRegion));
+    stRegion.enType = COVEREX_RGN;
+    ret = TS_MPI_RGN_Create(cover_handle, &stRegion);
+    if (ret) {
+        vp_error("Failed to call TS_MPI_RGN_Create for cover(err-%d).\n", ret);
+        return ret;
+    }
+
+    RGN_CHN_ATTR_S stChnAttr;
+    memset(&stChnAttr, 0, sizeof(stChnAttr));
+    stChnAttr.bShow = TS_FALSE;
+    stChnAttr.enType = COVEREX_RGN;
+    stChnAttr.unChnAttr.stCoverExChn.enCoverType = AREA_RECT;
+    stChnAttr.unChnAttr.stCoverExChn.stRect.s32X = item->x;
+    stChnAttr.unChnAttr.stCoverExChn.stRect.s32Y = item->y;
+    stChnAttr.unChnAttr.stCoverExChn.stRect.u32Height = item->height;
+    stChnAttr.unChnAttr.stCoverExChn.stRect.u32Width = item->width;
+    stChnAttr.unChnAttr.stCoverExChn.u32Color = item->rect.color;
+    stChnAttr.unChnAttr.stCoverExChn.u32Layer = cover_handle;
+
+    ret = TS_MPI_RGN_AttachToChn(cover_handle, &stChn, &stChnAttr);
+    if (ret) {
+        vp_error("Failed to call TS_MPI_RGN_AttachToChn for cover(err-%d).\n", ret);
+        return ret;
+    }
+
+    return 0;
+}
+
 static void vp_video_osd_destroy(vp_channel_config_t *channel, vp_osd_item_t *item) {
     if (channel == NULL || item == NULL || 0 == item->handle) return;
 
@@ -574,13 +613,28 @@ int vp_video_osd_config_rect(uint8_t idx, vp_video_chn_t chn, uint8_t index, vp_
     int ret;
     item->type = VP_VIDEO_OSD_TYPE_RECT;
 
+    item->x = 0;
+    item->y = 0;
+    item->handle = idx * VP_VIDEO_CHANNEL_MAX * VP_VIDEO_OSD_MAX + chn * VP_VIDEO_OSD_MAX + index + 4;
+    item->width = 32;
+    item->height = 32;
+
     if (0 == item->create) {
-        item->create = 1;
         vp_lock_init(&item->lock);
+        item->rect.line = config->line;
+        item->rect.color = config->color;
+        ret = vp_video_cover_create(channel, item);
+        if (ret == 0) {
+            item->create = 1;
+        } else {
+            vp_error("Failed to create cover, ret=%d\n", ret);
+            return ret;
+        }
+    } else {
+        item->rect.line = config->line;
+        item->rect.color = config->color;
     }
 
-    item->rect.line = config->line;
-    item->rect.color = config->color;
     return 0;
 }
 
@@ -706,13 +760,34 @@ int vp_video_osd_show(uint8_t idx, vp_video_chn_t chn, uint8_t index) {
     if (channel->osd_config.start_flag == 0) return -1;
     vp_osd_item_t *item = &channel->osd_config.items[index];
     if (item->create == 0) return -1;
-    if (item->show) return 0;
 
     vp_lock(&item->lock);
     int ret = vp_video_osd_ctrl(item, 1);
     vp_unlock(&item->lock);
 
-    if (index > 13) {
+    if (index >= 4 && index < 14) {
+        MPP_CHN_S stChn = { 0 };
+        stChn.enModId = TS_ID_VPSS;
+        stChn.s32DevId = channel->osd_config.dev;
+        stChn.s32ChnId = channel->osd_config.chn;
+
+        RGN_CHN_ATTR_S stChnAttr;
+        memset(&stChnAttr, 0, sizeof(stChnAttr));
+        ret = TS_MPI_RGN_GetDisplayAttr(item->handle, &stChn, &stChnAttr);
+        if (ret) {
+            vp_error("Failed to call TS_MPI_RGN_GetDisplayAttr.\n");
+            return ret;
+        }
+
+        if (stChnAttr.bShow == TS_FALSE) {
+            stChnAttr.bShow = TS_TRUE;
+            ret = TS_MPI_RGN_SetDisplayAttr(item->handle, &stChn, &stChnAttr);
+
+            if (ret) {
+                vp_error("Failed to call TS_MPI_RGN_SetDisplayAttr.\n");
+            }
+        }
+    } else if (index > 13) {
         MPP_CHN_S stChn = { 0 };
         stChn.enModId = TS_ID_VPSS;
         stChn.s32DevId = channel->osd_config.dev;
@@ -942,14 +1017,48 @@ int vp_video_osd_update_rect(uint8_t idx, vp_video_chn_t chn, uint8_t index,
     vp_osd_item_t *item = &channel->osd_config.items[4 + index];
     if (item->create == 0) return -1;
 
+    uint32_t max_width = channel->fs_chn_attr.u32Width;
+    uint32_t max_height = channel->fs_chn_attr.u32Height;
+
+    int ret = 0;
     vp_lock(&item->lock);
-    item->x = x;
-    item->y = y;
-    item->width = width;
-    item->height = height;
+    item->x = x & 0xffe0;
+    item->y = y & 0xffe0;
+    item->width = (width + 32) & 0xffe0;
+    item->height = (height + 32) & 0xffe0;
+    if (item->x >= max_width) item->x = max_width - 1;
+    if (item->y >= max_height) item->y = max_height - 1;
+    item->width = (item->x + item->width) >= max_width ? (max_width - item->x) : item->width;
+    item->height = (item->y + item->height) >= max_height ? (max_height - item->y) : item->height;
+    if (item->width == 0 || item->height == 0) {
+        vp_unlock(&item->lock);
+        return -1;
+    }
     vp_unlock(&item->lock);
 
-    return 0;
+    MPP_CHN_S stChn = { 0 };
+    stChn.enModId = TS_ID_VPSS;
+    stChn.s32DevId = channel->osd_config.dev;
+    stChn.s32ChnId = channel->osd_config.chn;
+
+    RGN_CHN_ATTR_S stChnAttr;
+    memset(&stChnAttr, 0, sizeof(stChnAttr));
+    ret = TS_MPI_RGN_GetDisplayAttr(item->handle, &stChn, &stChnAttr);
+    if (ret) {
+        vp_error("Failed to call TS_MPI_RGN_GetDisplayAttr(err_%d).\n", ret);
+        return ret;
+    }
+
+    stChnAttr.unChnAttr.stCoverExChn.stRect.s32X = item->x;
+    stChnAttr.unChnAttr.stCoverExChn.stRect.s32Y = item->y;
+    stChnAttr.unChnAttr.stCoverExChn.stRect.u32Width = item->width;
+    stChnAttr.unChnAttr.stCoverExChn.stRect.u32Height = item->height;
+    ret = TS_MPI_RGN_SetDisplayAttr(item->handle, &stChn, &stChnAttr);
+    if (ret) {
+        vp_error("Failed to call TS_MPI_RGN_SetDisplayAttr(ret-%d).\n", ret);
+    }
+
+    return ret;
 }
 
 /**
@@ -1040,11 +1149,12 @@ int vp_video_osd_hide(uint8_t idx, vp_video_chn_t chn, uint8_t index) {
     if (channel->osd_config.start_flag == 0) return -1;
     vp_osd_item_t *item = &channel->osd_config.items[index];
     if (item->create == 0) return -1;
-    if (item->show == 0) return 0;
 
-    int ret = vp_video_osd_ctrl(item, 0);
+    int ret = 0;
 
     if (index < 4) {
+        if (item->show == 0) return 0;
+        ret = vp_video_osd_ctrl(item, 0);
         RGN_CANVAS_INFO_S stCanvasInfo;
         memset(&stCanvasInfo, 0, sizeof(stCanvasInfo));
         ret = vp_osd_get_osd_buffer(channel, item, &stCanvasInfo);
@@ -1055,7 +1165,31 @@ int vp_video_osd_hide(uint8_t idx, vp_video_chn_t chn, uint8_t index) {
         ret = vp_osd_update_osd_buffer(channel, item);
     }
 
-    if (index > 13) {
+    if (index >= 4 && index < 14) {
+        ret = vp_video_osd_ctrl(item, 0);
+        MPP_CHN_S stChn = { 0 };
+        stChn.enModId = TS_ID_VPSS;
+        stChn.s32DevId = channel->osd_config.dev;
+        stChn.s32ChnId = channel->osd_config.chn;
+
+        RGN_CHN_ATTR_S stChnAttr;
+        memset(&stChnAttr, 0, sizeof(stChnAttr));
+        ret = TS_MPI_RGN_GetDisplayAttr(item->handle, &stChn, &stChnAttr);
+        if (ret) {
+            vp_error("Failed to call TS_MPI_RGN_GetDisplayAttr.\n");
+            return ret;
+        }
+
+        if (stChnAttr.bShow) {
+            stChnAttr.bShow = TS_FALSE;
+            ret = TS_MPI_RGN_SetDisplayAttr(item->handle, &stChn, &stChnAttr);
+
+            if (ret) {
+                vp_error("Failed to call TS_MPI_RGN_SetDisplayAttr.\n");
+            }
+        }
+    } else if (index > 13) {
+        ret = vp_video_osd_ctrl(item, 0);
         MPP_CHN_S stChn = { 0 };
         stChn.enModId = TS_ID_VPSS;
         stChn.s32DevId = channel->osd_config.dev;

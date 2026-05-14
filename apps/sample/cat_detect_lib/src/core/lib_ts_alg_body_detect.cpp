@@ -36,302 +36,116 @@ static TS_FLOAT *gPostProcBuf = NULL;
 #endif
 ALG_CatDetect_DET_PARAM_S det_param_cpp;
 
-// static int nms(float *torchCat, int len1, int len2, int *nmsOut, float thresh, int maxDet)
-// {
-//     float tmpX, tmpY, tmpW, tmpH;
+#define NMS_MAX_LEN 10000
+static float g_nms_pScore[NMS_MAX_LEN];
+static int g_nms_box_idx[NMS_MAX_LEN];
+static float g_nms_areas[NMS_MAX_LEN];
+static float g_nms_xx1[NMS_MAX_LEN];
+static float g_nms_yy1[NMS_MAX_LEN];
+static float g_nms_xx2[NMS_MAX_LEN];
+static float g_nms_yy2[NMS_MAX_LEN];
+static int g_nms_newbox_idx[NMS_MAX_LEN];
 
-//     float* pScore = (float *)(nmsOut + len1);
-//     int* box_idx = (int *)(pScore + len1);
-//     float* areas = (float*)(box_idx + len1);
-//     for (int i = 0; i < len1; i++)
-//     {
-//         box_idx[i] = i;
-//         pScore[i] = torchCat[len2 * i + 5];
-//         tmpX = torchCat[len2 * i + 0];
-//         tmpY = torchCat[len2 * i + 1];
-//         tmpW = torchCat[len2 * i + 2];
-//         tmpH = torchCat[len2 * i + 3];
-//         areas[i] = tmpW * tmpH;
-//         torchCat[len2 * i + 0] = tmpX - tmpW / 2;
-//         torchCat[len2 * i + 1] = tmpY - tmpH / 2;
-//         torchCat[len2 * i + 2] = tmpX + tmpW / 2;
-//         torchCat[len2 * i + 3] = tmpY + tmpH / 2;
-//     }
-
-//     for (int i = 0; i < len1; i++) {
-//         float max = pScore[i];
-//         int idx_t = i;
-//         for (int j = i + 1; j < len1; j++) {
-//             if (max < pScore[j]) {
-//                 max = pScore[j];
-//                 idx_t = j;
-//             }
-//         }
-//         int tt = box_idx[i];
-//         box_idx[i] = box_idx[idx_t];
-//         box_idx[idx_t] = tt;
-//         float tt1 = pScore[i];
-//         pScore[i] = pScore[idx_t];
-//         pScore[idx_t] = tt1;
-//     }
-
-//     int	cnt = 0;
-//     int sSzie = len1;
-//     while (sSzie > 0) {// torch.numel()返回张量元素个数
-//         if (sSzie == 1) {//    保留框只剩一个
-//             nmsOut[cnt] = box_idx[0];
-//             cnt++;
-//             break;
-//         }
-//         else {
-//             nmsOut[cnt] = box_idx[0];
-//             cnt++;
-//         }
-//         if (cnt >= maxDet) {
-//             break;
-//         }
-
-// 		//计算box[i]与其余各框的IOU(思路很好)
-// 		//auto orderMask = order.narrow(1, order.m_size - 1, 0);
-// 		//x1.index({ orderMask });
-// 		//x1.index({ orderMask }).clamp(x1[keep.back()].item().toFloat(), 1e10);
-// 		//auto xx1 = x1.index({ orderMask }).clamp(x1.m_data[keep.back()],1e10);// [N - 1, ]
-// 		//auto yy1 = y1.index({ orderMask }).clamp(y1.m_data[keep.back()], 1e10);
-// 		//auto xx2 = x2.index({ orderMask }).clamp(0, x2.m_data[keep.back()]);
-// 		//auto yy2 = y2.index({ orderMask }).clamp(0, y2.m_data[keep.back()]);
-//         float *xx1 = (float *)(areas + len1);
-//         float *yy1 = (float *)(xx1 + sSzie);
-//         float *xx2 = (float *)(yy1 + sSzie);
-//         float *yy2 = (float *)(xx2 + sSzie);
-//         for (int i=1; i<sSzie; i++){
-//             xx1[i-1] = MIN(MAX(torchCat[len2*box_idx[0] + 0], torchCat[len2*box_idx[i] + 0]), 1e10);
-//             yy1[i-1] = MIN(MAX(torchCat[len2*box_idx[0] + 1], torchCat[len2*box_idx[i] + 1]), 1e10);
-//             xx2[i-1] = MIN(MAX(0, torchCat[len2*box_idx[i] + 2]), torchCat[len2*box_idx[0] + 2]);
-//             yy2[i-1] = MIN(MAX(0, torchCat[len2*box_idx[i] + 3]), torchCat[len2*box_idx[0] + 3]);
-//         }
-
-// 		// auto selWidth = xx2 - xx1;
-//         // auto selHeight = yy2 - yy1;
-//         // auto selWidth_ = selWidth.clamp(0, 1e10);
-//         // auto selHeight_= selHeight.clamp(0, 1e10);
-// 		// auto inter = selWidth_ * selHeight_;// [N - 1, ]
-//         // xx2 = inter
-//         for (int i=0; i<sSzie-1; i++){
-//             xx1[i] = MIN(MAX(0, xx2[i] - xx1[i]), 1e10);
-//             yy1[i] = MIN(MAX(0, yy2[i] - yy1[i]), 1e10);
-//             xx2[i] = xx1[i] * yy1[i];
-//         }
-
-//         // auto tmpNarrow = order.narrow(1,order.m_size - 1, 0) ;
-//         // auto merge = areas.index(tmpNarrow) + areas.m_data[keep.back()] - inter;
-// 		// auto iou = inter / (merge);//[N - 1, ]
-//         //xx1 = merge
-//         //yy1 = iou
-//         //yy2 = idx
-//         // auto idx = cmpnonzero(iou, thresh);
-//         int idx_len = 0;
-//         int *newbox_idx = (int *)yy2;
-//         //int* idx = (int*)yy2;
-//         for (int i = 1; i < sSzie; i++) {
-//             xx1[i - 1] = areas[box_idx[i]] + areas[box_idx[0]] - xx2[i - 1];
-//             yy1[i - 1] = xx2[i - 1] / xx1[i - 1];
-
-//             if (yy1[i - 1] < thresh) {
-//                 newbox_idx[idx_len] = box_idx[i];
-//                 idx_len++;
-//             }
-//         }
-
-//         if (idx_len == 0) {
-//             break;
-//         }
-
-//         // auto tmpIndex = idx + 1;
-//         // tmpIndex.m_type = 2;
-//         // order = order.index(tmpIndex); //修补索引之间的差值
-//         memcpy(box_idx, newbox_idx, idx_len * sizeof(int));
-//         //sSzie = idx_len - 1;
-//         sSzie = idx_len;
-//     }
-//     return cnt;
-// }
-// static int nms(const float *torchCat, int len1, int len2, int *nmsOut, float thresh, int maxDet)
-// {
-//     if (len1 <= 0 || maxDet <= 0)
-//         return 0;
-
-//     typedef struct {
-//         float x1, y1, x2, y2;
-//         float score;
-//         int   index;
-//     } Box;
-
-//     Box *boxes = (Box*)malloc(len1 * sizeof(Box));
-//     if (!boxes) return 0;
-
-//     // 正确解析：cx, cy, w, h -> x1y1x2y2
-//     for (int i = 0; i < len1; i++) {
-//         float cx = torchCat[len2 * i + 0];
-//         float cy = torchCat[len2 * i + 1];
-//         float w  = torchCat[len2 * i + 2];
-//         float h  = torchCat[len2 * i + 3];
-//         float score = torchCat[len2 * i + 5];
-
-//         boxes[i].x1 = cx - w * 0.5f;
-//         boxes[i].y1 = cy - h * 0.5f;
-//         boxes[i].x2 = cx + w * 0.5f;
-//         boxes[i].y2 = cy + h * 0.5f;
-//         boxes[i].score = score;
-//         boxes[i].index = i;
-//     }
-
-//     // 按置信度降序排序
-//     for (int i = 0; i < len1 - 1; i++) {
-//         for (int j = i + 1; j < len1; j++) {
-//             if (boxes[j].score > boxes[i].score) {
-//                 Box tmp = boxes[i];
-//                 boxes[i] = boxes[j];
-//                 boxes[j] = tmp;
-//             }
-//         }
-//     }
-
-//     char *suppressed = (char*)calloc(len1, 1);
-//     int cnt = 0;
-
-//     for (int i = 0; i < len1 && cnt < maxDet; i++) {
-//         if (suppressed[i]) continue;
-
-//         nmsOut[cnt++] = boxes[i].index;
-
-//         float ax1 = boxes[i].x1;
-//         float ay1 = boxes[i].y1;
-//         float ax2 = boxes[i].x2;
-//         float ay2 = boxes[i].y2;
-//         float area_a = (ax2 - ax1) * (ay2 - ay1);
-
-//         for (int j = i + 1; j < len1; j++) {
-//             if (suppressed[j]) continue;
-
-//             float bx1 = boxes[j].x1;
-//             float by1 = boxes[j].y1;
-//             float bx2 = boxes[j].x2;
-//             float by2 = boxes[j].y2;
-
-//             float ix1 = ax1 > bx1 ? ax1 : bx1;
-//             float iy1 = ay1 > by1 ? ay1 : by1;
-//             float ix2 = ax2 < bx2 ? ax2 : bx2;
-//             float iy2 = ay2 < by2 ? ay2 : by2;
-
-//             float iw = ix2 - ix1;
-//             float ih = iy2 - iy1;
-//             if (iw <= 0 || ih <= 0) continue;
-
-//             float inter = iw * ih;
-//             float area_b = (bx2 - bx1) * (by2 - by1);
-//             float iou = inter / (area_a + area_b - inter);
-
-//             if (iou > thresh) {
-//                 suppressed[j] = 1;
-//             }
-//         }
-//     }
-
-//     free(suppressed);
-//     free(boxes);
-//     return cnt;
-// }
-
-static int nms(const float *torchCat, int len1, int len2, int *nmsOut, float thresh, int maxDet)
+static int nms(float *torchCat, int len1, int len2, int *nmsOut, float thresh, int maxDet)
 {
-    if (len1 <= 0 || maxDet <= 0)
-        return 0;
+    if (len1 <= 0) return 0;
+    if (len1 > NMS_MAX_LEN) {
+        ALG_LOGE("nms: len1=%d exceeds NMS_MAX_LEN=%d\n", len1, NMS_MAX_LEN);
+        len1 = NMS_MAX_LEN;
+    }
+    
+    float tmpX, tmpY, tmpW, tmpH;
 
-    typedef struct {
-        float cx, cy, w, h;
-        float score;
-        int index;
-    } Box;
+    float* pScore = g_nms_pScore;
+    int* box_idx = g_nms_box_idx;
+    float* areas = g_nms_areas;
+    for (int i = 0; i < len1; i++)
+    {
+        box_idx[i] = i;
+        pScore[i] = torchCat[len2 * i + 4];
+        tmpX = torchCat[len2 * i + 0];
+        tmpY = torchCat[len2 * i + 1];
+        tmpW = torchCat[len2 * i + 2];
+        tmpH = torchCat[len2 * i + 3];
+        areas[i] = tmpW * tmpH;
+        torchCat[len2 * i + 0] = tmpX - tmpW / 2;
+        torchCat[len2 * i + 1] = tmpY - tmpH / 2;
+        torchCat[len2 * i + 2] = tmpX + tmpW / 2;
+        torchCat[len2 * i + 3] = tmpY + tmpH / 2;
+    }
 
-    Box *boxes = (Box *)malloc(len1 * sizeof(Box));
-    if (!boxes) return 0;
-
-    // 只读取，不修改、不转换坐标！
     for (int i = 0; i < len1; i++) {
-        boxes[i].cx = torchCat[len2 * i + 0];
-        boxes[i].cy = torchCat[len2 * i + 1];
-        boxes[i].w  = torchCat[len2 * i + 2];
-        boxes[i].h  = torchCat[len2 * i + 3];
-        boxes[i].score = torchCat[len2 * i + 4];
-        boxes[i].index = i;
-    }
-
-    // 按置信度排序
-    for (int i = 0; i < len1 - 1; i++) {
+        float max = pScore[i];
+        int idx_t = i;
         for (int j = i + 1; j < len1; j++) {
-            if (boxes[j].score > boxes[i].score) {
-                Box tmp = boxes[i];
-                boxes[i] = boxes[j];
-                boxes[j] = tmp;
+            if (max < pScore[j]) {
+                max = pScore[j];
+                idx_t = j;
             }
         }
+        int tt = box_idx[i];
+        box_idx[i] = box_idx[idx_t];
+        box_idx[idx_t] = tt;
+        float tt1 = pScore[i];
+        pScore[i] = pScore[idx_t];
+        pScore[idx_t] = tt1;
     }
 
-    char *suppressed = (char *)calloc(len1, 1);
-    int cnt = 0;
+    int	cnt = 0;
+    int sSzie = len1;
+    float *xx1 = g_nms_xx1;
+    float *yy1 = g_nms_yy1;
+    float *xx2 = g_nms_xx2;
+    float *yy2 = g_nms_yy2;
+    
+    while (sSzie > 0) {
+        if (sSzie == 1) {
+            nmsOut[cnt] = box_idx[0];
+            cnt++;
+            break;
+        }
+        else {
+            nmsOut[cnt] = box_idx[0];
+            cnt++;
+        }
+        if (cnt >= maxDet) {
+            break;
+        }
 
-    for (int i = 0; i < len1 && cnt < maxDet; i++) {
-        if (suppressed[i]) continue;
+        for (int i=1; i<sSzie; i++){
+            xx1[i-1] = MIN(MAX(torchCat[len2*box_idx[0] + 0], torchCat[len2*box_idx[i] + 0]), 1e10);
+            yy1[i-1] = MIN(MAX(torchCat[len2*box_idx[0] + 1], torchCat[len2*box_idx[i] + 1]), 1e10);
+            xx2[i-1] = MIN(MAX(0, torchCat[len2*box_idx[i] + 2]), torchCat[len2*box_idx[0] + 2]);
+            yy2[i-1] = MIN(MAX(0, torchCat[len2*box_idx[i] + 3]), torchCat[len2*box_idx[0] + 3]);
+        }
 
-        nmsOut[cnt++] = boxes[i].index;
+        for (int i=0; i<sSzie-1; i++){
+            xx1[i] = MIN(MAX(0, xx2[i] - xx1[i]), 1e10);
+            yy1[i] = MIN(MAX(0, yy2[i] - yy1[i]), 1e10);
+            xx2[i] = xx1[i] * yy1[i];
+        }
 
-        // 计算 IOU 时临时转框，不改动原始数据
-        float cx1 = boxes[i].cx;
-        float cy1 = boxes[i].cy;
-        float w1  = boxes[i].w;
-        float h1  = boxes[i].h;
-        float x1 = cx1 - w1 * 0.5f;
-        float y1 = cy1 - h1 * 0.5f;
-        float x2 = cx1 + w1 * 0.5f;
-        float y2 = cy1 + h1 * 0.5f;
-        float area_a = (x2 - x1) * (y2 - y1);
+        int idx_len = 0;
+        int *newbox_idx = g_nms_newbox_idx;
+        for (int i = 1; i < sSzie; i++) {
+            xx1[i - 1] = areas[box_idx[i]] + areas[box_idx[0]] - xx2[i - 1];
+            yy1[i - 1] = xx2[i - 1] / xx1[i - 1];
 
-        for (int j = i + 1; j < len1; j++) {
-            if (suppressed[j]) continue;
-
-            float cx2 = boxes[j].cx;
-            float cy2 = boxes[j].cy;
-            float w2  = boxes[j].w;
-            float h2  = boxes[j].h;
-            float bx1 = cx2 - w2 * 0.5f;
-            float by1 = cy2 - h2 * 0.5f;
-            float bx2 = cx2 + w2 * 0.5f;
-            float by2 = cy2 + h2 * 0.5f;
-
-            float ix1 = (x1 > bx1) ? x1 : bx1;
-            float iy1 = (y1 > by1) ? y1 : by1;
-            float ix2 = (x2 < bx2) ? x2 : bx2;
-            float iy2 = (y2 < by2) ? y2 : by2;
-
-            float iw = ix2 - ix1;
-            float ih = iy2 - iy1;
-            if (iw <= 0 || ih <= 0) continue;
-
-            float inter = iw * ih;
-            float area_b = (bx2 - bx1) * (by2 - by1);
-            float iou = inter / (area_a + area_b - inter);
-
-            if (iou > thresh) {
-                suppressed[j] = 1;
+            if (yy1[i - 1] < thresh) {
+                newbox_idx[idx_len] = box_idx[i];
+                idx_len++;
             }
         }
-    }
 
-    free(suppressed);
-    free(boxes);
+        if (idx_len == 0) {
+            break;
+        }
+
+        memcpy(box_idx, newbox_idx, idx_len * sizeof(int));
+        sSzie = idx_len;
+    }
     return cnt;
 }
-
 //lx test
 float test_conf = 0;
 int test_conf_set(float conf)
@@ -345,85 +159,29 @@ int test_conf_get()
 	return ret;
 }
 //
-// int TS_ALG_PcppDetV12_PostProcess(unsigned char **blob, unsigned int *cstride, unsigned int *s32C, float *fcoeff, float* dataVec)
-// {
-// 	int nblob = 3;
-// 	int shapeVec2[3][5] = {{1, 3, 48, 80, 6}, {1, 3, 24, 40, 6}, {1, 3, 12, 20, 6}};
-
-//     float scale_output[] = { fcoeff[0], fcoeff[1], fcoeff[2] };
-//     float scale_output2[] = { fcoeff[0] * 2, fcoeff[1] * 2, fcoeff[2] * 2 };
-//     int stride[3] = { 8,16,32 };
-//     int anch[3][6] = {{10,13, 16,30, 33,23}, {30,61, 62,45, 59,119}, {116,90, 156,198, 373,326}};
-//     //int anch[3][6] = {{32, 23, 62, 35, 99, 55}, {107, 104, 193, 98, 255,143}, {385, 146, 351, 205, 469, 208}};
-//     //2026-03-31
-//     //int anch[3][6] = {{32, 38, 62, 59, 99, 92}, {107, 174, 193, 163, 255,238}, {385, 243, 351, 342, 469, 346}};
-//     float value_det = 0.5f;
-//     int len = 0;
-//     float petThres = 0.7;
-//     TS_ALG_CatDetect_GetParam(&det_param_cpp);
-//     petThres = det_param_cpp.DetectionConfThres;
-//     int maxNms = 10000;
-
-//     for (int i = 0; i < nblob; i++)
-//     {
-//         int no_yolo = s32C[i] / 3;
-//         shapeVec2[i][4] = no_yolo;
-//         for (int j = 0; j < shapeVec2[i][1]; j++) {
-//             int* anchorgrid = &(anch[i][j * 2]);
-//             for (int k = 0; k < shapeVec2[i][2]; k++) {
-//                 for (int m = 0; m < shapeVec2[i][3]; m++) {
-//                     unsigned char *dataf = blob[i] + j * no_yolo + k * shapeVec2[i][3] * cstride[i] + m * cstride[i];
-
-//                     float data = (dataf[4] * scale_output[i]) * (dataf[5] * scale_output[i]);
-//                     if (data > petThres) {
-//                         if(len < maxNms){
-//                             float griddataf0 = (float)m - value_det;
-//                             float griddataf1 = (float)k - value_det;
-
-//                             dataVec[len * 6 + 0] = (dataf[0] * scale_output2[i] + griddataf0) * stride[i];
-//                             dataVec[len * 6 + 1] = (dataf[1] * scale_output2[i] + griddataf1) * stride[i];
-
-//                             float value = (dataf[2] * scale_output2[i]);
-//                             dataVec[len * 6 + 2] = value * value * anchorgrid[0];
-//                             value = (dataf[3] * scale_output2[i]);
-//                             dataVec[len * 6 + 3] = value * value * anchorgrid[1];
-
-//                             dataVec[len * 6 + 4] = dataf[4] * scale_output[i];
-//                             dataVec[len * 6 + 5] = data;
-//                             len++;
-//                         }
-//                     }
-//                 }
-//            }
-//        }
-//     }
-
-//     return len;
-   
-// }
-int TS_ALG_PcppDetV12_PostProcess(unsigned char **blob, unsigned int *cstride, unsigned int *s32C, float *fcoeff, float* dataVec)
+int TS_ALG_PcppDetV12_PostProcess(unsigned char **blob, unsigned int *cstride, unsigned int *s32C, float *fcoeff, float* dataVec, TS_U16* dataidx)
 {
 	int nblob = 3;
-	int shapeVec2[3][5] = {{1, 3, 48, 80, 6}, {1, 3, 24, 40, 6}, {1, 3, 12, 20, 6}};
+	//int imShape[4] = {1, 3, 640, 480}; // = srcShape
+	int shapeVec2[3][5] = {{1, 3, 48, 80, 6}, {1, 3, 24, 40, 6}, {1, 3, 12, 20, 6}};//0,1,2
 
-    float scale_output[] = { fcoeff[0], fcoeff[1], fcoeff[2] };
-    float scale_output2[] = { fcoeff[0] * 2, fcoeff[1] * 2, fcoeff[2] * 2 };
+    float scale_output[] = { fcoeff[0], fcoeff[1], fcoeff[2] }; //1,2,3
+
     int stride[3] = { 8,16,32 };
-
-    // 宠物猫专用 anchor（适配 640x360，不贴边、更稳定）
-    // int anch[3][6] = {
-    //     { 40, 32,  60, 45,  90, 60 },
-    //     { 95, 90, 130, 100, 160, 130 },
-    //     { 180, 150, 240, 200, 320, 260 }
-    // };
+    //unsigned int time1 = TIME_CACL_GET();
+	//初始化先验眶
+    // int anch[3][6] = {{6,9, 32,25, 22,59}, {73,53, 55,144, 108,291}, {201,172, 336,402, 432,439}};
     int anch[3][6] = {{10,13, 16,30, 33,23}, {30,61, 62,45, 59,119}, {116,90, 156,198, 373,326}};
-    float value_det = 0.5f;
-    int len = 0;
-    float petThres = 0.7;
-    TS_ALG_CatDetect_GetParam(&det_param_cpp);
-    petThres = det_param_cpp.DetectionConfThres;
-    int maxNms = 10000;
+    //int anch[3][6] = { {5,5, 11,12, 15,19}, {22,27, 40,53, 54,41}, {61,79, 115,159, 252,217} };
 
+    float value_det = 0.5f; //_makeGrid : float value = 0.5;
+
+    int len = 0;
+    int idxtmp = 0;
+    float petThres = 0.25;//0.45; //confidence
+    	//TS_ALG_CatDetect_GetParam(&det_param_cpp);
+	//petThres = det_param_cpp.DetectionConfThres;
+    int maxNms = 1024;  // maximum number of boxes into torchvision.ops.nms()
     for (int i = 0; i < nblob; i++)
     {
         int no_yolo = s32C[i] / 3;
@@ -433,113 +191,51 @@ int TS_ALG_PcppDetV12_PostProcess(unsigned char **blob, unsigned int *cstride, u
             for (int k = 0; k < shapeVec2[i][2]; k++) {
                 for (int m = 0; m < shapeVec2[i][3]; m++) {
                     unsigned char *dataf = blob[i] + j * no_yolo + k * shapeVec2[i][3] * cstride[i] + m * cstride[i];
+                    //int8_t *sigmoid_in = (int8_t *)dataf;
+                    //Feature_gtf(pred.m_data, mask, pred.m_shape[0] * pred.m_shape[1], confThres, pred.m_shape[2], 4);
+                    float data = (dataf[4] * scale_output[i]);
+                    if (data > petThres) {
+                        if(len < maxNms){
+                            unsigned char max_data = 0;
+                            unsigned char max_idx = 5;
+                            for(int n = 5; n < no_yolo; n++){
+                                if(max_data < dataf[n]){
+                                    max_data = dataf[n];
+                                    max_idx = n;
+                                }
+                            }
 
-                    // float data = (dataf[4] * scale_output[i]) * (dataf[5] * scale_output[i]);
-                    // if (data > petThres) {
-                    //     if(len < maxNms){
-                    //         float griddataf0 = (float)m - value_det;
-                    //         float griddataf1 = (float)k - value_det;
+                            float score_tmp = dataf[max_idx] * scale_output[i] * data;
+                            float tmpThres = petThres;
+                            if(score_tmp > tmpThres){
+                                float griddataf0 = (float)m - value_det;
+                                float griddataf1 = (float)k - value_det;
 
-                    //         float cx = (dataf[0] * scale_output2[i] + griddataf0) * stride[i];
-                    //         float cy = (dataf[1] * scale_output2[i] + griddataf1) * stride[i];
+                                //y_tmp = ((y.index("...", sha3) * 2.0) + this->grid[i]) * this->stride[i];
+                                dataVec[idxtmp++] = (dataf[0] * scale_output[i] * 2.0f + griddataf0) * stride[i];
+                                dataVec[idxtmp++] = (dataf[1] * scale_output[i] * 2.0f + griddataf1) * stride[i];
 
-                    //         float value_w = (dataf[2] * scale_output2[i]);
-                    //         float w = value_w * value_w * anchorgrid[0];
-                    //         float value_h = (dataf[3] * scale_output2[i]);
-                    //         float h = value_h * value_h * anchorgrid[1];
+                                // y_tmp = (y.index("...", sha4) * 2).pow(2) * this->anchorGrid[i];
+                                float value = (dataf[2] * scale_output[i] * 2.0f);
+                                dataVec[idxtmp++] = value * value * anchorgrid[0];
+                                value = (dataf[3] * scale_output[i] * 2.0f);
+                                dataVec[idxtmp++] = value * value * anchorgrid[1];
 
-                    //         // 防贴边 + 防止框过小闪烁
-                    //         cx = fmaxf(fminf(cx, 640 - 30), 30);
-                    //         cy = fmaxf(fminf(cy, 360 - 30), 30);
-                    //         w  = fmaxf(w, 50);
-                    //         h  = fmaxf(h, 50);
-
-                    //         dataVec[len * 6 + 0] = cx;
-                    //         dataVec[len * 6 + 1] = cy;
-                    //         dataVec[len * 6 + 2] = w;
-                    //         dataVec[len * 6 + 3] = h;
-                    //         dataVec[len * 6 + 4] = dataf[4] * scale_output[i];
-                    //         dataVec[len * 6 + 5] = data;
-
-                    //         len++;
-                    //     }
-                //     float data = (dataf[4] * scale_output[i]) * (dataf[5] * scale_output[i]);
-                //     if (data > petThres) {
-                //     // ======================== 核心修复 ========================
-                //         if (len >= 30) {  // 限制框数量，防止越界踩内存
-                //             continue;
-                //                 }
-
-                // float griddataf0 = (float)m - value_det;
-                // float griddataf1 = (float)k - value_det;
-
-                // float cx = (dataf[0] * scale_output2[i] + griddataf0) * stride[i];
-                // float cy = (dataf[1] * scale_output2[i] + griddataf1) * stride[i];
-
-                // float value_w = (dataf[2] * scale_output2[i]);
-                // float w = value_w * value_w * anchorgrid[0];
-                // float value_h = (dataf[3] * scale_output2[i]);
-                // float h = value_h * value_h * anchorgrid[1];
-
-                // cx = fmaxf(fminf(cx, 640 - 30), 30);
-                // cy = fmaxf(fminf(cy, 360 - 30), 30);
-                // w  = fmaxf(w, 50);
-                // h  = fmaxf(h, 50);
-
-                // dataVec[len * 6 + 0] = cx;
-                // dataVec[len * 6 + 1] = cy;
-                // dataVec[len * 6 + 2] = w;
-                // dataVec[len * 6 + 3] = h;
-                // dataVec[len * 6 + 4] = dataf[4] * scale_output[i];
-                // dataVec[len * 6 + 5] = data;
-
-                // len++;
-                // //}
-
-                //     }
-                float data = (dataf[4] * scale_output[i]) * (dataf[5] * scale_output[i]);
-if (data > petThres) {
-    // 【仅修复内存】防止 len 异常大导致越界写坏全局变量
-    if (len >= 100) {
-        continue;
-    }
-
-    if (len < maxNms) {
-        float griddataf0 = (float)m - value_det;
-        float griddataf1 = (float)k - value_det;
-
-        float cx = (dataf[0] * scale_output2[i] + griddataf0) * stride[i];
-        float cy = (dataf[1] * scale_output2[i] + griddataf1) * stride[i];
-
-        float value_w = (dataf[2] * scale_output2[i]);
-        float w = value_w * value_w * anchorgrid[0];
-        float value_h = (dataf[3] * scale_output2[i]);
-        float h = value_h * value_h * anchorgrid[1];
-
-        cx = fmaxf(fminf(cx, 640 - 30), 30);
-        cy = fmaxf(fminf(cy, 360 - 30), 30);
-        w  = fmaxf(w, 50);
-        h  = fmaxf(h, 50);
-
-        dataVec[len * 6 + 0] = cx;
-        dataVec[len * 6 + 1] = cy;
-        dataVec[len * 6 + 2] = w;
-        dataVec[len * 6 + 3] = h;
-        dataVec[len * 6 + 4] = dataf[4] * scale_output[i];
-        dataVec[len * 6 + 5] = data;
-
-        len++;
-        }
-        }
-
-                }
+                                dataVec[idxtmp++] = score_tmp;
+                                //printf("score_tmp:%f\n",score_tmp);
+                                // dataVec[idxtmp++] = dataf[5] * scale_output[i];
+                                dataidx[len++] = max_idx;
+                            }
+                        }
+						test_conf_set(data);
+                    }
+               }
            }
        }
     }
 
     return len;
 }
-
 
 TS_S32 TS_ALG_BodyDetect_Init(TS_VOID **handle, ALG_MODEL_INIT_S *param)
 {
@@ -638,7 +334,7 @@ TS_S32 TS_ALG_BodyDetect_Init(TS_VOID **handle, ALG_MODEL_INIT_S *param)
 		return -1;
 	}
 	//ALG_LOGE("malloc error!\n");
-    int shapeVec[] = { 1, (int)(3 * 48 * 80 + 3 * 24 * 40 + 3 * 12 * 20), 6};
+    int shapeVec[] = { 1, 3 * 48 * 80 + 3 * 24 * 40 + 3 * 12 * 20, 6};//0,1,2
     gPostProcBuf = (TS_FLOAT *)malloc(shapeVec[0] * shapeVec[1] * shapeVec[2] * sizeof(float));    //362,880
 	if(NULL == gPostProcBuf){
 		ALG_LOGE("malloc error !!!\n");
@@ -787,84 +483,151 @@ TS_S32 TS_ALG_BodyDetect_Process(TS_VOID *handle, ALG_IMAGE_S *image, ALG_CatDet
 	}
 
     float* dataVec = (float*)gPostProcBuf;
-	int len = TS_ALG_PcppDetV12_PostProcess(resultAddr, cstride, s32C, fcoeff, dataVec);
-    //printf("len:%d\n", len);
-
-    int maxNms = 100;
-    //int *nmsOut = (int *)(dataVec + len * 5);
-    // 定义一个足够大的 NMS 输出索引数组
-#define MAX_BOX_COUNT 10000
-int nmsOut[MAX_BOX_COUNT];
-
-    // 修复调试代码越界问题：只在len >= 5时才打印
-//     for (int i = 0; i < 5 && i < len; i++) {
-//     printf("box%d: %f %f %f %f  score:%f\\n",
-//         i,
-//         gPostProcBuf[i*6+0],
-//         gPostProcBuf[i*6+1],
-//         gPostProcBuf[i*6+2],
-//         gPostProcBuf[i*6+3],
-//         gPostProcBuf[i*6+5]
-//     );
-// }
-
-    int outNum = nms(gPostProcBuf, len, 6, nmsOut, 0.45, maxNms);
-	result->u32ObjNum = outNum;
-
-    TS_ALG_CatDetect_GetParam(&det_param_cpp);
-
-	int j = 0;
-
-	// for (int i = 0; i < outNum; i++) {
-	// 	// printf("[NMS] i=%d, nmsOut[i]=%d, conf=%.6f\n",
-	// 	//        i, nmsOut[i], gPostProcBuf[nmsOut[i] * 6 + 5]);
-	// 	if(gPostProcBuf[nmsOut[i] * 6 + 5] <= det_param_cpp.DetectionConfThres){
-	// 		continue;
-	// 	}
-	// 	result->stBox[j].f32Xmin = gPostProcBuf[nmsOut[i] * 6 + 0]/640.0;
-	// 	result->stBox[j].f32Ymin = MAX(0, (gPostProcBuf[nmsOut[i] * 6 + 1]-12.0) / 360.0);
-	// 	result->stBox[j].f32Xmax = gPostProcBuf[nmsOut[i] * 6 + 2]/640.0;
-	// 	result->stBox[j].f32Ymax = MAX(0, (gPostProcBuf[nmsOut[i] * 6 + 3]-12.0) / 360.0);
-    //     result->stBox[j].DetectionConf = gPostProcBuf[nmsOut[i] * 6 + 5];
-	// 	result->stBox[j].class_id = (int)(gPostProcBuf[nmsOut[i] * 6 + 4]);
-	// 	// printf("[NMS] j=%d, class_id=%d, conf=%.6f\n", j, result->stBox[j].class_id, result->stBox[j].DetectionConf);
-	// 	j++;
-	// }
-    for (int i = 0; i < outNum; i++) {
-    // 添加边界检查，防止nmsOut索引越界
-    if (nmsOut[i] < 0 || nmsOut[i] >= len) {
-        ALG_LOGE("nmsOut[%d]=%d out of range [0, %d)\n", i, nmsOut[i], len);
-        continue;
+    TS_U16* dataidx = (TS_U16 *)(gPostProcBuf + 15*1024);
+	int len = TS_ALG_PcppDetV12_PostProcess(resultAddr, cstride, s32C, fcoeff, dataVec, dataidx);
+    
+    const int maxDet = 100;
+    const int maxLen = 10000;
+    
+    if (len > maxLen) {
+        ALG_LOGE("Warning: len=%d exceeds maxLen=%d, truncating\n", len, maxLen);
+        len = maxLen;
     }
     
-    if(gPostProcBuf[nmsOut[i] * 6 + 5] <= det_param_cpp.DetectionConfThres) {
-        continue;
-    }
+    static int nmsOut_static[10000];
+    int *nmsOut = nmsOut_static;
 
-    // 取出中心、宽高
-    float cx = gPostProcBuf[nmsOut[i] * 6 + 0];
-    float cy = gPostProcBuf[nmsOut[i] * 6 + 1];
-    float w  = gPostProcBuf[nmsOut[i] * 6 + 2];
-    float h  = gPostProcBuf[nmsOut[i] * 6 + 3];
-
-    // 算出真实左上右下
-    float xmin = cx - w * 0.5f;
-    float ymin = cy - h * 0.5f;
-    float xmax = cx + w * 0.5f;
-    float ymax = cy + h * 0.5f;
-
-    // 归一化到0~1
-    result->stBox[j].f32Xmin = xmin / 640.0f;
-    result->stBox[j].f32Ymin = (ymin - 12.0f) / 360.0f;
-    result->stBox[j].f32Xmax = xmax / 640.0f;
-    result->stBox[j].f32Ymax = (ymax - 12.0f) / 360.0f;
-
-    result->stBox[j].DetectionConf = gPostProcBuf[nmsOut[i] * 6 + 5];
-    result->stBox[j].class_id = (int)(gPostProcBuf[nmsOut[i] * 6 + 4]);
-    j++;
-}
- 
-
+    int outNum = nms(gPostProcBuf, len, 5, nmsOut, 0.45, maxDet);
+	result->u32ObjNum = outNum;
+	
+    TS_ALG_CatDetect_GetParam(&det_param_cpp);
+	
+    const float BASE_CONF_THRESH = det_param_cpp.DetectionConfThres;
+    const float MIN_AREA_RATIO = 0.001f;
+    const float MAX_AREA_RATIO = 0.99f;
+    const float MIN_ASPECT_RATIO = 0.1f;
+    const float MAX_ASPECT_RATIO = 10.0f;
+    const float MIN_WIDTH = 10.0f;
+    const float MIN_HEIGHT = 10.0f;
+    const int IMG_WIDTH = 640;
+    const int IMG_HEIGHT = 360;
+    
+    const float HIGH_CONF_THRESH = BASE_CONF_THRESH;
+    const float LOW_CONF_THRESH = BASE_CONF_THRESH * 0.7f;
+    
+    const float CENTER_X_MIN = IMG_WIDTH * 0.25f;
+    const float CENTER_X_MAX = IMG_WIDTH * 0.75f;
+    const float CENTER_Y_MIN = IMG_HEIGHT * 0.25f;
+    const float CENTER_Y_MAX = IMG_HEIGHT * 0.75f;
+    
+    const float SMALL_AREA_THRESH = 0.05f;
+    const float MEDIUM_AREA_THRESH = 0.15f;
+    const float LARGE_AREA_THRESH = 0.30f;
+    
+    const float CLASS_THRESH[4] = {
+        BASE_CONF_THRESH,
+        BASE_CONF_THRESH * 0.9f,
+        BASE_CONF_THRESH * 0.85f,
+        BASE_CONF_THRESH * 0.8f
+    };
+    
+    auto get_area_thresh = [=](float area_ratio, float base_thresh) -> float {
+        if (area_ratio < 0.02f) {
+            return base_thresh * 1.44f;
+        } else if (area_ratio < SMALL_AREA_THRESH) {
+            return base_thresh * 1.25f;
+        } else if (area_ratio < MEDIUM_AREA_THRESH) {
+            return base_thresh;
+        } else if (area_ratio < LARGE_AREA_THRESH) {
+            return base_thresh*0.95;
+        } else {
+            return base_thresh * 0.85f;
+        }
+    };
+    
+    auto is_in_center = [](float xmin, float ymin, float xmax, float ymax,
+                           float cx_min, float cx_max, float cy_min, float cy_max) -> bool {
+        float center_x = (xmin + xmax) / 2.0f;
+        float center_y = (ymin + ymax) / 2.0f;
+        return (center_x >= cx_min && center_x <= cx_max &&
+                center_y >= cy_min && center_y <= cy_max);
+    };
+    
+    auto get_region_thresh = [&](bool in_center, float base_thresh) -> float {
+        return in_center ? base_thresh * 0.9f : base_thresh * 1.1f;
+    };
+	
+	int j = 0;
+	
+	for (int i = 0; i < outNum; i++) {
+		float conf = gPostProcBuf[nmsOut[i] * 5 + 4];
+		float xmin = gPostProcBuf[nmsOut[i] * 5 + 0];
+		float ymin = gPostProcBuf[nmsOut[i] * 5 + 1];
+		float xmax = gPostProcBuf[nmsOut[i] * 5 + 2];
+		float ymax = gPostProcBuf[nmsOut[i] * 5 + 3];
+		int cls_id = dataidx[nmsOut[i]] - 5;
+		
+		float width = xmax - xmin;
+		float height = ymax - ymin;
+		if (width < MIN_WIDTH || height < MIN_HEIGHT) {
+			ALG_LOGD("Filter: box too small, w=%.1f h=%.1f\n", width, height);
+			continue;
+		}
+		
+		float area = width * height;
+		float img_area = IMG_WIDTH * IMG_HEIGHT;
+		float area_ratio = area / img_area;
+		if (area_ratio < MIN_AREA_RATIO || area_ratio > MAX_AREA_RATIO) {
+			ALG_LOGD("Filter: invalid area ratio %.4f\n", area_ratio);
+		}
+		
+		float aspect_ratio = width / height;
+		if (aspect_ratio < MIN_ASPECT_RATIO || aspect_ratio > MAX_ASPECT_RATIO) {
+			ALG_LOGD("Filter: invalid aspect ratio %.2f\n", aspect_ratio);
+		}
+		
+		float class_thresh = (cls_id >= 0 && cls_id < 4) ? CLASS_THRESH[cls_id] : BASE_CONF_THRESH;
+		float area_thresh = get_area_thresh(area_ratio, class_thresh);
+		bool in_center = is_in_center(xmin, ymin, xmax, ymax, 
+		                               CENTER_X_MIN, CENTER_X_MAX, 
+		                               CENTER_Y_MIN, CENTER_Y_MAX);
+		float region_thresh = get_region_thresh(in_center, area_thresh);
+		
+		bool pass_high = (conf >= HIGH_CONF_THRESH);
+		bool pass_low = (conf >= LOW_CONF_THRESH && conf < HIGH_CONF_THRESH);
+		
+		if (pass_high) {
+			// pass
+		} else if (pass_low) {
+			if (!in_center && area_ratio > LARGE_AREA_THRESH) {
+				// pass
+			} else if (in_center && area_ratio > MEDIUM_AREA_THRESH) {
+				// pass
+			} else if (area_ratio > LARGE_AREA_THRESH) {
+				// pass
+			} else {
+				ALG_LOGD("Filter: low conf %.3f, area %.4f, center=%d\n", 
+				         conf, area_ratio, in_center);
+				continue;
+			}
+		} else {
+			ALG_LOGD("Filter: conf %.3f < low thresh %.3f\n", conf, LOW_CONF_THRESH);
+			continue;
+		}
+		
+		if (xmin < 0) xmin = 0;
+		if (ymin < 0) ymin = 0;
+		if (xmax > IMG_WIDTH) xmax = IMG_WIDTH;
+		if (ymax > IMG_HEIGHT) ymax = IMG_HEIGHT;
+		
+		result->stBox[j].Xmin = xmin / IMG_WIDTH;
+		result->stBox[j].Ymin = MAX(0, (ymin - 12.0) / IMG_HEIGHT);
+		result->stBox[j].Xmax = xmax / IMG_WIDTH;
+		result->stBox[j].Ymax = MAX(0, (ymax - 12.0) / IMG_HEIGHT);
+        result->stBox[j].Conf = conf;
+		result->stBox[j].cls_id = cls_id;
+		j++;
+	}
 	result->u32ObjNum = j;
     //ALG_LOGE("rne postprocess time:%d\n",TIME_CACL_GET()-time1);
 

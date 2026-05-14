@@ -3,7 +3,17 @@ set (VP_VIDEO_CODER_DIR     ${APP_SRC_DIR}/vp_video_coder)
 set (VP_COMM_DIR            ${APP_SRC_DIR}/vp_comm)
 set (VP_ALGOTHRM_DIR        ${APP_SRC_DIR}/vp_algothrim)
 
+
+# ===== 新增：段错误/COREDUMP/交叉GDB调试必加参数 =====
+add_compile_options(-g -O0 -Wall)
+# 关闭优化、保留调试符号、开启编译告警，精准定位崩溃源码行
+# =====================================================
 add_definitions(-DSENSOR0_TYPE=EVB_SENSOR)
+
+
+ 
+
+ 
 
 set(VP_VIDEO_CODER_TEST vp_algothrim_test)
 

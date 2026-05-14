@@ -334,22 +334,22 @@ TS_S32 VIDEO_ALG_CatDetect_Proc(TS_VOID *pHandle, ALG_IMAGE_S *pImage, ALG_IMAGE
     const float img_h = (float)pImage->s32H;
 
     for (int i = 0; i < pTmpResult->u32ObjNum; i++) {
-        if (pTmpResult->stBox[i].f32Xmin < 0.0f) pTmpResult->stBox[i].f32Xmin = 0.0f;
-        if (pTmpResult->stBox[i].f32Xmin > 1.0f) pTmpResult->stBox[i].f32Xmin = 1.0f;
+        if (pTmpResult->stBox[i].Xmin < 0.0f) pTmpResult->stBox[i].Xmin = 0.0f;
+        if (pTmpResult->stBox[i].Xmin > 1.0f) pTmpResult->stBox[i].Xmin = 1.0f;
 
-        if (pTmpResult->stBox[i].f32Ymin < 0.0f) pTmpResult->stBox[i].f32Ymin = 0.0f;
-        if (pTmpResult->stBox[i].f32Ymin > 1.0f) pTmpResult->stBox[i].f32Ymin = 1.0f;
+        if (pTmpResult->stBox[i].Ymin < 0.0f) pTmpResult->stBox[i].Ymin = 0.0f;
+        if (pTmpResult->stBox[i].Ymin > 1.0f) pTmpResult->stBox[i].Ymin = 1.0f;
 
-        if (pTmpResult->stBox[i].f32Xmax < 0.0f) pTmpResult->stBox[i].f32Xmax = 0.0f;
-        if (pTmpResult->stBox[i].f32Xmax > 1.0f) pTmpResult->stBox[i].f32Xmax = 1.0f;
+        if (pTmpResult->stBox[i].Xmax < 0.0f) pTmpResult->stBox[i].Xmax = 0.0f;
+        if (pTmpResult->stBox[i].Xmax > 1.0f) pTmpResult->stBox[i].Xmax = 1.0f;
 
-        if (pTmpResult->stBox[i].f32Ymax < 0.0f) pTmpResult->stBox[i].f32Ymax = 0.0f;
-        if (pTmpResult->stBox[i].f32Ymax > 1.0f) pTmpResult->stBox[i].f32Ymax = 1.0f;
+        if (pTmpResult->stBox[i].Ymax < 0.0f) pTmpResult->stBox[i].Ymax = 0.0f;
+        if (pTmpResult->stBox[i].Ymax > 1.0f) pTmpResult->stBox[i].Ymax = 1.0f;
 
-        rect.left = pTmpResult->stBox[i].f32Xmin * img_w;
-        rect.top = pTmpResult->stBox[i].f32Ymin * img_h;
-        rect.right = pTmpResult->stBox[i].f32Xmax * img_w;
-        rect.bottom = pTmpResult->stBox[i].f32Ymax * img_h;
+        rect.left = pTmpResult->stBox[i].Xmin * img_w;
+        rect.top = pTmpResult->stBox[i].Ymin * img_h;
+        rect.right = pTmpResult->stBox[i].Xmax * img_w;
+        rect.bottom = pTmpResult->stBox[i].Ymax * img_h;
 
         pTmpResult->stBox[i].cam_id = cam_id;
     }

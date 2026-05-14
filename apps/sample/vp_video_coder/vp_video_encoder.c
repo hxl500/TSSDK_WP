@@ -1761,7 +1761,8 @@ int vp_video_encoder_install_key(uint8_t idx, vp_video_chn_t chn) {
  */
 int vp_video_encoder_jpeg(uint8_t idx, vp_video_chn_t chn, vp_video_source_t *frame,
                           uint8_t *jpeg_data, uint32_t *jpeg_size) {
-
+    printf("============vp_video_encoder_jpeg================\n");
+    return 0;
     if (idx >= VP_SENSOR_NUM || chn >= vp_video_chn_max) return -1;
     vp_channel_config_t *channel = vp_video_get_channel(idx, chn);
     if (channel == NULL) return -1;

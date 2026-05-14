@@ -96,6 +96,7 @@ include_directories(${SAMPLE_CATDETECT_DIR}/include/api)
 include_directories(${SAMPLE_CATDETECT_DIR}/include/core)
 include_directories(${SAMPLE_CATDETECT_DIR}/include/utils)
 include_directories(${SAMPLE_CATDETECT_DIR}/src/record_file)
+include_directories(${APP_SRC_DIR}/../../libs/mpp/include)
 # include_directories(${APP_SRC_DIR}/../../libs/trp/cve/include)
 # include_directories($ENV{TARGET_STAGING_INC})
 # include_directories($ENV{TARGET_STAGING_INC}/opencv4)
@@ -131,6 +132,8 @@ link_directories(${APP_SRC_DIR}/../../libs/yuv/lib)
 #include_directories(${APP_SRC_DIR}/tsalg_lib)
 #link_directories(${APP_SRC_DIR}/temp/tsalg_lib)
 link_directories(${APP_SRC_DIR}/../../libs/yuv/lib)
+
+# ===== 调试必加：支持coredump、交叉gdb定位源码行号 =====
 add_library(${SAMPLE_LIB_CATDETECT} STATIC
 	${SAMPLE_CATDETECT_DIR}/src/core/lib_ts_alg_body_detect.cpp
 	${SAMPLE_CATDETECT_DIR}/src/core/lib_video_alg_catdetect.c 
@@ -144,8 +147,17 @@ add_library(${SAMPLE_LIB_CATDETECT} STATIC
 	${SAMPLE_CATDETECT_DIR}/src/utils/lib_iot_net.c
 	${SAMPLE_CATDETECT_DIR}/src/utils/qi_nv12_yuv.cpp
 	${SAMPLE_CATDETECT_DIR}/src/record_file/ts_rne_record_file.c
-	 
 )
+target_compile_options(${SAMPLE_LIB_CATDETECT} PRIVATE
+    -g
+    -O0
+    -Wall
+    -funwind-tables
+)
+target_link_options(${SAMPLE_LIB_CATDETECT} PRIVATE
+    -rdynamic
+)
+# ======================================================
 
 	
 	
